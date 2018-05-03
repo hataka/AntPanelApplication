@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2871AC57-9191-487E-BE0E-39C81063DCE1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AntPlugin</RootNamespace>
+    <AssemblyName>AntPlugin</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\FlashDevelop\Bin\Debug\Plugins\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\FlashDevelop\Bin\Debug\Plugins\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>..\..\..\FlashDevelop\Bin\Debug\Plugins\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>..\..\..\FlashDevelop\Bin\Debug\Plugins\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="TKFP, Version=1.4.4.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\TKFP.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommonLibrary\FileHandler.cs" />
+    <Compile Include="CommonLibrary\ImageHander.cs" />
+    <Compile Include="CommonLibrary\IniFileHandler.cs" />
+    <Compile Include="CommonLibrary\Lib.cs" />
+    <Compile Include="CommonLibrary\OsVersion.cs" />
+    <Compile Include="CommonLibrary\ProcessHandler.cs" />
+    <Compile Include="CommonLibrary\PSPadProject.cs" />
+    <Compile Include="CommonLibrary\StringHandler.cs" />
+    <Compile Include="CommonLibrary\TwoKeysDictionary.cs" />
+    <Compile Include="CommonLibrary\TwoKeysHashTable.cs" />
+    <Compile Include="CommonLibrary\WebHandler.cs" />
+    <Compile Include="CommonLibrary\Win32.cs" />
+    <Compile Include="CsOutlineParser\BuildTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CsOutlineParser\CSParserRegexes.cs" />
+    <Compile Include="CsOutlineParser\CSParserUtils.cs" />
+    <Compile Include="CsOutlineParser\LexicalAnalysis.cs" />
+    <Compile Include="CsOutlineParser\MemberModel.cs" />
+    <Compile Include="DirTreePanel\DirTreePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FTPClientPanel\FTPClientPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CommonLibrary\DeComment.cs" />
+    <Compile Include="GradleOutlineParser\GradleParserUtils.cs" />
+    <Compile Include="GradleOutlineParser\GradleTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GradleOutlineParser\GradleTree.Designer.cs">
+      <DependentUpon>GradleTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GradleOutlineParser\TaskInfo.cs" />
+    <Compile Include="PluginUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginUI.Designer.cs">
+      <DependentUpon>PluginUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PluginMain.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="XmlTreeMenu\Controls\Browser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DirTreePanel\DirTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\DrawPoints.cs" />
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\FontLabels.cs" />
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\GetLabelDelegate.cs" />
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\Glib.cs" />
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\GlibSample.cs" />
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\Obj.cs" />
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\Options.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\PageFont.cs" />
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\PicturePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\PicturePanel\RubberBandDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\RichTextEditor\dialogMode.cs" />
+    <Compile Include="XmlTreeMenu\Controls\RichTextEditor\findDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\RichTextEditor\jumpDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\RichTextEditor\RichTextEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\RichTextEditor\settingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\SimplePanel\SimplePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Controls\WebBrowserEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Dialogs\RunProcessDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Dialogs\ScriptingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Dialogs\ScriptingDialog.Designer.cs">
+      <DependentUpon>ScriptingDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XmlTreeMenu\Managers\ActionManager.cs" />
+    <Compile Include="XmlTreeMenu\Managers\ScriptManager.cs" />
+    <Compile Include="XmlTreeMenu\Managers\XMLManager.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\ChildFormControlClass.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\FDProject\CompileClass.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\FDProject\ExecuteClass.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\FDProject\IFDProjectClass.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\FDProject\ProjectClass.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\Glib.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\GlibSample.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\IMDIForm.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\Ini.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\MdiHosting.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\NodeInfo.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\Obj.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\ParentFormClass.cs" />
+    <Compile Include="XmlTreeMenu\MDIForm\PropertySetting.cs" />
+    <Compile Include="XmlTreeMenu\NodeInfo.cs" />
+    <Compile Include="XmlTreeMenu\Managers\StripBarManager.cs" />
+    <Compile Include="XmlTreeMenu\XmlTreeMenu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XmlTreeMenu\XmlTreeMenu.Designer.cs">
+      <DependentUpon>XmlTreeMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XmlTreePanel\XmlTreePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XmlTreePanel\XmlTreePanel.Designer.cs">
+      <DependentUpon>XmlTreePanel.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CsOutlineParser\BuildTree.resx">
+      <DependentUpon>BuildTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DirTreePanel\DirTreePanel.resx">
+      <DependentUpon>DirTreePanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FTPClientPanel\FTPClientPanel.resx">
+      <DependentUpon>FTPClientPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginUI.resx">
+      <DependentUpon>PluginUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeMenu\Controls\Browser.resources" />
+    <EmbeddedResource Include="DirTreePanel\DirTreeView.resx">
+      <DependentUpon>DirTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeMenu\Controls\PicturePanel\PicturePanel.resx">
+      <DependentUpon>PicturePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeMenu\Controls\PicturePanel\RubberBandDialog.resx">
+      <DependentUpon>RubberBandDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeMenu\Controls\RichTextEditor\RichTextEditor.resx">
+      <DependentUpon>RichTextEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeMenu\Controls\SimplePanel\SimplePanel.resx">
+      <DependentUpon>SimplePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeMenu\Controls\WebBrowserEx.resx">
+      <DependentUpon>WebBrowserEx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeMenu\Dialogs\RunProcessDialog.resources" />
+    <EmbeddedResource Include="XmlTreeMenu\Dialogs\ScriptingDialog.resx">
+      <DependentUpon>ScriptingDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreeMenu\XmlTreeMenu.resx">
+      <DependentUpon>XmlTreeMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreePanel\XmlTreePanel.resx">
+      <DependentUpon>XmlTreePanel.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\PluginCore\PluginCore.csproj">
+      <Project>{61885F70-B4DC-4B44-852D-5D6D03F2A734}</Project>
+      <Name>PluginCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ASCompletion\ASCompletion.csproj">
+      <Project>{4EBF2653-9654-4E40-880E-0046B3D6210E}</Project>
+      <Name>ASCompletion</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\targetpublic_obj1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+</Project>
