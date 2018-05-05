@@ -22,5 +22,358 @@ namespace AntPanelApplication.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AntPanel")]
+        public string Name {
+            get {
+                return ((string)(this["Name"]));
+            }
+            set {
+                this["Name"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MenuBarVisible {
+            get {
+                return ((bool)(this["MenuBarVisible"]));
+            }
+            set {
+                this["MenuBarVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public string ToolBarVisible {
+            get {
+                return ((string)(this["ToolBarVisible"]));
+            }
+            set {
+                this["ToolBarVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public string StatusBarVisible {
+            get {
+                return ((string)(this["StatusBarVisible"]));
+            }
+            set {
+                this["StatusBarVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>F:\My Music\２つのミサ曲\２つのミサ曲.asx</string>
+  <string>C:\home\KingFM.asx</string>
+  <string>F:\My Video\flv\misaki.flv</string>
+  <string>F:\My Music\KingFM\070104\MARTIN-Mass.wax</string>
+  <string>F:\home\xjpeg\ePXXXFd.wmv</string>
+  <string>http://v6.player.abacast.net/3</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection BookMarks {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BookMarks"]));
+            }
+            set {
+                this["BookMarks"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>F:\My Music\KingFM\061122\MOZART-Horn_Concerto_No.2_in_E-flat_K.417.wax</string>
+  <string>F:\My Music\２つのミサ曲\２つのミサ曲.asx</string>
+  <string>C:\home\KingFM.asx</string>
+  <string>F:\My Video\flv\misaki.flv</string>
+  <string>F:\My Music\KingFM\070104\MARTIN-Mass.wax</string>
+  <string>F:\My Music\KingFM\060804\MOZART-Piano_Concerto_No.13_in_C_K.415_387b.wax</string>
+  <string>F:\My Music\KingFM\061030\MOZART-Piano_Concerto_No.12_in_A_K.414.wax</string>
+  <string>F:\My Music\KingFM\060805\IBERT-Escales(Ports_of_Call).wax</string>
+  <string>F:/My Music/KingFM/070108/MOZART-Piano_Concerto_No.1_in_F,_K.37.wax</string>
+  <string>F:\home\xjpeg\ePXXXFd.wmv</string>
+  <string>F:\My Music\KingFM\070107\IRELAND-Orchestral_Poem_in_A_minor.wax</string>
+  <string>F:\My Music\KingFM\070112\KETCLBY-Bells_Across_the_Meadow.wax</string>
+  <string>F:\My Music\KingFM\070115\HEINICHEN-Chamber_Sonata_in_A,_S.208.wax</string>
+  <string>F:\My Music\KingFM\060810\GEMINIANI-Concerto_Grosso_in_B-flat_Op.5_2.wax</string>
+  <string>F:\My Music\KingFM\070117\FALLA-Love,_the_Magician-Ritual_Fire_Dance.wax</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection PreviousDocuments {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["PreviousDocuments"]));
+            }
+            set {
+                this["PreviousDocuments"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost")]
+        public string ServerRoot {
+            get {
+                return ((string)(this["ServerRoot"]));
+            }
+            set {
+                this["ServerRoot"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Apache2.2\\htdocs")]
+        public string DocumentRoot {
+            get {
+                return ((string)(this["DocumentRoot"]));
+            }
+            set {
+                this["DocumentRoot"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\sakura\\sakura.exe")]
+        public string SakuraPath {
+            get {
+                return ((string)(this["SakuraPath"]));
+            }
+            set {
+                this["SakuraPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\PSPad editor\\PSPad.exe")]
+        public string PspadPath {
+            get {
+                return ((string)(this["PspadPath"]));
+            }
+            set {
+                this["PspadPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\VCSharp\\Flashdevelop5.1.1-LL\\FlashDevelop\\Bin\\Debug\\FlashDevelop.exe")]
+        public string FlashdevelopPath {
+            get {
+                return ((string)(this["FlashdevelopPath"]));
+            }
+            set {
+                this["FlashdevelopPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\devenv.exe")]
+        public string Devenv15Path {
+            get {
+                return ((string)(this["Devenv15Path"]));
+            }
+            set {
+                this["Devenv15Path"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE\\devenv." +
+            "exe")]
+        public string Devenv17Path {
+            get {
+                return ((string)(this["Devenv17Path"]));
+            }
+            set {
+                this["Devenv17Path"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Windows Media Player\\wmplayer.exe")]
+        public string MediaPlayerPath {
+            get {
+                return ((string)(this["MediaPlayerPath"]));
+            }
+            set {
+                this["MediaPlayerPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\VideoLAN\\VLC\\vlc.exe")]
+        public string VlcPath {
+            get {
+                return ((string)(this["VlcPath"]));
+            }
+            set {
+                this["VlcPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\ant\\apache-ant-1.10.1\\bin\\ant.bat")]
+        public string AntExecutablePath {
+            get {
+                return ((string)(this["AntExecutablePath"]));
+            }
+            set {
+                this["AntExecutablePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\gradle-3.5\\bin\\gradle.bat")]
+        public string GradlePath {
+            get {
+                return ((string)(this["GradlePath"]));
+            }
+            set {
+                this["GradlePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe")]
+        public string ChromePath {
+            get {
+                return ((string)(this["ChromePath"]));
+            }
+            set {
+                this["ChromePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Internet Explorer\\iexplore.exe")]
+        public string IePath {
+            get {
+                return ((string)(this["IePath"]));
+            }
+            set {
+                this["IePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Windows\\system32\\cmd.exe")]
+        public string CmdPath {
+            get {
+                return ((string)(this["CmdPath"]));
+            }
+            set {
+                this["CmdPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Windows\\explorer.exe")]
+        public string ExplorerPath {
+            get {
+                return ((string)(this["ExplorerPath"]));
+            }
+            set {
+                this["ExplorerPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ＭＳ ゴシック, 16.2pt")]
+        public global::System.Drawing.Font DefaultFont {
+            get {
+                return ((global::System.Drawing.Font)(this["DefaultFont"]));
+            }
+            set {
+                this["DefaultFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>101000011011</string>
+  <string>101000011011</string>
+  <string>101000111111</string>
+  <string>111111011011</string>
+  <string>101000011011</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection MenuStripItemEnabled {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["MenuStripItemEnabled"]));
+            }
+            set {
+                this["MenuStripItemEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>01111101000100110</string>
+  <string>01110100000100110</string>
+  <string>01111101000111110</string>
+  <string>11111111111111110</string>
+  <string>01111100000111110</string>
+  <string>00000000000000000</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection FileMenuVisible {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["FileMenuVisible"]));
+            }
+            set {
+                this["FileMenuVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\ant\\apache-ant-1.10.1")]
+        public string AntPath {
+            get {
+                return ((string)(this["AntPath"]));
+            }
+            set {
+                this["AntPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("antPluginData.txt")]
+        public string StorageFileName {
+            get {
+                return ((string)(this["StorageFileName"]));
+            }
+            set {
+                this["StorageFileName"] = value;
+            }
+        }
     }
 }

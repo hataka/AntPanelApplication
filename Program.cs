@@ -14,7 +14,6 @@ namespace AntPanelApplication
     [STAThread]
     static void Main(String[] args)
     {
-
       /*
        public static void Main(string[] args)
       {
@@ -26,8 +25,9 @@ namespace AntPanelApplication
       Application.SetCompatibleTextRenderingDefault(false);
       if (args.Length>0)
       {
-        String projectPath = args[0];
-        Application.Run(new Form1(projectPath));
+        //String projectPath = args[0];
+        //Application.Run(new Form1(projectPath));
+        Application.Run(new Form1(args));
       }
       else Application.Run(new Form1());
     }

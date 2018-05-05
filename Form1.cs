@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-//using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace AntPanelApplication
@@ -16,20 +11,35 @@ namespace AntPanelApplication
     {
       InitializeComponent();
       AntPanel antPanel = new AntPanel();
-      antPanel.Dock = DockStyle.Fill;
-      this.Controls.Add(antPanel);
-      this.Text = "AntPanel";
-      this.Size = new Size(1200 ,800);
-      this.StartPosition = FormStartPosition.CenterScreen;
+      InitializeForm(antPanel);
     }
 
     public Form1(String path)
     {
       InitializeComponent();
       AntPanel antPanel = new AntPanel(path);
-      antPanel.Dock = DockStyle.Fill;
-      this.Controls.Add(antPanel);
-      this.Text = "AntPanel : " + path;
+      antPanel.AccessibleDescription = path;
+      InitializeForm(antPanel);
+    }
+
+    public Form1(String[] args)
+    {
+      InitializeComponent();
+      AntPanel antPanel = new AntPanel(args);
+      if (args.Length > 1 && !String.IsNullOrEmpty(args[0]))
+      {
+        antPanel.AccessibleDescription = args[0];
+      }
+      InitializeForm(antPanel);
+    }
+
+    private void InitializeForm(AntPanel antpanel)
+    {
+      antpanel.Dock = DockStyle.Fill;
+
+      this.Controls.Add(antpanel);
+
+      this.Text = "AntPanel : " + Path.GetFileName(antpanel.AccessibleDescription);
       this.Size = new Size(1200, 800);
       this.StartPosition = FormStartPosition.CenterScreen;
     }
