@@ -52,7 +52,7 @@ namespace AntPanelApplication
 		public GradleTree gradleTree = new GradleTree();
 		public XmlMenuTree menuTree = new XmlMenuTree();
 
-		public DirTreePanel dirTreePanel;// = new DirTreePanel();
+		public DirTreePanel dirTreePanel;
 		//public FTPClientPanel ftpClientPanel;
 		//public XmlTreePanel xmlTreePanel;
 
@@ -256,7 +256,6 @@ namespace AntPanelApplication
 			*/
     }
     #endregion
-
 
     private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
