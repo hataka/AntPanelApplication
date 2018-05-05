@@ -1,5 +1,6 @@
 ﻿using AntPanelApplication;
 using AntPlugin.CommonLibrary;
+using AxWMPLib;
 //using AntPlugin.XmlTreeMenu.Controls;
 //using AntPlugin.XMLTreeMenu.Controls;
 using System;
@@ -196,12 +197,13 @@ namespace AntPlugin.XmlTreeMenu.Managers
           //FIXED
           // Plugins のディレクトリにmediaplayerのdllをコピーするので廃止。
           // CustomDocumentに処理を移す
-          //case "player":
-          //this.Player(path);
-          //break;
-          ActionManager.Picture(command + "|" + args + "|" + path + "|" + option);
+          //ActionManager.Picture(command + "|" + args + "|" + path + "|" + option);
+           break;
+        case "player":
+          ActionManager.Player(path);
           //button.Tag = "PlayerPanel" + "|" + args + "|" + path + "|" + option;
           //ActionManager.CustomDocument(button, null);
+          break;
           break;
         // opengl.dllが,NET4.0で互換性がないので廃止 
         //.NET3.5 のFlashdevelop 5.2.0ではdockableControlで処理
@@ -302,7 +304,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
         else if (System.IO.File.Exists(path)) dir = Path.GetDirectoryName(path);
         if (dir != String.Empty) System.IO.Directory.SetCurrentDirectory(dir);
       }
-      ///////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////
       String result = "";
       // command前処理					
       if (command == String.Empty) command = path;
@@ -327,7 +329,10 @@ namespace AntPlugin.XmlTreeMenu.Managers
           //if (option.ToLower().IndexOf("doc") >= 0 || this.settings.IsDocumentOutput)
           if (option.ToLower().IndexOf("doc") >= 0)
           {
+            String tempfile = @"F:\temp\output.txt";
             result = ProcessHandler.getStandardOutput(command, args);
+            WriteFileEncoding(tempfile, result, Encoding.UTF8);
+            menuTree.antPanel.OpenDocument(tempfile);
             //PluginBase.MainForm.CallCommand("New", "");
             //PluginBase.MainForm.CurrentDocument.SciControl.DocumentStart();
             //PluginBase.MainForm.CurrentDocument.SciControl.ReplaceSel(result);
@@ -335,6 +340,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
           //if (option.ToLower().IndexOf("trace") >= 0 || this.settings.IsPanelOutput)
           if (option.ToLower().IndexOf("trace") >= 0)
           {
+            // https://msdn.microsoft.com/ja-jp/library/0xca6kdd.aspx
+            String arguments = "/Command " + "\"Shell /c " + command + " " + args + "\"";
+            Process.Start(settings.Devenv15Path, arguments);
             //result = ProcessHandler.getStandardOutput(command, args);
             //TraceManager.Add(result);
           }
@@ -346,6 +354,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           // テストステージ
           if (option.ToLower().IndexOf("textlog") >= 0 || option.ToLower().IndexOf("richtext") >= 0)
           {
+            //[テキストとしてファイルを挿入] InsertFile          Edit.InsertFileAsText
             //result = ProcessHandler.getStandardOutput(command, args);
             //String title = Path.GetFileNameWithoutExtension(command);
             //menuTree.CreateCustomDocument("RichTextEditor", "[出力]" + command + "!" + result);
@@ -1033,7 +1042,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void WriteFileEncoding(string file, string text, Encoding encoding)
     {
-      
       try
       {
         using (StreamWriter streamWriter = new StreamWriter(file, false, encoding))
@@ -1173,6 +1181,15 @@ namespace AntPlugin.XmlTreeMenu.Managers
       //document2.FormClosing += new FormClosingEventHandler(this.CustomDocument_FormClosing);
       */
     }
+
+    public static void Player(String path)
+    {
+      if (Lib.IsSoundFile(path) || Lib.IsVideoFile(path))
+      {
+        ((Form1)menuTree.antPanel.Tag).axWindowsMediaPlayer1.URL = path;
+      }
+    }
+
 
     private static void pictureBox2_DoubleClick(object sender, EventArgs e)
     {

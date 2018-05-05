@@ -120,5 +120,8 @@
     <Setting Name="StorageFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">antPluginData.txt</Value>
     </Setting>
+    <Setting Name="HomeMenuPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug\SettingData\FDTreeMenu.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

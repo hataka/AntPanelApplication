@@ -113,8 +113,9 @@ namespace AntPanelApplication
 
 			CreateMenus();
 
+      this.homeStripButton.Click += new System.EventHandler(this.homeStripButton_Click);
 
-			this.splitContainer1.Panel2Collapsed = true;
+      this.splitContainer1.Panel2Collapsed = true;
 			this.splitContainer1.Panel1Collapsed = false;
 			this.propertyGrid1.HelpVisible = false;
 			this.propertyGrid1.ToolbarVisible = false;
@@ -1244,16 +1245,26 @@ namespace AntPanelApplication
       else Process.Start(path);
     }
 
+    private void homeStripButton_Click(object sender, EventArgs e)
+    {
+      treeView.Nodes.Clear();
+      // bug fix 2018-03-16
+      // タブコントロールに組み込むと最初に加えたノードが表示されなくなる
+      // 間に合せのパッチ
+      TreeNode dummy = new TreeNode("dummy");
+      treeView.Nodes.Add(dummy);
+      treeView.Nodes.Add(this.menuTree.getXmlTreeNode(this.settings.HomeMenuPath, true));
+    }
 
   }
 
 
-	/// <summary>
-	/// How to load xml document in Property Grid
-	/// </summary>
-	/// http://stackoverflow.com/questions/4591115/how-to-load-xml-document-in-property-grid
-	/// 追加 2017-01-12
-	[TypeConverter(typeof(XmlNodeWrapperConverter))]
+  /// <summary>
+  /// How to load xml document in Property Grid
+  /// </summary>
+  /// http://stackoverflow.com/questions/4591115/how-to-load-xml-document-in-property-grid
+  /// 追加 2017-01-12
+  [TypeConverter(typeof(XmlNodeWrapperConverter))]
 	class XmlNodeWrapper
 	{
 		private readonly XmlNode node;

@@ -375,5 +375,18 @@ namespace AntPanelApplication.Properties {
                 this["StorageFileName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\VCSharp\\Flashdevelop5.1.1-LL\\FlashDevelop\\Bin\\Debug\\SettingData\\FDTreeMenu.xml" +
+            "")]
+        public string HomeMenuPath {
+            get {
+                return ((string)(this["HomeMenuPath"]));
+            }
+            set {
+                this["HomeMenuPath"] = value;
+            }
+        }
     }
 }

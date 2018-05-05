@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B4A553F6-3438-411E-B8CC-AD185F52DFF0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RichTextEditor</RootNamespace>
+    <AssemblyName>RichTextEditor</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <StartupObject>
+    </StartupObject>
+    <ApplicationIcon>F:\icons\csharp.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>.\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="CommonLib\CommonLib.cs" />
+    <Compile Include="CommonLib\FDProject.cs" />
+    <Compile Include="CommonLib\FileHandler.cs" />
+    <Compile Include="CommonLib\ImageHandler.cs" />
+    <Compile Include="CommonLib\IniFileHandler.cs" />
+    <Compile Include="CommonLib\MDIForm.ini.cs" />
+    <Compile Include="CommonLib\MDIFormInterface.cs" />
+    <Compile Include="CommonLib\NodeInfo.cs" />
+    <Compile Include="CommonLib\ProcessHandler.cs" />
+    <Compile Include="CommonLib\PropertySetting.cs" />
+    <Compile Include="CommonLib\Settings.cs" />
+    <Compile Include="CommonLib\StringHandler.cs" />
+    <Compile Include="CommonLib\WebHandler.cs" />
+    <Compile Include="CommonLib\ZetaActiveScript.cs" />
+    <Compile Include="dialogMode.cs" />
+    <Compile Include="findDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="jumpDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RichTextEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="settingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RichTextEditor.resx">
+      <DependentUpon>RichTextEditor.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

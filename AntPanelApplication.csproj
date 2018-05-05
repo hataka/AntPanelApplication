@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PlayerPanel">
+      <HintPath>..\PlayerPanel\obj\Debug\PlayerPanel.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -55,6 +58,9 @@
       <DependentUpon>AntPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="CommonLibrary\ChildFormControlClass.cs" />
+    <Compile Include="CommonLibrary\Common.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CommonLibrary\DeComment.cs" />
     <Compile Include="CommonLibrary\FileHandler.cs" />
     <Compile Include="CommonLibrary\IconExtractor.cs" />
@@ -74,6 +80,47 @@
     <Compile Include="CommonLibrary\TwoKeysHashTable.cs" />
     <Compile Include="CommonLibrary\WebHandler.cs" />
     <Compile Include="CommonLibrary\Win32.cs" />
+    <Compile Include="Controls\BrowserEx.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BrowserEx.Designer.cs">
+      <DependentUpon>BrowserEx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PicturePanel\DrawPoints.cs" />
+    <Compile Include="Controls\PicturePanel\FontLabels.cs" />
+    <Compile Include="Controls\PicturePanel\GetLabelDelegate.cs" />
+    <Compile Include="Controls\PicturePanel\Glib.cs" />
+    <Compile Include="Controls\PicturePanel\GlibSample.cs" />
+    <Compile Include="Controls\PicturePanel\Obj.cs" />
+    <Compile Include="Controls\PicturePanel\Options.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\PicturePanel\PageFont.cs" />
+    <Compile Include="Controls\PicturePanel\PicturePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PicturePanel\RubberBandDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\PlayerPanel\PlayerPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PlayerPanel\PlayerPanel.Designer.cs">
+      <DependentUpon>PlayerPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RichTextEditor\dialogMode.cs" />
+    <Compile Include="Controls\RichTextEditor\findDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\RichTextEditor\jumpDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\RichTextEditor\RichTextEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\RichTextEditor\settingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="CsOutlineParser\BuildTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -112,6 +159,21 @@
     <EmbeddedResource Include="AntPanel.resx">
       <DependentUpon>AntPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\BrowserEx.resx">
+      <DependentUpon>BrowserEx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PicturePanel\PicturePanel.resx">
+      <DependentUpon>PicturePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PicturePanel\RubberBandDialog.resx">
+      <DependentUpon>RubberBandDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PlayerPanel\PlayerPanel.resx">
+      <DependentUpon>PlayerPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RichTextEditor\RichTextEditor.resx">
+      <DependentUpon>RichTextEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CsOutlineParser\BuildTree.resx">
       <DependentUpon>BuildTree.cs</DependentUpon>
     </EmbeddedResource>
@@ -121,6 +183,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DirTreePanel\DirTreeView.resx">
       <DependentUpon>DirTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -148,7 +213,25 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,0 +1,411 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<project name="RichTextEditor" default="build" basedir=".">
+	<description> build C# Windows Form Application with apache ant.</description>
+	<property name="appdata.dir" location="F:/ant/appdata"/>
+  <property name="config.dir" value="${appdata.dir}/config" />
+ 
+  <import file="${config.dir}/properties.xml" />
+ <!--
+  <import file="${config.dir}/jnlp.xml" />
+	--> 
+  <!-- =================================================================== -->
+  <!-- properties                                     -->
+  <!-- =================================================================== -->
+	<property environment="env" />
+	<dirname property="ant.file.dir" file="${ant.file}"/>
+	<property name="appname" value="${ant.project.name}"/>
+	<property name="target" value="${appname}"/>
+
+	<property name="exe" value="${target}.exe"/>
+	<property name="web.dir" value="${web.server.root}/$(WorkingDir)/"/> 
+	<!-- property name="src.path" value="$(CurFile)"/ -->
+	<property name="src.name" value="${target}.cs"/>
+	<property name="src.path" value="${basedir}/${src.name}"/>
+	<property name="src.ext" value="cs"/>
+	<property name="src.body" value="${target}"/>
+	<property name="src.dir" value="${basedir}"/>
+	<!-- dirname property="src.dir" file="${src.path}"/ -->
+
+	<property name="working.dir" value="$(WorkingDir)"/>
+	<property name="web.document.root" value="F:"/>
+	<property name="web.server.root" value="http://hata2"/>
+	<!-- <property name="web.server.root" value="http://kahata.travel.coocan.jp"/> 	-->
+
+	<property name="sdk.path" value="${env.VS90COMNTOOLS}..\IDE\VCSExpress.exe"/>
+	<basename property="sdk.name" file="${sdk.path}"/>
+	<property name="sdk.version" value="9.0"/>
+	<property name="sdk.compiler" value="${sdk.path}" />
+	<property name="sdk.net.version" value="3.5"/>
+
+	<property name="csproj" value="${basedir}/${target}.csproj" />
+	<property name="sln" value="${basedir}/${target}.sln" />
+  
+  <!-- =================================================================== -->
+  <!-- condition definition                                     -->
+  <!-- =================================================================== -->
+	<available file="${basedir}/${exe}" property="have.exe" />
+	<available file="${sln}" property="have.sln" />
+	<available file="${basedir}/build.bat" property="build.bat" />
+	<available file="${basedir}/RunApp.wsf" property="RunApp.wsf" />
+	<available file="${basedir}/${target}.ppr" property="${target}.ppr" />
+	<available file="${basedir}/Sakura_MultiOpen.wsf" property="Sakura_MultiOpen.wsf" />
+	<available file="${basedir}/RunWsScript.wsf" property="RunWsScript.wsf" />
+	<available file="${basedir}/${target}.fdp" property="${target}.fdp" />
+  <condition property="is_windows_XP">
+        <os name="Windows XP"/>
+  </condition>
+  <!-- =================================================================== -->
+  <!-- initialization                                     -->
+  <!-- =================================================================== -->
+	<target name="init">
+		<script language="javascript"> <![CDATA[
+			importPackage(java.io);
+			eval(''+project.getProperty("common_lib"));
+			var working_dir = project.getProperty("working.dir");
+			var document_root = project.getProperty("web.document.root");
+			var server_root = project.getProperty("web.server.root");
+			if(!file_exists(""+working_dir)){
+				working_dir = project.getProperty("ant.file.dir");
+			}
+			var site_dir = server_root + working_dir.replaceAll(document_root, "");
+			site_dir = site_dir.replace(/\\/g,"/");
+			project.setProperty("web.dir", site_dir);
+			var src_path = project.getProperty("src.path");
+			if(!file_exists(""+src_path)){
+				src_path = working_dir + "\\" + project.getProperty("src");
+			}
+			project.setProperty("src.path", src_path);
+			//list_environment();
+		]]></script>
+		<!--antcall target="echo-properties" / -->
+			<echo message="sit.dir = ${web.dir}" />
+	</target>
+
+  <!-- =================================================================== -->
+  <!-- execution task definitions                                     -->
+  <!-- =================================================================== -->
+  <target name="build" depends="init">
+		<!--	<exec executable="${basedir}/build.bat" /> -->
+		<!-- description>- compiles the source code (default)</description -->
+		<exec executable="cmd" spawn="false">
+		  <arg value="/k" />
+	  	<arg value="&quot;${sdk.compiler}&quot;"/>
+	  	<arg value="${csproj}" />
+	  	<arg value="/rebuild" />
+		</exec>
+	<!-- 	<available file="${basedir}/bin/Release/${exe}" property="have.release" /> 	-->
+		<copy file="${basedir}/bin/Release/${exe}" todir="${basedir}" failonerror="false" />
+		<copy file="${basedir}/bin/Debug/${exe}" todir="${basedir}" failonerror="false" />
+		<copy todir="${basedir}" failonerror="false">
+			<fileset dir="${basedir}/obj/x86/Release" includes="*.resources" excludes=""/>
+			<fileset dir="${basedir}/obj/x86/Debug" includes="*.resources" excludes=""/>
+		</copy>	
+  </target>
+
+  <target name="run" if="have.exe">
+		<exec executable="${basedir}/${exe}" />
+  </target>
+
+  <target name="VCSExpress" if="have.sln">
+	<exec executable="${sdk.compiler}" spawn="true" >
+	  <arg value="${sln}" />
+	</exec>
+  </target>
+
+  <target name="runScript">
+	<exec executable="${csscript}" >
+	  <arg value="${basedir}/${src}" />
+	</exec>
+  </target>
+
+  <target name="pspad" if="${target}.ppr">
+	<exec executable="F:\Programs\PSPad editor\PSPad.exe"  spawn="true">
+	  <arg value="${basedir}/${target}.ppr" />
+	</exec>
+  </target>
+
+  <target name="fd" if="${target}.fdp">
+	<exec executable="F:\Programs\FlashDevelop\FlashDevelop.exe" spawn="true">
+	  <arg value="-reuse" />
+	  <arg value="${basedir}/${target}.fdp" />
+	</exec>
+  </target>
+
+  <target name="open-src-in-fd" if="${target}.fdp">
+	<exec executable="F:\Programs\FlashDevelop\FlashDevelop.exe" spawn="true">
+	  <arg value="-reuse" />
+	  <arg value="${ant.file.dir}/${appname}.cs" />
+	</exec>
+  </target>
+
+  <target name="sakura" if="Sakura_MultiOpen.wsf">
+	<exec executable="cmd.exe" spawn="true">
+	  <arg value="/c" />
+	  <arg value="wscript.exe" />
+	  <arg value="//nologo" />
+	  <arg value="${basedir}/Sakura_MultiOpen.wsf" />
+	</exec>
+  </target>
+
+  <target name="runWsScript" if="RunWsScript.wsf">
+	<exec executable="cmd.exe" spawn="true">
+	  <arg value="/c" />
+	  <arg value="wscript.exe" />
+	  <arg value="//nologo" />
+	  <arg value="${basedir}/RunWsScript.wsf" />
+	</exec>
+  </target>
+
+  <target name="runbat" if="build.bat">
+	<exec executable="cmd.exe" spawn="true">
+	  <arg value="/c" />
+	  <arg value="build.bat" />
+	</exec>
+  </target>
+
+  <target name="open appdata folder">
+	<exec executable="explorer.exe" spawn="true">
+	  <arg value="${appdata.dir}" />
+	</exec>
+  </target>
+
+  <target name="runapp" if="RunApp.wsf">
+	<exec executable="cmd.exe" spawn="true">
+	  <arg value="/c" />
+	  <arg value="wscript.exe" />
+	  <arg value="//nologo" />
+	  <arg value="${basedir}/RunApp.wsf" />
+	</exec>
+  </target>
+  
+  <target name="clean">
+   <!-- http://www.ne.jp/asahi/hishidama/home/tech/ant/tag/delete.html -->
+	<delete dir="bin" includeEmptyDirs="true" failonerror="false" />
+	<delete dir="obj/Debug" includeEmptyDirs="true" failonerror="false" />
+	<delete dir="obj/Release" includeEmptyDirs="true" failonerror="false" />
+	<delete dir="Properties" includeEmptyDirs="true" failonerror="false"/>
+	<delete>
+	  <fileset dir="." includes="*.user"/>
+	  <fileset dir="." includes="*.suo"/>
+	  <fileset dir="." includes="*.pdb" />
+	  <fileset dir="." includes="*.vshost.*" />
+	</delete>
+  </target>
+
+  <target name="clear" >
+	<delete dir="bin" includeEmptyDirs="true" failonerror="false" />
+	<!-- delete dir="obj" includeEmptyDirs="true" failonerror="false" / -->
+	<delete dir="obj/Debug" includeEmptyDirs="true" failonerror="false" />
+	<delete dir="obj/Release" includeEmptyDirs="true" failonerror="false" />
+	<delete dir="doxygen" includeEmptyDirs="true" failonerror="false" />
+	<delete dir="Properties" includeEmptyDirs="true" failonerror="false"/>
+	<delete>
+	  <fileset dir="." includes="*.user"/>
+	  <fileset dir="." includes="*.suo"/>
+	  <fileset dir="." includes="*.exe"/>
+	  <fileset dir="." includes="*.resources" />
+	  <fileset dir="." includes="*.vshost.*" />
+	  <fileset dir="." includes="*.pdb" />
+<!--
+	  <fileset dir="." includes="*.class"/>
+	  <fileset dir="." includes="*.swf"/>
+-->
+	</delete>
+  </target>
+
+  <target name="doxygen">
+	<exec executable="cmd.exe" >
+	  <arg value="/k" />
+	  <arg value="${doxygen}" />
+	  <arg value="${doxyfile}" />
+	</exec>
+  </target>
+
+	<target name="echo-properties">
+		<echoproperties>
+			<propertyset>
+				<propertyref prefix="os." />
+				<propertyref prefix="ant." />
+				<propertyref prefix="src." />
+				<propertyref prefix="web." />
+				<propertyref prefix="sdk." />
+				<propertyref prefix="lib." />
+				<propertyref prefix="fd." />
+			</propertyset>
+		</echoproperties>
+		<!--<antcall target="help" /> -->
+	</target>
+
+  <target name="help" depends="init">
+		<antcall target="echo-properties" />
+		<echo message=" available targets are:" />
+		<echo message="" />
+		<exec executable="cmd.exe" >
+	  	<arg value="/c" />
+	  	<arg value="ant" />
+	  	<arg value="-p" />
+		</exec>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Help on usage													   -->
+  <!-- =================================================================== -->
+  <target name="usage">
+	<echo message="" />
+	<echo message="" />
+	<echo message="${name} Build file" />
+	<echo message="-------------------------------------------------------------" />
+	<echo message="" />
+	<echo message=" available targets are:" />
+	<echo message="" />
+	<echo message="   build	 - compiles the source code (default)" />
+	<echo message="   run	   - execute the exsample" />
+	<echo message="   runscript - run script of the exsample" />
+	<!--
+	<echo message="   package   - generates the ${name}.jar file" />
+	-->
+	<echo message="   doxygen   - generates the doxygen documentation" />
+	<echo message="   clean	 - cleans up the directory" />
+	<echo message="   clear	 - delete all build files" />
+	<echo message="" />
+	<echo message=" See the comments inside the build.xml file for more details." />
+	<echo message="-------------------------------------------------------------" />
+	<echo message="" />
+	<echo message="" />
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- Prepares the source code                                            -->
+  <!-- =================================================================== -->
+	<property name="template.dir" value="F:\ant\appdata\Templates\Form01"/>
+	<property name="target.dir" value="F:\VCSharp\FormsApplication03"/>
+	<property name="target.name" value="FormsApplication03"/>
+
+	<target name="VCSForms_project">
+		<MakeProject	tmp.dir="${template.dir}" tgt.dir="${target.dir}"
+		 tgt.name ="${target.name}" tgt.ext="cs"/>
+	</target>
+
+<!--
+  <fileset id="ftp.upload.fileset" dir="${build.dir}">
+    <include name="${name}.*" />
+    <!- include name="screenshot*.*" / ->
+    <include name="*.jar" />
+    <include name="src.zip" />
+    <include name="index.html" />
+  </fileset>
+
+  <target name="ftp" depends="dist">
+    <property name="ftp.userid" value="${env.FTP_USERID}" />
+    <property name="ftp.server" value="${env.FTP_SERVER}" />
+    <property name="ftp.remotedir" value="/public_html/swing/${jnlp.name}" />
+    <input message="Enter Password:" addproperty="ftp.password">
+      <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+    </input>
+    <ftp action="mkdir"
+         server="${ftp.server}" remotedir="${ftp.remotedir}"
+         userid="${ftp.userid}" password="${ftp.password}"
+         passive="yes" verbose="yes" />
+    <ftp server="${ftp.server}" remotedir="${ftp.remotedir}"
+         userid="${ftp.userid}" password="${ftp.password}"
+         passive="yes" verbose="yes">
+      <fileset refid="ftp.upload.fileset" />
+    </ftp>
+  </target>
+-->
+</project>
+<!-- mkdir dir="${build.src}" / -->
+ <!--
+    <filter token="title"    value="${jnlp.title}" />
+    <filter token="homepage" value="${jnlp.homepage}" />
+     <copy todir="${build.src}" filtering="yes"
+          encoding="${compile.encoding}"
+          outputencoding="${compile.encoding}">
+      <fileset dir="${src.dir}" includes="**/*.java" />
+    </copy>
+    <copy todir="${build.src}">
+      <fileset dir="${src.dir}" excludes="**/*.java, **/*.bak" />
+    </copy>
+-->
+    <!--native2ascii encoding="UTF-8" src="${src.dir}" dest="${build.dest}" includes="**/*.properties.utf8" ext="" /-->
+<!--
+    <copy todir="${build.dest}">
+      <fileset dir="${src.dir}" excludes="**/*.java, **/*.bak, **/*.utf8" />
+    </copy>
+-->
+
+<!--
+	<macrodef name="MakeProject">
+ 		<attribute name="tmp.dir" default="F:\ant\appdata\Templates\Form01"/>
+ 		<attribute name="tgt.dir" default="F:\VCSharp\FormsApplication03"/>
+ 		<attribute name="tgt.name" default="FormsApplication03"/>
+  	<sequential>
+ 			<fileset id="template.projectfiles" dir="@{tmp.dir}">
+  			<include name="TARGET.*" />
+  		</fileset>
+		 	<fileset id="template.toolsfiles" dir="@{tmp.dir}">
+  			<include name="*.*" />
+				<exclude name="TARGET.*" />
+  		</fileset>
+			<filterset id="template.filter" begintoken="%%" endtoken="%%">
+  			<filter token="TARGET" value="${target.name}"/>
+  			<filter token="TIMESTAMP" value="${timestamp}"/>
+  			<filter token="FILENAME" value="${target.name}.cs"/>
+  			<filter token="FILEDIR" value="${target.dir}"/>
+  			<filter token="DIR_NAME" value="DIR_NAME"/>
+  			<filter token="PATH" value="${target.dir}/${target.name}.cs"/>
+  			<filter token="LOCALDIR" value="LOCALDIR"/>
+  			<filter token="LOCALURL" value="LOCALURL"/>
+			</filterset>
+			<copy toDir="@{tgt.dir}" overwrite="false" preservelastmodified="false" filtering="true" encoding="UTF-8">
+			<fileset refid="template.projectfiles" />
+			<filterset refid="template.filter" />
+			<mapper type="glob" from="TARGET.*" to="@{tgt.name}.*"/>
+		</copy>
+		<copy toDir="@{tgt.dir}" overwrite="false" preservelastmodified="false" filtering="true" encoding="UTF-8">
+			<fileset refid="template.toolsfiles" />
+			<filterset refid="template.filter" />
+		</copy>
+   </sequential>
+	</macrodef>
+
+
+  <target name="VCSForms_project">  
+ 	<fileset id="template.projectfiles" dir="${template.dir}">
+  	<include name="TARGET.*" />
+		<!- <exclude name="*.txt" /> ->
+  </fileset>
+
+ 	<fileset id="template.toolsfiles" dir="${template.dir}">
+  	<include name="*.*" />
+		<exclude name="TARGET.*" />
+  </fileset>
+
+	<filterset id="template.filter" begintoken="%%" endtoken="%%">
+  	<filter token="TARGET" value="${target.name}"/>
+  	<filter token="TIMESTAMP" value="${timestamp}"/>
+  	<filter token="FILENAME" value="${target.name}.cs"/>
+  	<filter token="FILEDIR" value="${target.dir}"/>
+  	<filter token="DIR_NAME" value="DIR_NAME"/>
+  	<filter token="PATH" value="${target.dir}/${target.name}.cs"/>
+  	<filter token="LOCALDIR" value="LOCALDIR"/>
+  	<filter token="LOCALURL" value="LOCALURL"/>
+	</filterset>
+
+
+	<!- http://qiita.com/t-suwa/items/7b3b4d359923934f619d
+		<local name="deploy.host"/>
+		<property name="deploy.host" value="vwebdev02"/>
+		<echo>${deploy.host}</echo>
+		->
+		<copy toDir="${target.dir}" overwrite="false" preservelastmodified="false" filtering="true" encoding="UTF-8">
+			<fileset refid="template.projectfiles" />
+			<filterset refid="template.filter" />
+			<mapper type="glob" from="TARGET.*" to="${target.name}.*"/>
+		</copy>
+		<copy toDir="${target.dir}" overwrite="false" preservelastmodified="false" filtering="true" encoding="UTF-8">
+			<fileset refid="template.toolsfiles" />
+			<filterset refid="template.filter" />
+		</copy>
+  </target>
+-->
