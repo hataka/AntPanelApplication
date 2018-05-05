@@ -30,7 +30,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
       get { return GetCurrentDocumentPath(); }
     }
 
-
     public static string ProcessVariable(string strVar)
     {
       string arg = strVar;
@@ -163,8 +162,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.AddBuildFiles(button, null);
           break;
         case "browse":
-          if(String.IsNullOrEmpty(ni.Option)) ActionManager.BrowseEx(path,false);
-          else ActionManager.BrowseEx(path,true);
+          ActionManager.Browse(ni);
           break;
         case "ant":
           ActionManager.RunTarget(button, null);
@@ -194,16 +192,13 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.OpenDocument(button, null);
           break;
         case "picture":
-          //FIXED
-          // Plugins のディレクトリにmediaplayerのdllをコピーするので廃止。
-          // CustomDocumentに処理を移す
           //ActionManager.Picture(command + "|" + args + "|" + path + "|" + option);
-           break;
-        case "player":
-          ActionManager.Player(path);
-          //button.Tag = "PlayerPanel" + "|" + args + "|" + path + "|" + option;
-          //ActionManager.CustomDocument(button, null);
+          ActionManager.Picture(ni);
           break;
+        case "player":
+          //ActionManager.Player(path);
+          ActionManager.Player(ni);
+          ((Form1)menuTree.Tag).ActivatePlayer();
           break;
         // opengl.dllが,NET4.0で互換性がないので廃止 
         //.NET3.5 のFlashdevelop 5.2.0ではdockableControlで処理
@@ -529,6 +524,104 @@ namespace AntPlugin.XmlTreeMenu.Managers
       return;
     }
 
+    public static void OpenDocument(NodeInfo ni)
+    {
+      if (ni == null) return;
+
+      ///////////////////////////////////////////////////////////////
+      //String result = "";
+      // command前処理					
+      if (ni.Command == String.Empty) ni.Command = ni.Path;
+      else if (ni.Args == String.Empty) ni.Args = ni.Path;
+
+      if (!File.Exists(ni.Command))
+      {
+        MessageBox.Show("path: " + ni.Command + " が見つかりません", "ActionManager.OpenDocument");
+        return;
+      }
+      String file = ni.Command;
+      Directory.SetCurrentDirectory(Path.GetDirectoryName(file));
+      //実行出力
+      try
+      {
+        if (Lib.IsImageFile(file))
+        {
+          ni.Action = "picture";
+          //ActionManager.Picture(file);
+          ActionManager.Picture(ni);
+          return;
+        }
+        else if (Lib.IsWebSite(file))
+        {
+          //menuTree.BrowseEx(file);
+          ActionManager.BrowseEx(file);
+          return;
+        }
+        else if (Lib.IsSoundFile(file) || Lib.IsVideoFile(file))
+        {
+          ni.Action = "player";
+          //this.Player(file);
+          ActionManager.Player(ni);
+          return;
+        }
+        else if (!Lib.IsExecutableFile(file) && !Lib.IsSoundFile(file) && !Lib.IsVideoFile(file))
+        {
+          switch (ni.Option.ToLower())
+          {
+            case "sakura":
+              Process.Start(settings.SakuraPath, file);
+              break;
+            case "pspad":
+              Process.Start(settings.PspadPath, file);
+              break;
+            case "flashdevelop":
+            case "fd":
+              Process.Start(settings.FlashdevelopPath,file);
+              break;
+            case "editor":
+            case "ant":
+            case "panel":
+              if (Path.GetExtension(file) == ".rtf")
+              {
+                ((Form1)menuTree.Tag).editor.richTextBox1.LoadFile(file);
+              }
+              else
+              {
+                ((Form1)menuTree.Tag).editor.richTextBox1.Text 
+                  = Lib.File_ReadToEndDecode(file);
+              }
+              break;
+            case "vs":
+            case "visualstudio":
+            default:
+              Process.Start(menuTree.antPanel.devenv15Path, "/edit " + "\"" + file + "\"");
+              return;
+          }
+        }
+        else
+        {
+          if (ni.Option.ToLower().IndexOf("inplace") >= 0 || ni.Option.ToLower().IndexOf("inpanel") >= 0)
+          {
+            //button.Tag = argstring;
+            //menuTree.ExecuteInPlace(argstring);
+            //E/xecuteInPlace(button, null);
+            return;
+          }
+          else
+          {
+            Process.Start(ni.Command, ni.Args);
+            return;
+          }
+        }
+      }
+      catch (Exception exc)
+      {
+        String errmsg = exc.Message.ToString();
+        MessageBox.Show(errmsg, "ActionManager.OpenDocument");
+      }
+      return;
+    }
+    
     public static void CustomDocument(object sender, EventArgs e)
     {
       ToolStripMenuItem button = sender as ToolStripMenuItem;
@@ -772,7 +865,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       {
         if (Lib.IsTextFile(ni.Path))
         {
-          //PluginBase.MainForm.OpenEditableDocument(ni.Path);
+          ActionManager.OpenDocument(ni);
         }
         else if (Path.GetExtension(ni.Path) == ".url")
         {
@@ -796,9 +889,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
       else if (Lib.IsWebSite(ni.Path))
       {
-        ActionManager.BrowseEx(ni.Path);
-        //Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", ni.Path);
-        //PluginBase.MainForm.CallCommand("Browse", ni.Path);
+        //ActionManager.BrowseEx(ni.Path);
+        ActionManager.Browse(ni);
       }
     }
 
@@ -1101,7 +1193,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       */
     }
 
-    public static void Picture(String argstring)
+    public static void Picture(string argstring)
     {
       /*
       String command = String.Empty;// null;
@@ -1182,6 +1274,60 @@ namespace AntPlugin.XmlTreeMenu.Managers
       */
     }
 
+    public static void Picture(NodeInfo ni)
+    {
+      String dir = String.Empty;
+      if (ni == null) return;
+
+      if (ni.Path != String.Empty)
+      {
+        if (System.IO.Directory.Exists(ni.Path)) dir = ni.Path;
+        else if (System.IO.File.Exists(ni.Path)) dir = Path.GetDirectoryName(ni.Path);
+        if (dir != String.Empty) System.IO.Directory.SetCurrentDirectory(dir);
+      }
+      ///////////////////////////////////////////////////////////////	
+      PictureBox pictureBox2 = ((Form1)menuTree.antPanel.Tag).picturePanel.pictureBox1;
+      try
+      {
+        switch (ni.Command.ToLower())
+        {
+          case "qcgraph":
+            break;
+          case "script":
+            pictureBox2.Tag = "script!" + ni.Path;
+            break;
+          default:
+            if (File.Exists(ni.Path))
+            {
+              pictureBox2.Image = System.Drawing.Image.FromFile(ni.Path);
+              pictureBox2.Tag = ni.Path;
+              pictureBox2.DoubleClick += new System.EventHandler(pictureBox2_DoubleClick);
+            }
+            else if (File.Exists(ni.Command))
+            {
+              pictureBox2.Image = System.Drawing.Image.FromFile(ni.Command);
+              pictureBox2.Tag = ni.Command;
+              pictureBox2.DoubleClick += new System.EventHandler(pictureBox2_DoubleClick);
+            }
+            else
+            {
+              pictureBox2.Image = null;// System.Drawing.Image.FromFile(command);
+              pictureBox2.Tag = "dummy";//  command;
+            }
+            break;
+        }
+      }
+      catch (Exception exc)
+      {
+        MessageBox.Show(Lib.OutputError(exc.Message.ToString()), "TreeMenu:Picture:1708");
+        pictureBox2.Image = null;// System.Drawing.Image.FromFile(path);
+        pictureBox2.Tag = null;// path;
+      }
+      //String data = pictureBox2.Tag.ToString();
+      //this.AddPreviousCustomDocuments(data);
+      //document2.FormClosing += new FormClosingEventHandler(this.CustomDocument_FormClosing);
+    }
+
     public static void Player(String path)
     {
       if (Lib.IsSoundFile(path) || Lib.IsVideoFile(path))
@@ -1190,14 +1336,20 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
     }
 
+    public static void Player(NodeInfo ni)
+    {
+      if (Lib.IsSoundFile(ni.Path) || Lib.IsVideoFile(ni.Path))
+      {
+        //((Form1)menuTree.antPanel.Tag).axWindowsMediaPlayer1.URL = ni.Path;
+        ((Form1)menuTree.antPanel.Tag).player.axWindowsMediaPlayer1.URL = ni.Path;
+      }
+    }
 
     private static void pictureBox2_DoubleClick(object sender, EventArgs e)
     {
-      /*
       System.Windows.Forms.PictureBox item = (System.Windows.Forms.PictureBox)sender;
       String path = item.Tag as String;
       Process.Start(path);
-      */
     }
 
     /// <summary>
@@ -1243,6 +1395,58 @@ namespace AntPlugin.XmlTreeMenu.Managers
         MessageBox.Show(Lib.OutputError(exc.Message.ToString()), "TreeMenu:BrowseEx:1763");
       }
     }
+
+    public static void Browse(NodeInfo ni)
+    {
+      String url = string.Empty;
+      String path = ProcessVariable(ni.Path);
+      try
+      {
+        if (Path.GetExtension(path) == ".url")
+        {
+          StringBuilder sb = new StringBuilder(1024);
+          IniFileHandler.GetPrivateProfileString("InternetShortcut", "URL", "default", sb, (uint)sb.Capacity, path);
+          url = sb.ToString();
+        }
+        else if (Path.GetExtension(path).ToLower() == ".php")
+        {
+          url = path.Replace(@"C:\Apache2.2\htdocs", "http://localhost").Replace("\\", "/");
+          url = url.Replace(@"F:\", "http://localhost/f").Replace("\\", "/");
+        }
+        else url = path;
+        switch (ni.Option.ToLower())
+        {
+          // https://msdn.microsoft.com/ja-jp/library/c42zyyew.aspx
+          //View.ShowWebBrowser URL[/ new][/ext]
+          // /new省略可能です。 ページを Web ブラウザーの新しいページに表示します。
+          /// ext 省略可能です。 IDE の外部にある既定の Web ブラウザーにページを表示します。
+          case "vs":
+          case "inner":
+          case "visualstudio":
+            String arguments = "/Command \"navigate " + url + "\"";
+            Process.Start(settings.Devenv15Path, arguments);
+            break;
+          case "antpanel":
+          case "ant":
+          case "panel":
+            if (url.Trim() != "") ((Form1)menuTree.antPanel.Tag).browser.webBrowser1.Navigate(url);
+            else ((Form1)menuTree.antPanel.Tag).browser.webBrowser1.GoHome();
+            break;
+          case "ie":
+            Process.Start(settings.IePath, url);
+            break;
+          case "chrome":
+          default:
+            Process.Start(settings.ChromePath, url);
+            break;
+        }
+      }
+      catch (Exception exc)
+      {
+        MessageBox.Show(Lib.OutputError(exc.Message.ToString()), "TreeMenu:BrowseEx:1763");
+      }
+    }
+
 
     public static void BrowseExString(object sender, EventArgs e)
     {

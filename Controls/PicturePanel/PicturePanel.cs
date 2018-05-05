@@ -30,7 +30,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 	  public List<string> previousDocuments = new List<string>();
 	  public string currentPath = string.Empty;
 	  public Point currentPoint = new Point(0, 0);
-	  private PictureBox pictureBox1;
+	  public PictureBox pictureBox1;
 	  public static ImageList imageList1;
 #if Interface	  
 		private PluginMain xmlTreeMenu;

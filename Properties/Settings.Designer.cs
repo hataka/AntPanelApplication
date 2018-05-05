@@ -49,10 +49,10 @@ namespace AntPanelApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public string ToolBarVisible {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ToolBarVisible {
             get {
-                return ((string)(this["ToolBarVisible"]));
+                return ((bool)(this["ToolBarVisible"]));
             }
             set {
                 this["ToolBarVisible"] = value;
@@ -61,10 +61,10 @@ namespace AntPanelApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public string StatusBarVisible {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StatusBarVisible {
             get {
-                return ((string)(this["StatusBarVisible"]));
+                return ((bool)(this["StatusBarVisible"]));
             }
             set {
                 this["StatusBarVisible"] = value;

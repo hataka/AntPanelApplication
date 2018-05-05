@@ -9,6 +9,9 @@ namespace AntPanelApplication
 {
   public partial class Form1 : Form
   {
+    global::AntPanelApplication.Properties.Settings
+      settings = new global::AntPanelApplication.Properties.Settings();
+
     public bool showIcon = true;
     public BrowserEx browser;
     public PicturePanel picturePanel;
@@ -43,6 +46,19 @@ namespace AntPanelApplication
 
     private void InitializeForm(AntPanel antpanel)
     {
+      LoadControls(antpanel);
+
+      this.splitContainer1.Panel1.Controls.Add(antpanel);
+      this.splitContainer1.Panel2Collapsed = true;
+      this.splitContainer1.Panel1Collapsed = false;
+
+      this.Text = "AntPanel : " + Path.GetFileName(antpanel.AccessibleDescription);
+      this.Size = new Size(1200, 800);
+      this.StartPosition = FormStartPosition.CenterScreen;
+    }
+
+    private void LoadControls(AntPanel antpanel)
+    {
       antpanel.Dock = DockStyle.Fill;
       antpanel.Tag = this;
 
@@ -55,7 +71,16 @@ namespace AntPanelApplication
       //this.tabPage1.Controls.Add(this.richTextBox1);
 
       this.tabPage2.Controls.Clear();
-      InitializeBrowser();
+      this.browser = new BrowserEx();
+      // 
+      // webBrowser
+      // 
+      this.browser.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.browser.Location = new System.Drawing.Point(0, 0);
+      this.browser.MinimumSize = new System.Drawing.Size(20, 20);
+      this.browser.Name = "Browser";
+      this.browser.Size = new System.Drawing.Size(973, 474);
+      this.browser.TabIndex = 0;
       this.browser.Tag = this;
       this.tabPage2.Text = "Browser";
       this.tabPage2.Controls.Add(this.browser);
@@ -82,31 +107,17 @@ namespace AntPanelApplication
       this.tabPage6.Controls.Clear();
       //this.tabPage6.Controls.Add(this.axWindowsMediaPlayer1);
 
-
-
-      this.splitContainer1.Panel1.Controls.Add(antpanel);
-      this.splitContainer1.Panel2Collapsed = true;
-      this.splitContainer1.Panel1Collapsed = false;
-
-      this.Text = "AntPanel : " + Path.GetFileName(antpanel.AccessibleDescription);
-      this.Size = new Size(1200, 800);
-      this.StartPosition = FormStartPosition.CenterScreen;
     }
 
-    private void InitializeBrowser()
+    private void ApplySettings()
     {
-      this.browser = new BrowserEx();
-      // 
-      // webBrowser
-      // 
-      this.browser.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.browser.Location = new System.Drawing.Point(0, 0);
-      this.browser.MinimumSize = new System.Drawing.Size(20, 20);
-      this.browser.Name = "Browser";
-      this.browser.Size = new System.Drawing.Size(973, 474);
-      this.browser.TabIndex = 0;
+      this.menuStrip1.Visible = this.settings.MenuBarVisible;
+      this.toolStrip1.Visible = this.settings.ToolBarVisible;
+      this.statusStrip1.Visible = this.settings.StatusBarVisible;
     }
 
+
+    #region Click Handler
     private int toggleIndex = 1;
     private void 表示ToolStripButton_Click(object sender, EventArgs e)
     {
@@ -139,6 +150,53 @@ namespace AntPanelApplication
       this.toggleIndex++;
     }
 
+
+    private void 画面切替TToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      this.表示ToolStripButton_Click(sender, e);
+    }
+
+    private void ツールバーTToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      this.toolStrip1.Visible = this.ツールバーTToolStripMenuItem.Checked;
+    }
+
+    private void ステータスバーSToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      this.statusStrip1.Visible = ステータスバーSToolStripMenuItem.Checked;
+    }
+    #endregion
+
+
+
+    public void ActivatePlayer()
+    {
+      //this.splitContainer1.Panel2Collapsed = false;
+      //this.splitContainer1.Panel1Collapsed = false;
+      //this.t.tabControl1.SelectedIndex = 3;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     #region Icon Management
 
     public void toggle_アイコン表示()
@@ -150,8 +208,8 @@ namespace AntPanelApplication
       }
       //else this.ImageList = null;
     }
+
     #endregion
 
-
-  }
+   }
 }

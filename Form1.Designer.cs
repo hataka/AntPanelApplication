@@ -336,6 +336,7 @@
       this.ツールバーTToolStripMenuItem.Name = "ツールバーTToolStripMenuItem";
       this.ツールバーTToolStripMenuItem.Size = new System.Drawing.Size(233, 30);
       this.ツールバーTToolStripMenuItem.Text = "ツールバー(T)";
+      this.ツールバーTToolStripMenuItem.Click += new System.EventHandler(this.ツールバーTToolStripMenuItem_Click);
       // 
       // ステータスバーSToolStripMenuItem
       // 
@@ -343,6 +344,7 @@
       this.ステータスバーSToolStripMenuItem.Name = "ステータスバーSToolStripMenuItem";
       this.ステータスバーSToolStripMenuItem.Size = new System.Drawing.Size(233, 30);
       this.ステータスバーSToolStripMenuItem.Text = "ステータスバー(S)";
+      this.ステータスバーSToolStripMenuItem.Click += new System.EventHandler(this.ステータスバーSToolStripMenuItem_Click);
       // 
       // toolStripSeparator10
       // 
@@ -354,14 +356,15 @@
       this.画面切替TToolStripMenuItem.Name = "画面切替TToolStripMenuItem";
       this.画面切替TToolStripMenuItem.Size = new System.Drawing.Size(233, 30);
       this.画面切替TToolStripMenuItem.Text = "画面切替(&T)";
+      this.画面切替TToolStripMenuItem.Click += new System.EventHandler(this.画面切替TToolStripMenuItem_Click);
       // 
       // メインコントロールToolStripMenuItem
       // 
       this.メインコントロールToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.richTextRToolStripMenuItem,
+            this.pictureIToolStripMenuItem,
             this.playerPToolStripMenuItem,
             this.propertyGridGToolStripMenuItem,
-            this.pictureIToolStripMenuItem,
-            this.richTextRToolStripMenuItem,
             this.browserbToolStripMenuItem});
       this.メインコントロールToolStripMenuItem.Name = "メインコントロールToolStripMenuItem";
       this.メインコントロールToolStripMenuItem.Size = new System.Drawing.Size(233, 30);
@@ -470,7 +473,7 @@
             this.ステータスバーToolStripMenuItem2});
       this.richTextRToolStripMenuItem.Name = "richTextRToolStripMenuItem";
       this.richTextRToolStripMenuItem.Size = new System.Drawing.Size(246, 30);
-      this.richTextRToolStripMenuItem.Text = "RichText(R)";
+      this.richTextRToolStripMenuItem.Text = "Editor(E)";
       // 
       // メニューバーToolStripMenuItem2
       // 
@@ -690,6 +693,7 @@
       this.toolStrip1.Size = new System.Drawing.Size(1311, 27);
       this.toolStrip1.TabIndex = 1;
       this.toolStrip1.Text = "toolStrip1";
+      this.toolStrip1.Visible = false;
       // 
       // 新規作成NToolStripButton
       // 
@@ -786,24 +790,25 @@
       // statusStrip1
       // 
       this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-      this.statusStrip1.Location = new System.Drawing.Point(0, 574);
+      this.statusStrip1.Location = new System.Drawing.Point(0, 572);
       this.statusStrip1.Name = "statusStrip1";
       this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 21, 0);
-      this.statusStrip1.Size = new System.Drawing.Size(1311, 22);
+      this.statusStrip1.Size = new System.Drawing.Size(1311, 24);
       this.statusStrip1.TabIndex = 2;
       this.statusStrip1.Text = "statusStrip1";
+      this.statusStrip1.Visible = false;
       // 
       // splitContainer1
       // 
       this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.splitContainer1.Location = new System.Drawing.Point(0, 62);
+      this.splitContainer1.Location = new System.Drawing.Point(0, 35);
       this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.splitContainer1.Name = "splitContainer1";
       // 
       // splitContainer1.Panel2
       // 
       this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-      this.splitContainer1.Size = new System.Drawing.Size(1311, 512);
+      this.splitContainer1.Size = new System.Drawing.Size(1311, 537);
       this.splitContainer1.SplitterDistance = 323;
       this.splitContainer1.SplitterWidth = 7;
       this.splitContainer1.TabIndex = 3;
@@ -821,7 +826,7 @@
       this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(981, 512);
+      this.tabControl1.Size = new System.Drawing.Size(981, 537);
       this.tabControl1.TabIndex = 0;
       // 
       // tabPage1
@@ -831,7 +836,7 @@
       this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-      this.tabPage1.Size = new System.Drawing.Size(973, 474);
+      this.tabPage1.Size = new System.Drawing.Size(973, 499);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "tabPage1";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -842,7 +847,7 @@
       this.richTextBox1.Font = new System.Drawing.Font("ＭＳ ゴシック", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
       this.richTextBox1.Location = new System.Drawing.Point(4, 5);
       this.richTextBox1.Name = "richTextBox1";
-      this.richTextBox1.Size = new System.Drawing.Size(965, 464);
+      this.richTextBox1.Size = new System.Drawing.Size(965, 489);
       this.richTextBox1.TabIndex = 8;
       this.richTextBox1.Text = "こんにちわ\nリッチテキストです\n";
       this.richTextBox1.UseWaitCursor = true;
@@ -850,11 +855,11 @@
       // tabPage2
       // 
       this.tabPage2.Controls.Add(this.pictureBox1);
-      this.tabPage2.Location = new System.Drawing.Point(4, 34);
+      this.tabPage2.Location = new System.Drawing.Point(4, 25);
       this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-      this.tabPage2.Size = new System.Drawing.Size(973, 474);
+      this.tabPage2.Size = new System.Drawing.Size(973, 483);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "tabPage2";
       this.tabPage2.UseVisualStyleBackColor = true;
@@ -865,7 +870,7 @@
       this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.pictureBox1.Location = new System.Drawing.Point(4, 5);
       this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(965, 464);
+      this.pictureBox1.Size = new System.Drawing.Size(965, 473);
       this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.pictureBox1.TabIndex = 7;
       this.pictureBox1.TabStop = false;
@@ -873,18 +878,18 @@
       // 
       // tabPage3
       // 
-      this.tabPage3.Location = new System.Drawing.Point(4, 34);
+      this.tabPage3.Location = new System.Drawing.Point(4, 25);
       this.tabPage3.Name = "tabPage3";
-      this.tabPage3.Size = new System.Drawing.Size(973, 474);
+      this.tabPage3.Size = new System.Drawing.Size(973, 483);
       this.tabPage3.TabIndex = 2;
       this.tabPage3.Text = "tabPage3";
       this.tabPage3.UseVisualStyleBackColor = true;
       // 
       // tabPage4
       // 
-      this.tabPage4.Location = new System.Drawing.Point(4, 34);
+      this.tabPage4.Location = new System.Drawing.Point(4, 25);
       this.tabPage4.Name = "tabPage4";
-      this.tabPage4.Size = new System.Drawing.Size(973, 474);
+      this.tabPage4.Size = new System.Drawing.Size(973, 483);
       this.tabPage4.TabIndex = 3;
       this.tabPage4.Text = "tabPage4";
       this.tabPage4.UseVisualStyleBackColor = true;
@@ -893,9 +898,9 @@
       // 
       this.tabPage5.Controls.Add(this.axWindowsMediaPlayer1);
       this.tabPage5.Controls.Add(this.propertyGrid1);
-      this.tabPage5.Location = new System.Drawing.Point(4, 34);
+      this.tabPage5.Location = new System.Drawing.Point(4, 25);
       this.tabPage5.Name = "tabPage5";
-      this.tabPage5.Size = new System.Drawing.Size(973, 474);
+      this.tabPage5.Size = new System.Drawing.Size(973, 483);
       this.tabPage5.TabIndex = 4;
       this.tabPage5.Text = "tabPage5";
       this.tabPage5.UseVisualStyleBackColor = true;
@@ -907,7 +912,7 @@
       this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(0, 0);
       this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
       this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
-      this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(973, 474);
+      this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(973, 483);
       this.axWindowsMediaPlayer1.TabIndex = 1;
       // 
       // propertyGrid1
@@ -1017,7 +1022,7 @@
     private System.Windows.Forms.ToolStripButton ヘルプLToolStripButton;
     private System.Windows.Forms.StatusStrip statusStrip1;
     private System.Windows.Forms.SplitContainer splitContainer1;
-    private System.Windows.Forms.TabControl tabControl1;
+    public System.Windows.Forms.TabControl tabControl1;
     private System.Windows.Forms.TabPage tabPage1;
     private System.Windows.Forms.TabPage tabPage2;
     private System.Windows.Forms.ToolStripButton 表示ToolStripButton;
