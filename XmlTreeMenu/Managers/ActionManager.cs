@@ -247,6 +247,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.OpenDocument(button, null);
           break;
         case "picture":
+          //ActionManager.
           //FIXED
           // Plugins のディレクトリにmediaplayerのdllをコピーするので廃止。
           // CustomDocumentに処理を移す

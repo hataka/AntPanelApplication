@@ -426,30 +426,31 @@ public class DirTreeView : TreeView
     //try { this.rootNode.Nodes.Clear(); } catch { }
     this.ImageList = imageList1;//使用するImageListを指定
 		this.ContextMenuStrip = contextMenuStrip1;
-		if(System.IO.Directory.Exists(folder))
-		{
-			try
-			{
-				TreeNode tn = new TreeNode(folder);
-				tn.ImageIndex = 2;			//閉じたフォルダアイコン指定
-				tn.SelectedImageIndex = 3;	//開いたフォルダアイコン指定
-				this.Nodes.Add(tn);
-				tn.Nodes.Add("dummy");
-				//Cドライブを初期展開する場合このコードを追加
-				//if(tn.Text == "C:\\")
-				//tn.Expand();
+    if (System.IO.Directory.Exists(folder))
+    {
+      try
+      {
+        TreeNode tn = new TreeNode(folder);
+        tn.ImageIndex = 2;      //閉じたフォルダアイコン指定
+        tn.SelectedImageIndex = 3;  //開いたフォルダアイコン指定
+        this.Nodes.Add(tn);
+        tn.Nodes.Add("dummy");
+        //Cドライブを初期展開する場合このコードを追加
+        //if(tn.Text == "C:\\")
+        //tn.Expand();
         this.rootNode = tn;
       }
-			catch (Exception exc)
-			{
-				String s = exc.Message.ToString();
-				//MessageBox.Show(s);
-				MessageBox.Show(OutputError(s));
-				//this.MainForm.toolStripStatusLabel.Text = Lib.OutputError(s);
-				//this.MainForm.toolStripStatusLabel.Text = s;
-			}
-		}
-	}
+      catch (Exception exc)
+      {
+        String s = exc.Message.ToString();
+        //MessageBox.Show(s);
+        MessageBox.Show(OutputError(s));
+        //this.MainForm.toolStripStatusLabel.Text = Lib.OutputError(s);
+        //this.MainForm.toolStripStatusLabel.Text = s;
+      }
+    }
+    else InitializeDirTreeView();
+  }
 	
 	private void DirTreeView_BeforeExpand(object sender, System.Windows.Forms.TreeViewCancelEventArgs e)
 	{

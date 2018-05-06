@@ -41,7 +41,14 @@ namespace AntPlugin.Controls
     private ListView listView1;
     private Panel panel3;
     private TreeView treeView2;
+    private ToolStripButton rootButton;
+    private ToolStripButton parentFolderButton;
+    private ToolStripButton nodeFolderButton;
+    private ToolStripButton projectFolderButton;
+    private ToolStripButton itemFolderButton;
+    private ToolStripButton synchronizeButton;
     private string currentProjectDir = String.Empty;
+    public String currentRootDir = String.Empty;
 
     public DirTreePanel(PluginMain pluginMain)
     {
@@ -96,6 +103,12 @@ namespace AntPlugin.Controls
       this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
       this.ヘルプLToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.rootButton = new System.Windows.Forms.ToolStripButton();
+      this.parentFolderButton = new System.Windows.Forms.ToolStripButton();
+      this.nodeFolderButton = new System.Windows.Forms.ToolStripButton();
+      this.projectFolderButton = new System.Windows.Forms.ToolStripButton();
+      this.itemFolderButton = new System.Windows.Forms.ToolStripButton();
+      this.synchronizeButton = new System.Windows.Forms.ToolStripButton();
       this.panel1 = new System.Windows.Forms.Panel();
       this.treeView1 = new System.Windows.Forms.TreeView();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -127,7 +140,13 @@ namespace AntPlugin.Controls
             this.貼り付けPToolStripButton,
             this.toolStripSeparator2,
             this.toolStripButton1,
-            this.ヘルプLToolStripButton});
+            this.ヘルプLToolStripButton,
+            this.rootButton,
+            this.parentFolderButton,
+            this.nodeFolderButton,
+            this.projectFolderButton,
+            this.itemFolderButton,
+            this.synchronizeButton});
       this.toolStrip1.Location = new System.Drawing.Point(0, 0);
       this.toolStrip1.Name = "toolStrip1";
       this.toolStrip1.Size = new System.Drawing.Size(787, 27);
@@ -142,6 +161,7 @@ namespace AntPlugin.Controls
       this.新規作成NToolStripButton.Name = "新規作成NToolStripButton";
       this.新規作成NToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.新規作成NToolStripButton.Text = "新規作成(&N)";
+      this.新規作成NToolStripButton.Visible = false;
       // 
       // 開くOToolStripButton
       // 
@@ -161,6 +181,7 @@ namespace AntPlugin.Controls
       this.上書き保存SToolStripButton.Name = "上書き保存SToolStripButton";
       this.上書き保存SToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.上書き保存SToolStripButton.Text = "上書き保存(&S)";
+      this.上書き保存SToolStripButton.Visible = false;
       // 
       // 印刷PToolStripButton
       // 
@@ -170,6 +191,7 @@ namespace AntPlugin.Controls
       this.印刷PToolStripButton.Name = "印刷PToolStripButton";
       this.印刷PToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.印刷PToolStripButton.Text = "印刷(&P)";
+      this.印刷PToolStripButton.Visible = false;
       // 
       // toolStripSeparator
       // 
@@ -184,6 +206,7 @@ namespace AntPlugin.Controls
       this.切り取りUToolStripButton.Name = "切り取りUToolStripButton";
       this.切り取りUToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.切り取りUToolStripButton.Text = "切り取り(&U)";
+      this.切り取りUToolStripButton.Visible = false;
       // 
       // コピーCToolStripButton
       // 
@@ -193,6 +216,7 @@ namespace AntPlugin.Controls
       this.コピーCToolStripButton.Name = "コピーCToolStripButton";
       this.コピーCToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.コピーCToolStripButton.Text = "コピー(&C)";
+      this.コピーCToolStripButton.Visible = false;
       // 
       // 貼り付けPToolStripButton
       // 
@@ -202,6 +226,7 @@ namespace AntPlugin.Controls
       this.貼り付けPToolStripButton.Name = "貼り付けPToolStripButton";
       this.貼り付けPToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.貼り付けPToolStripButton.Text = "貼り付け(&P)";
+      this.貼り付けPToolStripButton.Visible = false;
       // 
       // toolStripSeparator2
       // 
@@ -227,6 +252,72 @@ namespace AntPlugin.Controls
       this.ヘルプLToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.ヘルプLToolStripButton.Text = "ヘルプ(&L)";
       this.ヘルプLToolStripButton.Click += new System.EventHandler(this.ヘルプLToolStripButton_Click);
+      // 
+      // rootButton
+      // 
+      this.rootButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.rootButton.Image = ((System.Drawing.Image)(resources.GetObject("rootButton.Image")));
+      this.rootButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.rootButton.Name = "rootButton";
+      this.rootButton.Size = new System.Drawing.Size(24, 24);
+      this.rootButton.Text = "roorButton";
+      this.rootButton.ToolTipText = "パソコンのルートフォルダに移動します";
+      this.rootButton.Click += new System.EventHandler(this.moveButton_Click);
+      // 
+      // parentFolderButton
+      // 
+      this.parentFolderButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.parentFolderButton.Image = ((System.Drawing.Image)(resources.GetObject("parentFolderButton.Image")));
+      this.parentFolderButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.parentFolderButton.Name = "parentFolderButton";
+      this.parentFolderButton.Size = new System.Drawing.Size(24, 24);
+      this.parentFolderButton.Text = "parentFolderButton";
+      this.parentFolderButton.ToolTipText = "親フォルダーに移動します";
+      this.parentFolderButton.Click += new System.EventHandler(this.moveButton_Click);
+      // 
+      // nodeFolderButton
+      // 
+      this.nodeFolderButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.nodeFolderButton.Image = ((System.Drawing.Image)(resources.GetObject("nodeFolderButton.Image")));
+      this.nodeFolderButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.nodeFolderButton.Name = "nodeFolderButton";
+      this.nodeFolderButton.Size = new System.Drawing.Size(24, 24);
+      this.nodeFolderButton.Text = "nodeFolderButton";
+      this.nodeFolderButton.ToolTipText = "ノードフォルダに移動します";
+      this.nodeFolderButton.Click += new System.EventHandler(this.moveButton_Click);
+      // 
+      // projectFolderButton
+      // 
+      this.projectFolderButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.projectFolderButton.Image = ((System.Drawing.Image)(resources.GetObject("projectFolderButton.Image")));
+      this.projectFolderButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.projectFolderButton.Name = "projectFolderButton";
+      this.projectFolderButton.Size = new System.Drawing.Size(24, 24);
+      this.projectFolderButton.Text = "projectFolderButton";
+      this.projectFolderButton.ToolTipText = "プロジェクトフォルダにイ号します";
+      this.projectFolderButton.Click += new System.EventHandler(this.moveButton_Click);
+      // 
+      // itemFolderButton
+      // 
+      this.itemFolderButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.itemFolderButton.Image = ((System.Drawing.Image)(resources.GetObject("itemFolderButton.Image")));
+      this.itemFolderButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.itemFolderButton.Name = "itemFolderButton";
+      this.itemFolderButton.Size = new System.Drawing.Size(24, 24);
+      this.itemFolderButton.Text = "itemFolderButton";
+      this.itemFolderButton.ToolTipText = "項目のフォルダに移動します";
+      this.itemFolderButton.Click += new System.EventHandler(this.moveButton_Click);
+      // 
+      // synchronizeButton
+      // 
+      this.synchronizeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.synchronizeButton.Image = ((System.Drawing.Image)(resources.GetObject("synchronizeButton.Image")));
+      this.synchronizeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.synchronizeButton.Name = "synchronizeButton";
+      this.synchronizeButton.Size = new System.Drawing.Size(24, 24);
+      this.synchronizeButton.Text = "synchronizeButton";
+      this.synchronizeButton.ToolTipText = "ファイルエクスプローラを動機します";
+      this.synchronizeButton.Click += new System.EventHandler(this.moveButton_Click);
       // 
       // panel1
       // 
@@ -266,12 +357,12 @@ namespace AntPlugin.Controls
       // propertyGrid1
       // 
       this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.propertyGrid1.HelpVisible = false;
       this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
       this.propertyGrid1.Name = "propertyGrid1";
       this.propertyGrid1.Size = new System.Drawing.Size(787, 245);
-      this.propertyGrid1.HelpVisible = false;
-      this.propertyGrid1.ToolbarVisible = false;
       this.propertyGrid1.TabIndex = 0;
+      this.propertyGrid1.ToolbarVisible = false;
       // 
       // panel2
       // 
@@ -342,17 +433,25 @@ namespace AntPlugin.Controls
     public void InitializDirTreeView()
     {
       //this.dirTreeView1 = new DirTreeView(@"F:\codingground");//OK
+      if (PluginBase.CurrentProject != null)
+      {
+        this.currentProjectDir = Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
+      }
       Boolean projectExists = (PluginBase.CurrentProject != null);
       Enabled = projectExists;
-      // Projectと同期廃止 親ディレクトリに移動できない FileExplorerを使用する
-      //if (projectExists)
-      //{
-      //this.dirTreeView1 = new DirTreeView(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath));
-      //}
-      //else
-      //{
-      this.dirTreeView1 = new DirTreeView();
-      //}
+
+      if (this.dirTreeView1 == null)
+      {
+         if (projectExists)
+        {
+          this.dirTreeView1 = new DirTreeView(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath));
+        }
+        else
+        {
+          this.dirTreeView1 = new DirTreeView();
+        }
+      }
+
       this.SuspendLayout();
 
       this.splitContainer1.Panel2Collapsed = true;
@@ -645,6 +744,60 @@ namespace AntPlugin.Controls
 
 
     #endregion
+
+
+    private void moveButton_Click(object sender, EventArgs e)
+    {
+      String item = ((ToolStripButton)sender).Name;
+      
+      this.Controls.Remove(this.dirTreeView1);
+      this.dirTreeView1.Dispose();
+
+      if (File.Exists(this.dirTreeView1.filepath)) this.currentRootDir = Path.GetDirectoryName(this.dirTreeView1.filepath);
+      else if (Directory.Exists(this.dirTreeView1.filepath)) this.currentRootDir = this.dirTreeView1.filepath;
+
+      switch (item)
+      {
+        case "rootButton":
+          this.currentRootDir = "";
+          this.dirTreeView1 = new DirTreeView();
+          break;
+        case "parentFolderButton":
+          this.currentRootDir = Path.GetDirectoryName(this.currentRootDir);
+          this.dirTreeView1 = new DirTreeView(this.currentRootDir);
+          break;
+
+        case "nodeFolderButton":
+           this.dirTreeView1 = new DirTreeView(this.currentRootDir);
+          break;
+        case "projectFolderButton":
+          this.currentRootDir = this.currentProjectDir;
+          this.dirTreeView1 = new DirTreeView(this.currentRootDir);
+          break;
+        case "itemFolderButton":
+          this.currentRootDir = Path.GetDirectoryName(PluginBase.MainForm.CurrentDocument.FileName);
+          this.dirTreeView1 = new DirTreeView(this.currentRootDir);
+          break;
+        case "synchronizeButton":
+          PluginBase.MainForm.CallCommand("PluginCommand", "FileExplorer.BrowseTo;" + this.currentRootDir);
+          return;
+      }
+      InitializDirTreeView();
+
+      /*
+      if (Directory.Exists(this.dirTreeView1.filepath))
+      {
+        this.currentRootDir = this.dirTreeView1.filepath;
+      }
+      else if (File.Exists(this.dirTreeView1.filepath))
+      {
+        this.currentRootDir = Path.GetDirectoryName(this.dirTreeView1.filepath);
+      }
+      this.dirTreeView1 = new DirTreeView(this.currentRootDir);
+      InitializDirTreeView();
+
+      */
+    }
 
 
     private void ShowNodeInfo(String path)
