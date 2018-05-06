@@ -110,6 +110,7 @@ namespace AntPanelApplication
       this.tabPage4 = new System.Windows.Forms.TabPage();
       this.tabPage5 = new System.Windows.Forms.TabPage();
       this.propertyGrid3 = new System.Windows.Forms.PropertyGrid();
+      this.gitButton = new System.Windows.Forms.ToolStripButton();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.toolStrip.SuspendLayout();
@@ -160,6 +161,7 @@ namespace AntPanelApplication
             this.toolStripDropDownButton2,
             this.imageListStripButton,
             this.csOutlineButton1,
+            this.gitButton,
             this.syncronizeDodument,
             this.syncronizeButton,
             this.表示ToolStripButton,
@@ -761,6 +763,19 @@ namespace AntPanelApplication
       this.propertyGrid3.TabIndex = 0;
       this.propertyGrid3.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid3_PropertyValueChanged);
       // 
+      // gitButton
+      // 
+      this.gitButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+      this.gitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.gitButton.Image = ((System.Drawing.Image)(resources.GetObject("gitButton.Image")));
+      this.gitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.gitButton.Name = "gitButton";
+      this.gitButton.Size = new System.Drawing.Size(24, 29);
+      this.gitButton.Text = "gitButton";
+      this.gitButton.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+      this.gitButton.ToolTipText = "Git Bash を起動します";
+      this.gitButton.Click += new System.EventHandler(this.gitButton_Click);
+      // 
       // AntPanel
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -976,5 +991,6 @@ namespace AntPanelApplication
     private ToolStripSeparator toolStripSeparator7;
     private ToolStripMenuItem 試験ToolStripMenuItem;
     private PropertyGrid propertyGrid3;
+    private ToolStripButton gitButton;
   }
 }

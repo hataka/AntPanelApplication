@@ -388,5 +388,17 @@ namespace AntPanelApplication.Properties {
                 this["HomeMenuPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Git\\git-bash.exe")]
+        public string GitPath {
+            get {
+                return ((string)(this["GitPath"]));
+            }
+            set {
+                this["GitPath"] = value;
+            }
+        }
     }
 }

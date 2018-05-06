@@ -76,6 +76,7 @@
     <Compile Include="CommonLibrary\ScaleHelper.cs" />
     <Compile Include="CommonLibrary\ShellContextMenu.cs" />
     <Compile Include="CommonLibrary\StringHandler.cs" />
+    <Compile Include="CommonLibrary\TabPageManager.cs" />
     <Compile Include="CommonLibrary\TwoKeysDictionary.cs" />
     <Compile Include="CommonLibrary\TwoKeysHashTable.cs" />
     <Compile Include="CommonLibrary\WebHandler.cs" />
@@ -120,6 +121,9 @@
     </Compile>
     <Compile Include="Controls\RichTextEditor\settingDialog.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\SimplePanel\SimplePanel.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="CsOutlineParser\BuildTree.cs">
       <SubType>UserControl</SubType>
@@ -173,6 +177,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\RichTextEditor\RichTextEditor.resx">
       <DependentUpon>RichTextEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SimplePanel\SimplePanel.resx">
+      <DependentUpon>SimplePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CsOutlineParser\BuildTree.resx">
       <DependentUpon>BuildTree.cs</DependentUpon>
@@ -232,6 +239,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gradle.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PSPad.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

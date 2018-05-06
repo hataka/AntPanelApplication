@@ -1255,6 +1255,11 @@ namespace AntPanelApplication
       treeView.Nodes.Add(this.menuTree.getXmlTreeNode(this.settings.HomeMenuPath, true));
     }
 
+    private void gitButton_Click(object sender, EventArgs e)
+    {
+      Directory.SetCurrentDirectory(Path.GetDirectoryName(this.projectPath));
+      Process.Start(this.settings.GitPath);
+    }
   }
 
 

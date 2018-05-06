@@ -1,4 +1,5 @@
-﻿using AntPlugin.XMLTreeMenu.Controls;
+﻿using AntPanelApplication.Properties;
+using AntPlugin.XMLTreeMenu.Controls;
 using CommonLibrary.Controls;
 using System;
 using System.Drawing;
@@ -11,12 +12,15 @@ namespace AntPanelApplication
   {
     global::AntPanelApplication.Properties.Settings
       settings = new global::AntPanelApplication.Properties.Settings();
+    global::AntPanelApplication.Properties.Resources 
+      resources = new global::AntPanelApplication.Properties.Resources();
 
     public bool showIcon = true;
     public BrowserEx browser;
     public PicturePanel picturePanel;
     public RichTextEditor editor;
     public AntPlugin.XMLTreeMenu.Controls.PlayerPanel player;
+    public SimplePanel panel;
 
     public Form1()
     {
@@ -96,13 +100,18 @@ namespace AntPanelApplication
       this.player = new AntPlugin.XMLTreeMenu.Controls.PlayerPanel();
       this.player.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabPage4.Text = "Player";
-      this.axWindowsMediaPlayer1.Tag = this;
+      //this.axWindowsMediaPlayer1.Tag = this;
       this.player.Tag = this;
       //this.tabPage4.Controls.Add(this.axWindowsMediaPlayer1);
       this.tabPage4.Controls.Add(this.player);
 
       this.tabPage5.Controls.Clear();
-      //this.tabPage5.Controls.Add(this.axWindowsMediaPlayer1);
+      //this.panel = new SimplePanel();
+      //this.panel.Dock = DockStyle.Fill;
+      this.tabPage5.Text = "Panel";
+      //this.panel.Tag = this;
+      //this.panel.panel1.Tag = @"F:\picture\Car\Car001.jpg";
+      //this.tabPage5.Controls.Add(this.panel);
 
       this.tabPage6.Controls.Clear();
       //this.tabPage6.Controls.Add(this.axWindowsMediaPlayer1);
@@ -114,6 +123,9 @@ namespace AntPanelApplication
       this.menuStrip1.Visible = this.settings.MenuBarVisible;
       this.toolStrip1.Visible = this.settings.ToolBarVisible;
       this.statusStrip1.Visible = this.settings.StatusBarVisible;
+
+      //this.gradleButton.Image = global::AntPanelApplication.Properties.Resources.gradle;
+      //this.gradleButton.Image = Resources.gradle;
     }
 
 
