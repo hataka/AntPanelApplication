@@ -27,7 +27,6 @@ using MDIForm;
 
 namespace AntPlugin.XmlTreeMenu
 {
-
   public partial class XmlMenuTree : UserControl
   {
     public TreeView treeView = new TreeView();
@@ -711,7 +710,7 @@ namespace AntPlugin.XmlTreeMenu
       treeView.Nodes.Add(node);
     }
 
-    private NodeInfo SetNodeinfo(String path)
+    public NodeInfo SetNodeinfo(String path)
     {
       NodeInfo nodeInfo = new NodeInfo();
 
@@ -736,7 +735,7 @@ namespace AntPlugin.XmlTreeMenu
       return nodeInfo;
     }
 
-    private NodeInfo SetNodeinfo(XmlNode xmlNode, String path)
+    public NodeInfo SetNodeinfo(XmlNode xmlNode, String path)
     {
       NodeInfo nodeInfo = new NodeInfo();
       nodeInfo.Type = ((XmlElement)xmlNode).Name;
@@ -770,21 +769,29 @@ namespace AntPlugin.XmlTreeMenu
       return nodeInfo;
     }
 
-    private TreeNode BuildTreeNode(NodeInfo nodeInfo, String path)
+    public TreeNode BuildTreeNode(NodeInfo nodeInfo, String path)
     {
       this.currentTreeMenuFilepath = path;
 
       //Int32 imageIndex = getImageIndexFromNodeInfo(nodeInfo);
       Int32 imageIndex = getImageIndexFromNodeInfo_safe(nodeInfo);
-
-      TreeNode treeNode = new TreeNode(nodeInfo.Title, imageIndex, imageIndex);
+      TreeNode treeNode;
+      if (!String.IsNullOrEmpty(nodeInfo.Title))
+      {
+        treeNode = new TreeNode(this.ProcessVariable(nodeInfo.Title), imageIndex, imageIndex);
+      }
+      else
+      {
+        treeNode = new TreeNode(nodeInfo.xmlNode.Name, imageIndex, imageIndex);
+      }
+      treeNode.ToolTipText = path;
       treeNode.Tag = nodeInfo;
       return treeNode;
     }
 
     public string ProcessVariable(string strVar)
     {
-      string arg = string.Empty;
+      string arg = strVar;// string.Empty;
       try
       {
         arg = PluginBase.MainForm.ProcessArgString(strVar);
@@ -1017,7 +1024,49 @@ namespace AntPlugin.XmlTreeMenu
       }
     }
 
-    private String GetTitleFromXmlNode(XmlNode node)
+    /// <summary>
+    /// XMLをツリーノードに変換する
+    /// </summary>
+    /// http://hiros-dot.net/CS2005/Control/TreeView/TreeView11.htm
+    /// <param name="xmlParent">変化するXMLデータ</param>
+    /// <param name="trvParent">変換されたツリーノード</param>
+    public TreeNode MakeXmlTreeMode(System.Xml.XmlElement xmlParent, TreeNode trvParent)
+    {
+      if (xmlParent.HasChildNodes)
+      {
+        for (int i = 0; i < xmlParent.ChildNodes.Count; i++)
+        {
+          if (xmlParent.ChildNodes[i].GetType().ToString().IndexOf("XmlElement") >= 0)
+          {
+            System.Xml.XmlElement xmlChild = (System.Xml.XmlElement)xmlParent.ChildNodes[i];
+            //Path 設定
+            NodeInfo nodeInfo = this.SetNodeinfo(xmlChild,"");
+            TreeNode trvChild = new TreeNode();
+            trvChild.Tag = nodeInfo;
+            trvChild.Text = xmlChild.Name;
+            trvChild.ToolTipText = this.GetTitleFromXmlNode(xmlChild);
+            
+            // 子ノードがまだあるか？
+            if (xmlChild.HasChildNodes)
+              this.MakeXmlTreeMode(xmlChild, trvChild);
+            trvParent.Nodes.Add(trvChild);
+          }
+          else if (xmlParent.ChildNodes[i].GetType().ToString().IndexOf("XmlText") >= 0)
+          {
+            TreeNode trvChild = new TreeNode();
+            NodeInfo nodeInfo = this.SetNodeinfo(xmlParent, "");
+            trvChild.Tag = nodeInfo;
+            trvChild.Text = xmlParent.ChildNodes[i].InnerText;
+            trvParent.Nodes.Add(trvChild);
+          }
+        }
+      }
+      //親ノードの設定
+      //trvParent.Text = xmlParent.Name;
+      return trvParent;
+    }
+ 
+    public String GetTitleFromXmlNode(XmlNode node)
     {
       string title = String.Empty;
       title = node.OuterXml;

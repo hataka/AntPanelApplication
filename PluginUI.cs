@@ -281,6 +281,7 @@ namespace AntPlugin
 		}
 
     public TreeNode currentNode=null;
+
     public void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
       TreeView tree = sender as TreeView;
@@ -291,7 +292,20 @@ namespace AntPlugin
         
         // FIXME java cs outline 右クリック
         if (currentNode.Tag == null) return;
-				if (currentNode.Tag.GetType().Name != "NodeInfo")
+
+        if (tree.Name == "outlineTreeView")
+        {
+          if (tree.SelectedNode.Tag is NodeInfo)
+          {
+            targetMenu.Items[0].Visible = false;
+            targetMenu.Tag = this.outlineTreeView;
+            targetMenu.Show(tree, e.Location);
+          }
+          return;
+        }
+        else targetMenu.Tag = treeView;
+
+        if (currentNode.Tag.GetType().Name != "NodeInfo")
 				{
           AntTreeNode antNode = treeView.SelectedNode as AntTreeNode;
           if (antNode == null) return;
@@ -351,6 +365,16 @@ namespace AntPlugin
     /// <param name="e"></param>
     public void ShowOuterXmlClick(object sender, EventArgs e)
     {
+      if (((TreeView)this.targetMenu.Tag) == outlineTreeView)
+      {
+        TreeView tree = outlineTreeView;
+        if(tree.SelectedNode.Tag is NodeInfo)
+        {
+          NodeInfo ni = tree.SelectedNode.Tag as NodeInfo;
+          MessageBox.Show(ni.XmlNode.OuterXml.Replace("\t", "  ").Replace("	", "  "), "OuterXML : " + ni.Type);
+        }
+        return;
+      }
       AntTreeNode node = this.currentNode as AntTreeNode;
 
       if (node.Tag is TaskInfo)
@@ -377,7 +401,13 @@ namespace AntPlugin
     }
 
     public void MenuEditClick(object sender, EventArgs e)
-		{
+    {
+      if (((TreeView)this.targetMenu.Tag) == outlineTreeView)
+      {
+        this.LocateOutLinePanelMember(null, null);
+        return;
+      }
+
       TreeView tree = this.treeView;
       if (tree.SelectedNode is AntTreeNode)
 			{
@@ -417,7 +447,6 @@ namespace AntPlugin
 			{
 				if (tree.SelectedNode.Tag.GetType().Name == "NodeInfo")
 				{
-					//Globals.MainForm.OpenEditableDocument(((NodeInfo)tree.SelectedNode.Tag).Path, false);
           PluginBase.MainForm.OpenEditableDocument(((NodeInfo)tree.SelectedNode.Tag).Path, false);
         }
         else
@@ -733,17 +762,11 @@ namespace AntPlugin
     public void LocateMember(NodeInfo ni)
     {
       PluginBase.MainForm.OpenEditableDocument(ni.Path);
-
-      //ScintillaControl sci = Globals.SciControl;
-      ScintillaControl sci = PluginBase.MainForm.CurrentDocument.SciControl;
+       ScintillaControl sci = PluginBase.MainForm.CurrentDocument.SciControl;
       String text = sci.Text;
-      //Regex regexp = new Regex("<target[^>]+name\\s*=\\s*\"" + node.Target + "\".*>");
-
-      // Time-stamp: <2016-05-13 9:03:27 kahata>
-      //string search = ((MemberModel)treeNode.Tag).definition;
-      string search = ni.XmlNode.OuterXml;
-
-      //Match match = regexp.Match(text);
+      // Time-stamp: <2018-05-07 18:03:27 kahata>
+      string search = this.menuTree.GetTitleFromXmlNode(ni.XmlNode);
+ 
       int index = text.IndexOf(search);
       if (index > 0)
       {
@@ -1677,7 +1700,7 @@ namespace AntPlugin
         {
           outlineTreeView = new TreeView();
           outlineTreeView.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(this.LocateOutLinePanelMember);
-          outlineTreeView.ImageList = this.imageList;
+           outlineTreeView.ImageList = this.imageList;
           outlineTreeView.Dock = DockStyle.Fill;
           this.OutLinePanelMemberId.Clear();
 
@@ -1699,30 +1722,37 @@ namespace AntPlugin
        || Path.GetExtension(path) == ".fdp"
         )
       {
-        //this.imageList.Tag = "NonAnt";
         try
         {
           outlineTreeView = new TreeView();
+          outlineTreeView.Name = "outlineTreeView";
           outlineTreeView.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(this.LocateOutLinePanelMember);
+          outlineTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
           //outlineTreeView.ImageList = this.imageList;
           outlineTreeView.Dock = DockStyle.Fill;
           outlineTreeView.ShowNodeToolTips = true;
-          //this.treeView1.ShowNodeToolTips = true;
-          //this.OutLinePanelMemberId.Clear();
-          rootNode = this.menuTree.getXmlTreeNode(path, true);
+
+          //rootNode = this.menuTree.getXmlTreeNode(path, true);
+          //XMLファイルを読み込む
+          System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
+          xmlDoc.Load(path);
+          System.Xml.XmlElement xmlRoot = xmlDoc.DocumentElement;
+
+          NodeInfo nodeInfo = this.menuTree.SetNodeinfo(xmlRoot, path);
+          //TreeNode trvRoot = this.menuTree.BuildTreeNode(nodeInfo, path);
+          TreeNode trvRoot = new TreeNode(path);
+          //TreeNode trvRoot = new TreeNode(xmlRoot.Name);
+          trvRoot.ToolTipText = this.menuTree.GetTitleFromXmlNode(xmlRoot);// path;
+          trvRoot.Tag = nodeInfo;
+          //XMLをツリーノードに変換する
+          rootNode = this.menuTree.MakeXmlTreeMode(xmlRoot, trvRoot);
+          //XMLをツリービューに変換したノードを追加する
           outlineTreeView.Nodes.Add(rootNode);
           this.aSpluginUI.Controls.Add(outlineTreeView);
           outlineTreeView.BringToFront();
         }
         catch { }
-
-
       }
-
-
-
-
-
     }
 
     public void CsOutlineParse_old()
@@ -1748,7 +1778,6 @@ namespace AntPlugin
 		{
 			string path = PluginBase.MainForm.CurrentDocument.FileName;
       Object tag = outlineTreeView.SelectedNode.Tag;
-      //MessageBox.Show(tag.GetType().FullName);
       if (tag.GetType().FullName == "CSParser.Model.MemberModel")
 			{
 				CSParser.Model.MemberModel model = tag as CSParser.Model.MemberModel;
@@ -1756,11 +1785,9 @@ namespace AntPlugin
 			}
       else if (tag.GetType().Name == "NodeInfo")
       {
-        //MessageBox.Show("koko");
         NodeInfo ni = tag as NodeInfo;
         this.LocateMember(ni);
       }
-
       else if (tag.GetType().FullName == "System.String" && File.Exists((string)tag))
 			{
 				PluginBase.MainForm.OpenEditableDocument((string)tag);
