@@ -1,4 +1,4 @@
-# AntPanel Applivation
+# AntPanel Application
 ## 履歴
 * 2018-05-06 DirTreePanel フォルダの移動 実装
 
