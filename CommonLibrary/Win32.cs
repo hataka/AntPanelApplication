@@ -123,20 +123,28 @@ namespace CommonLibrary
 
       public static Process LoadProcessInControl(ProcessStartInfo hPsInfo, Control ctrl)
       {
-        Process process = Process.Start(hPsInfo);
-        process.WaitForInputIdle();
-        int num = 0;
-        while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
+        try
         {
-          Thread.Sleep(100);
-          num++;
-          process.Refresh();
+          Process process = Process.Start(hPsInfo);
+          process.WaitForInputIdle();
+          int num = 0;
+          while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
+          {
+            Thread.Sleep(100);
+            num++;
+            process.Refresh();
+          }
+          if (process.MainWindowHandle != IntPtr.Zero)
+          {
+            Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
+          }
+          return process;
         }
-        if (process.MainWindowHandle != IntPtr.Zero)
+        catch (Exception exc)
         {
-          Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
+          MessageBox.Show(exc.Message.ToString(), "LoadProcessInControl");
+          return null;
         }
-        return process;
       }
 
       public static MdiClient GetMdiClient(Form form)

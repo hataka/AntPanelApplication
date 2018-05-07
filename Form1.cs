@@ -15,24 +15,26 @@ namespace AntPanelApplication
     global::AntPanelApplication.Properties.Resources 
       resources = new global::AntPanelApplication.Properties.Resources();
 
-    public bool showIcon = true;
+    public AntPanel antPanel;
     public BrowserEx browser;
     public PicturePanel picturePanel;
     public RichTextEditor editor;
     public AntPlugin.XMLTreeMenu.Controls.PlayerPanel player;
     public SimplePanel panel;
 
+    public bool showIcon = true;
+
     public Form1()
     {
       InitializeComponent();
-      AntPanel antPanel = new AntPanel();
+      this.antPanel = new AntPanel();
       InitializeForm(antPanel);
     }
 
     public Form1(String path)
     {
       InitializeComponent();
-      AntPanel antPanel = new AntPanel(path);
+      this.antPanel = new AntPanel(path);
       antPanel.AccessibleDescription = path;
       InitializeForm(antPanel);
     }
@@ -51,11 +53,6 @@ namespace AntPanelApplication
     private void InitializeForm(AntPanel antpanel)
     {
       LoadControls(antpanel);
-
-      this.splitContainer1.Panel1.Controls.Add(antpanel);
-      this.splitContainer1.Panel2Collapsed = true;
-      this.splitContainer1.Panel1Collapsed = false;
-
       this.Text = "AntPanel : " + Path.GetFileName(antpanel.AccessibleDescription);
       this.Size = new Size(1200, 800);
       this.StartPosition = FormStartPosition.CenterScreen;
@@ -63,6 +60,9 @@ namespace AntPanelApplication
 
     private void LoadControls(AntPanel antpanel)
     {
+      this.splitContainer1.Panel1.Controls.Add(antpanel);
+      this.splitContainer1.Panel2Collapsed = true;
+      this.splitContainer1.Panel1Collapsed = false;
       antpanel.Dock = DockStyle.Fill;
       antpanel.Tag = this;
 
@@ -106,12 +106,12 @@ namespace AntPanelApplication
       this.tabPage4.Controls.Add(this.player);
 
       this.tabPage5.Controls.Clear();
-      //this.panel = new SimplePanel();
-      //this.panel.Dock = DockStyle.Fill;
+      this.panel = new SimplePanel();
+      this.panel.Dock = DockStyle.Fill;
       this.tabPage5.Text = "Panel";
-      //this.panel.Tag = this;
-      //this.panel.panel1.Tag = @"F:\picture\Car\Car001.jpg";
-      //this.tabPage5.Controls.Add(this.panel);
+      this.panel.Tag = this;
+      this.panel.panel1.Tag = @"F:\c_program\OpenGL\NeHe_1200x900\Lesson05\lesson5.exe";
+      this.tabPage5.Controls.Add(this.panel);
 
       this.tabPage6.Controls.Clear();
       //this.tabPage6.Controls.Add(this.axWindowsMediaPlayer1);
