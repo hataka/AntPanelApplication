@@ -1740,8 +1740,8 @@ namespace AntPlugin
 
           NodeInfo nodeInfo = this.menuTree.SetNodeinfo(xmlRoot, path);
           //TreeNode trvRoot = this.menuTree.BuildTreeNode(nodeInfo, path);
-          TreeNode trvRoot = new TreeNode(path);
-          //TreeNode trvRoot = new TreeNode(xmlRoot.Name);
+          //TreeNode trvRoot = new TreeNode(path);
+          TreeNode trvRoot = new TreeNode(xmlRoot.Name);
           trvRoot.ToolTipText = this.menuTree.GetTitleFromXmlNode(xmlRoot);// path;
           trvRoot.Tag = nodeInfo;
           //XMLをツリーノードに変換する

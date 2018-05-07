@@ -285,9 +285,10 @@ namespace AntPlugin
             this.開くOToolStripMenuItem,
             this.testToolStripMenuItem,
             this.antコマンドToolStripMenuItem});
+      this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
       this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-      this.toolStripDropDownButton1.Size = new System.Drawing.Size(14, 24);
+      this.toolStripDropDownButton1.Size = new System.Drawing.Size(34, 24);
       this.toolStripDropDownButton1.Text = "ツール";
       this.toolStripDropDownButton1.ToolTipText = "ツール";
       // 
@@ -615,9 +616,10 @@ namespace AntPlugin
       // 
       this.syncronizeButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
       this.syncronizeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.syncronizeButton.Image = ((System.Drawing.Image)(resources.GetObject("syncronizeButton.Image")));
       this.syncronizeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.syncronizeButton.Name = "syncronizeButton";
-      this.syncronizeButton.Size = new System.Drawing.Size(23, 24);
+      this.syncronizeButton.Size = new System.Drawing.Size(24, 24);
       this.syncronizeButton.Text = "toolStripButton1";
       this.syncronizeButton.ToolTipText = "ファイルエクスプローラとシンクロ";
       this.syncronizeButton.Click += new System.EventHandler(this.syncronizeButton_Click);
