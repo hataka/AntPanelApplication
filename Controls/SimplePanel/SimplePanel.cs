@@ -955,6 +955,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.panel1.Location = new System.Drawing.Point(0, 54);
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(604, 253);
+      this.panel1.Tag = @"F:\c_program\OpenGL\NeHe_1200x900\Lesson05\lesson5.exe";
       this.panel1.TabIndex = 3;
       this.panel1.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel1_DragDrop);
       this.panel1.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel1_DragEnter);
@@ -1015,7 +1016,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
     private void InitializeSimplePanel()
 		{
-      //this.imageList1.Images.Add((Bitmap)this.imageListButton.Image);
+      this.imageList1.Images.Add((Bitmap)this.imageListButton.Image);
       this.imageList1.TransparentColor = Color.FromArgb(233, 229, 215);
 			this.toolStrip1.Visible = false;
 			this.statusStrip1.Visible = false;

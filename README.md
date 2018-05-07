@@ -1,4 +1,4 @@
-# AntPanel Applivation
+# AntPanel Application
 ## 履歴
 * 2018-05-05 リポジトリ作成 Master Feature-A アップロード
 

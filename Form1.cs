@@ -110,7 +110,6 @@ namespace AntPanelApplication
       this.panel.Dock = DockStyle.Fill;
       this.tabPage5.Text = "Panel";
       this.panel.Tag = this;
-      this.panel.panel1.Tag = @"F:\c_program\OpenGL\NeHe_1200x900\Lesson05\lesson5.exe";
       this.tabPage5.Controls.Add(this.panel);
 
       this.tabPage6.Controls.Clear();
