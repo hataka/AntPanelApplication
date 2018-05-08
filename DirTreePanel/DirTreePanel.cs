@@ -855,7 +855,8 @@ namespace AntPlugin.Controls
         += new System.EventHandler(this.dirTreeView1_コンテキストメニューtoolStripMenuItem1_Click);
       this.dirTreeView1.ファイルエクスプローラと同期toolStripMenuItem.Click += new System.EventHandler(this.ファイルエクスプローラと同期toolStripMenuItem_Click);
       this.dirTreeView1.Antツリーに追加toolStripMenuItem.Click += new System.EventHandler(this.Antツリーに追加toolStripMenuItem_Click);
-
+      this.dirTreeView1.AntPanelを開くMenuItem1.Click += new System.EventHandler(this.AntPanelを開くMenuItem1_Click); ;
+ 
       this.panel1.Controls.Add(dirTreeView1);
       this.dirTreeView1.BringToFront();
       this.ResumeLayout(false);
@@ -1051,7 +1052,15 @@ namespace AntPlugin.Controls
       }
     }
 
+    private void AntPanelを開くMenuItem1_Click(object sender, EventArgs e)
+    {
+      String projectFolder = Path.GetDirectoryName(this.dirTreeView1.filepath);
+      this.pluginUI.dirViewSelectedDir = projectFolder;
+      //MessageBox.Show(projectFolder);
 
+      this.pluginMain.ReadBuildFiles(projectFolder);
+      this.pluginUI.RefreshData();
+    }
 
     private void ヘルプLToolStripButton_Click(object sender, EventArgs e)
     {
@@ -1214,6 +1223,43 @@ namespace AntPlugin.Controls
     private void 開くOToolStripButton_Click(object sender, EventArgs e)
     {
       String filepath = @"F:\codingground\java\swt.snippets8\Snippet005\Snippet5.java";
+      //FolderBrowserDialogクラスのインスタンスを作成
+      FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+      //上部に表示する説明テキストを指定する
+      fbd.Description = "フォルダを指定してください。";
+      //ルートフォルダを指定する
+      //デフォルトでDesktop
+      fbd.RootFolder = Environment.SpecialFolder.Desktop;
+      //最初に選択するフォルダを指定する
+      //RootFolder以下にあるフォルダである必要がある
+      fbd.SelectedPath = @"F:\";
+      //ユーザーが新しいフォルダを作成できるようにする
+      //デフォルトでTrue
+      fbd.ShowNewFolderButton = true;
+
+      //ダイアログを表示する
+      if (fbd.ShowDialog(this) == DialogResult.OK)
+      {
+        //選択されたフォルダを表示する
+        Console.WriteLine(fbd.SelectedPath);
+        filepath = fbd.SelectedPath;
+      }
+
+      if (Directory.Exists(filepath)) this.currentRootDir = filepath;
+      //else if(File.Exists(filepath)) this.currentRootDir = Path.GetDirectoryName(antPanel.projectPath);
+
+      this.Controls.Remove(this.dirTreeView1);
+      this.dirTreeView1 = new DirTreeView(this.currentRootDir);
+      InitializDirTreeView();
+
+
+
+
+
+
+      /*
+      String filepath = @"F:\codingground\java\swt.snippets8\Snippet005\Snippet5.java";
       String[] dirs = filepath.Split('\\');
 
 
@@ -1239,7 +1285,7 @@ namespace AntPlugin.Controls
         dir = (String)dirStack.Pop();
 
         MessageBox.Show(dir);
-        /*
+       
         foreach (TreeNode node in this.treeView1.SelectedNode.Nodes)
         {
           if (node.Text == dir)
@@ -1249,17 +1295,9 @@ namespace AntPlugin.Controls
             this.dirTreeView1.SelectedNode = node;
           }
         }
-        */
-
-
       }
+    */
     }
-
-
-
-
-
-
 
 
   }

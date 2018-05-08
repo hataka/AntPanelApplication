@@ -354,7 +354,7 @@ namespace AntPlugin
 			pluginUI.RefreshData();
 		}
 
-		private void ReadBuildFiles()
+		public void ReadBuildFiles()
 		{
 			buildFilesList.Clear();
 			String folder = GetBuildFilesStorageFolder();
@@ -373,7 +373,27 @@ namespace AntPlugin
 			}
 		}
 
-		private void SaveBuildFiles()
+    public void ReadBuildFiles(string folder)
+    {
+      buildFilesList.Clear();
+      //String folder = GetBuildFilesStorageFolder();
+      String fullName = folder + "\\" + STORAGE_FILE_NAME;
+
+      if (File.Exists(fullName))
+      {
+        StreamReader file = new StreamReader(fullName);
+        String line;
+        while ((line = file.ReadLine()) != null)
+        {
+          if (line.Length > 0 && !buildFilesList.Contains(line))
+            buildFilesList.Add(line);
+        }
+        file.Close();
+      }
+    }
+
+
+    private void SaveBuildFiles()
 		{
 			String folder = GetBuildFilesStorageFolder();
 			String fullName = folder + "\\" + STORAGE_FILE_NAME;

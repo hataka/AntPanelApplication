@@ -563,12 +563,17 @@ namespace AntPlugin
       }
     }
 
+    public String dirViewSelectedDir = String.Empty;
     public void addButton_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog dialog = new OpenFileDialog();
 			dialog.Filter = "BuildFiles (*.xml)|*.XML|" + "WshFiles (*.wsf)|*.wsf|" + "All files (*.*)|*.*";
 			dialog.Multiselect = true;
-			if (PluginBase.CurrentProject != null)
+      if(!String.IsNullOrEmpty(this.dirViewSelectedDir))
+      {
+        dialog.InitialDirectory = this.dirViewSelectedDir;
+      }
+      else if (PluginBase.CurrentProject != null)
 				dialog.InitialDirectory = Path.GetDirectoryName(
 					PluginBase.CurrentProject.ProjectPath);
 
@@ -765,7 +770,7 @@ namespace AntPlugin
        ScintillaControl sci = PluginBase.MainForm.CurrentDocument.SciControl;
       String text = sci.Text;
       // Time-stamp: <2018-05-07 18:03:27 kahata>
-      string search = this.menuTree.GetTitleFromXmlNode(ni.XmlNode);
+      string search = this.menuTree.GetHeadTagFromXmlNode(ni.XmlNode);
  
       int index = text.IndexOf(search);
       if (index > 0)
@@ -1742,7 +1747,7 @@ namespace AntPlugin
           //TreeNode trvRoot = this.menuTree.BuildTreeNode(nodeInfo, path);
           //TreeNode trvRoot = new TreeNode(path);
           TreeNode trvRoot = new TreeNode(xmlRoot.Name);
-          trvRoot.ToolTipText = this.menuTree.GetTitleFromXmlNode(xmlRoot);// path;
+          trvRoot.ToolTipText = this.menuTree.GetHeadTagFromXmlNode(xmlRoot);// path;
           trvRoot.Tag = nodeInfo;
           //XMLをツリーノードに変換する
           rootNode = this.menuTree.MakeXmlTreeMode(xmlRoot, trvRoot);

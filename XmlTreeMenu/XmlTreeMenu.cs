@@ -931,7 +931,7 @@ namespace AntPlugin.XmlTreeMenu
           //TreeNode tn = new TreeNode(ni.Title);
           TreeNode tn = new TreeNode(nodeName);
 
-          if (fullNode == true) tn.ToolTipText = GetTitleFromXmlNode(childXmlNode);
+          if (fullNode == true) tn.ToolTipText = GetHeadTagFromXmlNode(childXmlNode);
 
           if (ni.Tooltip != string.Empty) tn.ToolTipText = ni.Tooltip;
           /*
@@ -1044,7 +1044,7 @@ namespace AntPlugin.XmlTreeMenu
             TreeNode trvChild = new TreeNode();
             trvChild.Tag = nodeInfo;
             trvChild.Text = xmlChild.Name;
-            trvChild.ToolTipText = this.GetTitleFromXmlNode(xmlChild);
+            trvChild.ToolTipText = this.GetHeadTagFromXmlNode(xmlChild);
             
             // 子ノードがまだあるか？
             if (xmlChild.HasChildNodes)
@@ -1066,7 +1066,7 @@ namespace AntPlugin.XmlTreeMenu
       return trvParent;
     }
  
-    public String GetTitleFromXmlNode(XmlNode node)
+    public String GetHeadTagFromXmlNode(XmlNode node)
     {
       string title = String.Empty;
       title = node.OuterXml;
