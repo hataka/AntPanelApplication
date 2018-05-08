@@ -43,6 +43,7 @@ public class DirTreeView : TreeView
   private ToolStripMenuItem IEtoolStripMenuItem2;
   private ToolStripMenuItem BrowserExtoolStripMenuItem2;
   private ToolStripMenuItem BrowsertoolStripMenuItem2;
+  public  ToolStripMenuItem openAntPanel;
   public String filepath;
 
 	/// <summary>
@@ -148,6 +149,7 @@ public class DirTreeView : TreeView
       this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       this.ファイルエクスプローラと同期toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.Antツリーに追加toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.openAntPanel = new System.Windows.Forms.ToolStripMenuItem();
       this.contextMenuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -180,11 +182,11 @@ public class DirTreeView : TreeView
             this.コンテキストメニューtoolStripMenuItem1,
             this.toolStripSeparator2,
             this.ファイルエクスプローラと同期toolStripMenuItem,
-            this.Antツリーに追加toolStripMenuItem});
+            this.Antツリーに追加toolStripMenuItem,
+            this.openAntPanel});
       this.contextMenuStrip1.Name = "contextMenuStrip1";
-      this.contextMenuStrip1.Size = new System.Drawing.Size(240, 366);
+      this.contextMenuStrip1.Size = new System.Drawing.Size(240, 392);
       this.contextMenuStrip1.TabStop = true;
-      this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening_1);
       // 
       // 開くtoolStripMenuItem1
       // 
@@ -376,6 +378,12 @@ public class DirTreeView : TreeView
       this.Antツリーに追加toolStripMenuItem.Size = new System.Drawing.Size(239, 26);
       this.Antツリーに追加toolStripMenuItem.Text = "Antツリーに追加";
       this.Antツリーに追加toolStripMenuItem.Click += new System.EventHandler(this.Antツリーに追加toolStripMenuItem_Click);
+      // 
+      // openAntPanel
+      // 
+      this.openAntPanel.Name = "openAntPanel";
+      this.openAntPanel.Size = new System.Drawing.Size(239, 26);
+      this.openAntPanel.Text = "AntPanelを開く";
       // 
       // DirTreeView
       // 
@@ -625,9 +633,6 @@ public class DirTreeView : TreeView
 
   }
 
-
-
-
   private String OutputError(string Message)
 	{
 		StackFrame CallStack = new StackFrame(1, true);
@@ -637,11 +642,7 @@ public class DirTreeView : TreeView
 		String errMsg = "Error: " + Message + " - File: " + SourceFile + " Line: " + SourceLine.ToString();
 		return errMsg;
 	}
-
-  private void contextMenuStrip1_Opening_1(object sender, CancelEventArgs e)
-  {
-
-  }
+ 
 }
 
 /// <summary>

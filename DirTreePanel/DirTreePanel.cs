@@ -45,6 +45,43 @@ namespace AntPlugin.Controls
     private ToolStripButton downButton;
     private ToolStripButton projectButton;
     private ToolStripButton itemButton;
+    private ToolStripDropDownButton toolStripDropDownButton1;
+    private ToolStripMenuItem 最近開いたカスタムドキュメントToolStripMenuItem;
+    private ToolStripMenuItem 最近開いたカスタムドキュメントをクリアToolStripMenuItem;
+    private ToolStripMenuItem お気に入りToolStripMenuItem;
+    private ToolStripMenuItem お気に入りに追加ToolStripMenuItem;
+    private ToolStripMenuItem お気に入りのクリアToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator3;
+    private ToolStripMenuItem 開くOToolStripMenuItem;
+    private ToolStripMenuItem サクラエディタToolStripMenuItem;
+    private ToolStripMenuItem pSPadToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator7;
+    private ToolStripMenuItem richTextBoxToolStripMenuItem;
+    private ToolStripMenuItem scintillaCToolStripMenuItem;
+    public ToolStripMenuItem azukiEditorZToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator8;
+    private ToolStripMenuItem エクスプローラToolStripMenuItem;
+    private ToolStripMenuItem コマンドプロンプトToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator9;
+    private ToolStripMenuItem ファイル名を指定して実行OToolStripMenuItem;
+    private ToolStripMenuItem リンクを開くLToolStripMenuItem;
+    private ToolStripMenuItem 出力ToolStripMenuItem;
+    public ToolStripMenuItem consoleToolStripMenuItem;
+    public ToolStripMenuItem documentToolStripMenuItem;
+    public ToolStripMenuItem traceToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator4;
+    private ToolStripMenuItem オプションToolStripMenuItem;
+    private ToolStripMenuItem アイコン表示ToolStripMenuItem;
+    private ToolStripMenuItem プロパティ表示ToolStripMenuItem;
+    private ToolStripMenuItem 子ノード表示ToolStripMenuItem;
+    private ToolStripMenuItem ツールボタンToolStripMenuItem;
+    private ToolStripMenuItem 新規作成ToolStripMenuItem;
+    private ToolStripMenuItem 名前を付けて保存ToolStripMenuItem;
+    private ToolStripMenuItem imageListButtonToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator1;
+    private ToolStripMenuItem CSOutlinePanelMenuItem;
+    private ToolStripMenuItem カスタマイズToolStripMenuItem;
+    private ToolStripButton toolStripButton2;
     private string currentRootDir = String.Empty;
 
     /*
@@ -104,6 +141,10 @@ namespace AntPlugin.Controls
       this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
       this.ヘルプLToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.homeStripButton = new System.Windows.Forms.ToolStripButton();
+      this.upButton = new System.Windows.Forms.ToolStripButton();
+      this.downButton = new System.Windows.Forms.ToolStripButton();
+      this.projectButton = new System.Windows.Forms.ToolStripButton();
+      this.itemButton = new System.Windows.Forms.ToolStripButton();
       this.panel1 = new System.Windows.Forms.Panel();
       this.treeView1 = new System.Windows.Forms.TreeView();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -112,10 +153,43 @@ namespace AntPlugin.Controls
       this.listView1 = new System.Windows.Forms.ListView();
       this.panel3 = new System.Windows.Forms.Panel();
       this.treeView2 = new System.Windows.Forms.TreeView();
-      this.upButton = new System.Windows.Forms.ToolStripButton();
-      this.downButton = new System.Windows.Forms.ToolStripButton();
-      this.projectButton = new System.Windows.Forms.ToolStripButton();
-      this.itemButton = new System.Windows.Forms.ToolStripButton();
+      this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+      this.最近開いたカスタムドキュメントToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.最近開いたカスタムドキュメントをクリアToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.お気に入りToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.お気に入りに追加ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.お気に入りのクリアToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+      this.開くOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.サクラエディタToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.pSPadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+      this.richTextBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.scintillaCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.azukiEditorZToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+      this.エクスプローラToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.コマンドプロンプトToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+      this.ファイル名を指定して実行OToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.リンクを開くLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.出力ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.consoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.documentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.traceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+      this.オプションToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.アイコン表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.プロパティ表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.子ノード表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.ツールボタンToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.新規作成ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.名前を付けて保存ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.imageListButtonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+      this.CSOutlinePanelMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.カスタマイズToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
       this.toolStrip1.SuspendLayout();
       this.panel1.SuspendLayout();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -144,7 +218,9 @@ namespace AntPlugin.Controls
             this.upButton,
             this.downButton,
             this.projectButton,
-            this.itemButton});
+            this.itemButton,
+            this.toolStripDropDownButton1,
+            this.toolStripButton2});
       this.toolStrip1.Location = new System.Drawing.Point(0, 0);
       this.toolStrip1.Name = "toolStrip1";
       this.toolStrip1.Size = new System.Drawing.Size(787, 27);
@@ -159,6 +235,7 @@ namespace AntPlugin.Controls
       this.新規作成NToolStripButton.Name = "新規作成NToolStripButton";
       this.新規作成NToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.新規作成NToolStripButton.Text = "新規作成(&N)";
+      this.新規作成NToolStripButton.Visible = false;
       // 
       // 開くOToolStripButton
       // 
@@ -178,6 +255,7 @@ namespace AntPlugin.Controls
       this.上書き保存SToolStripButton.Name = "上書き保存SToolStripButton";
       this.上書き保存SToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.上書き保存SToolStripButton.Text = "上書き保存(&S)";
+      this.上書き保存SToolStripButton.Visible = false;
       // 
       // 印刷PToolStripButton
       // 
@@ -187,6 +265,7 @@ namespace AntPlugin.Controls
       this.印刷PToolStripButton.Name = "印刷PToolStripButton";
       this.印刷PToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.印刷PToolStripButton.Text = "印刷(&P)";
+      this.印刷PToolStripButton.Visible = false;
       // 
       // toolStripSeparator
       // 
@@ -201,6 +280,7 @@ namespace AntPlugin.Controls
       this.切り取りUToolStripButton.Name = "切り取りUToolStripButton";
       this.切り取りUToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.切り取りUToolStripButton.Text = "切り取り(&U)";
+      this.切り取りUToolStripButton.Visible = false;
       // 
       // コピーCToolStripButton
       // 
@@ -210,6 +290,7 @@ namespace AntPlugin.Controls
       this.コピーCToolStripButton.Name = "コピーCToolStripButton";
       this.コピーCToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.コピーCToolStripButton.Text = "コピー(&C)";
+      this.コピーCToolStripButton.Visible = false;
       // 
       // 貼り付けPToolStripButton
       // 
@@ -219,6 +300,7 @@ namespace AntPlugin.Controls
       this.貼り付けPToolStripButton.Name = "貼り付けPToolStripButton";
       this.貼り付けPToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.貼り付けPToolStripButton.Text = "貼り付け(&P)";
+      this.貼り付けPToolStripButton.Visible = false;
       // 
       // toolStripSeparator2
       // 
@@ -254,6 +336,50 @@ namespace AntPlugin.Controls
       this.homeStripButton.Size = new System.Drawing.Size(24, 24);
       this.homeStripButton.Text = "homeStripButton";
       this.homeStripButton.Click += new System.EventHandler(this.homeStripButton_Click);
+      // 
+      // upButton
+      // 
+      this.upButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.upButton.Image = ((System.Drawing.Image)(resources.GetObject("upButton.Image")));
+      this.upButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.upButton.Name = "upButton";
+      this.upButton.Size = new System.Drawing.Size(24, 24);
+      this.upButton.Text = "upButton";
+      this.upButton.ToolTipText = "上のディレクトリに移動します";
+      this.upButton.Click += new System.EventHandler(this.upButton_Click);
+      // 
+      // downButton
+      // 
+      this.downButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.downButton.Image = ((System.Drawing.Image)(resources.GetObject("downButton.Image")));
+      this.downButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.downButton.Name = "downButton";
+      this.downButton.Size = new System.Drawing.Size(24, 24);
+      this.downButton.Text = "downButton";
+      this.downButton.ToolTipText = "選択項目のフォルダに移動します";
+      this.downButton.Click += new System.EventHandler(this.downButton_Click);
+      // 
+      // projectButton
+      // 
+      this.projectButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.projectButton.Image = ((System.Drawing.Image)(resources.GetObject("projectButton.Image")));
+      this.projectButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.projectButton.Name = "projectButton";
+      this.projectButton.Size = new System.Drawing.Size(24, 24);
+      this.projectButton.Text = "projectButton";
+      this.projectButton.ToolTipText = "プロジェクトフォルダに移動します";
+      this.projectButton.Click += new System.EventHandler(this.projectButton_Click);
+      // 
+      // itemButton
+      // 
+      this.itemButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.itemButton.Image = ((System.Drawing.Image)(resources.GetObject("itemButton.Image")));
+      this.itemButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.itemButton.Name = "itemButton";
+      this.itemButton.Size = new System.Drawing.Size(24, 24);
+      this.itemButton.Text = "itemButton";
+      this.itemButton.ToolTipText = "アイテムフォルダに移動します";
+      this.itemButton.Click += new System.EventHandler(this.itemButton_Click);
       // 
       // panel1
       // 
@@ -335,49 +461,296 @@ namespace AntPlugin.Controls
       this.treeView2.Size = new System.Drawing.Size(787, 612);
       this.treeView2.TabIndex = 0;
       // 
-      // upButton
+      // toolStripDropDownButton1
       // 
-      this.upButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.upButton.Image = ((System.Drawing.Image)(resources.GetObject("upButton.Image")));
-      this.upButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.upButton.Name = "upButton";
-      this.upButton.Size = new System.Drawing.Size(24, 24);
-      this.upButton.Text = "upButton";
-      this.upButton.ToolTipText = "上のディレクトリに移動します";
-      this.upButton.Click += new System.EventHandler(this.upButton_Click);
+      this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+      this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.最近開いたカスタムドキュメントToolStripMenuItem,
+            this.お気に入りToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.開くOToolStripMenuItem,
+            this.出力ToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.オプションToolStripMenuItem,
+            this.カスタマイズToolStripMenuItem});
+      this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
+      this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+      this.toolStripDropDownButton1.Size = new System.Drawing.Size(34, 24);
+      this.toolStripDropDownButton1.Text = "ツール";
+      this.toolStripDropDownButton1.ToolTipText = "ツール";
       // 
-      // downButton
+      // 最近開いたカスタムドキュメントToolStripMenuItem
       // 
-      this.downButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.downButton.Image = ((System.Drawing.Image)(resources.GetObject("downButton.Image")));
-      this.downButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.downButton.Name = "downButton";
-      this.downButton.Size = new System.Drawing.Size(24, 24);
-      this.downButton.Text = "downButton";
-      this.downButton.ToolTipText = "選択項目のフォルダに移動します";
-      this.downButton.Click += new System.EventHandler(this.downButton_Click);
+      this.最近開いたカスタムドキュメントToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.最近開いたカスタムドキュメントをクリアToolStripMenuItem});
+      this.最近開いたカスタムドキュメントToolStripMenuItem.Name = "最近開いたカスタムドキュメントToolStripMenuItem";
+      this.最近開いたカスタムドキュメントToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
+      this.最近開いたカスタムドキュメントToolStripMenuItem.Text = "最近開いたツリーファイル";
       // 
-      // projectButton
+      // 最近開いたカスタムドキュメントをクリアToolStripMenuItem
       // 
-      this.projectButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.projectButton.Image = ((System.Drawing.Image)(resources.GetObject("projectButton.Image")));
-      this.projectButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.projectButton.Name = "projectButton";
-      this.projectButton.Size = new System.Drawing.Size(24, 24);
-      this.projectButton.Text = "projectButton";
-      this.projectButton.ToolTipText = "プロジェクトフォルダに移動します";
-      this.projectButton.Click += new System.EventHandler(this.projectButton_Click);
+      this.最近開いたカスタムドキュメントをクリアToolStripMenuItem.Name = "最近開いたカスタムドキュメントをクリアToolStripMenuItem";
+      this.最近開いたカスタムドキュメントをクリアToolStripMenuItem.Size = new System.Drawing.Size(268, 26);
+      this.最近開いたカスタムドキュメントをクリアToolStripMenuItem.Text = "最近開いたツリーファイルをクリア";
       // 
-      // itemButton
+      // お気に入りToolStripMenuItem
       // 
-      this.itemButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.itemButton.Image = ((System.Drawing.Image)(resources.GetObject("itemButton.Image")));
-      this.itemButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.itemButton.Name = "itemButton";
-      this.itemButton.Size = new System.Drawing.Size(24, 24);
-      this.itemButton.Text = "itemButton";
-      this.itemButton.ToolTipText = "アイテムフォルダに移動します";
-      this.itemButton.Click += new System.EventHandler(this.itemButton_Click);
+      this.お気に入りToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.お気に入りに追加ToolStripMenuItem,
+            this.お気に入りのクリアToolStripMenuItem});
+      this.お気に入りToolStripMenuItem.Name = "お気に入りToolStripMenuItem";
+      this.お気に入りToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
+      this.お気に入りToolStripMenuItem.Text = "お気に入り";
+      // 
+      // お気に入りに追加ToolStripMenuItem
+      // 
+      this.お気に入りに追加ToolStripMenuItem.Name = "お気に入りに追加ToolStripMenuItem";
+      this.お気に入りに追加ToolStripMenuItem.Size = new System.Drawing.Size(189, 26);
+      this.お気に入りに追加ToolStripMenuItem.Text = "お気に入りに追加";
+      // 
+      // お気に入りのクリアToolStripMenuItem
+      // 
+      this.お気に入りのクリアToolStripMenuItem.Name = "お気に入りのクリアToolStripMenuItem";
+      this.お気に入りのクリアToolStripMenuItem.Size = new System.Drawing.Size(189, 26);
+      this.お気に入りのクリアToolStripMenuItem.Text = "お気に入りのクリア";
+      // 
+      // toolStripSeparator3
+      // 
+      this.toolStripSeparator3.Name = "toolStripSeparator3";
+      this.toolStripSeparator3.Size = new System.Drawing.Size(224, 6);
+      // 
+      // 開くOToolStripMenuItem
+      // 
+      this.開くOToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.サクラエディタToolStripMenuItem,
+            this.pSPadToolStripMenuItem,
+            this.toolStripSeparator7,
+            this.richTextBoxToolStripMenuItem,
+            this.scintillaCToolStripMenuItem,
+            this.azukiEditorZToolStripMenuItem,
+            this.toolStripSeparator8,
+            this.エクスプローラToolStripMenuItem,
+            this.コマンドプロンプトToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.ファイル名を指定して実行OToolStripMenuItem,
+            this.リンクを開くLToolStripMenuItem});
+      this.開くOToolStripMenuItem.Name = "開くOToolStripMenuItem";
+      this.開くOToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
+      this.開くOToolStripMenuItem.Text = "開く(&O)";
+      // 
+      // サクラエディタToolStripMenuItem
+      // 
+      this.サクラエディタToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("サクラエディタToolStripMenuItem.Image")));
+      this.サクラエディタToolStripMenuItem.Name = "サクラエディタToolStripMenuItem";
+      this.サクラエディタToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.サクラエディタToolStripMenuItem.Text = "サクラエディタ";
+      // 
+      // pSPadToolStripMenuItem
+      // 
+      this.pSPadToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pSPadToolStripMenuItem.Image")));
+      this.pSPadToolStripMenuItem.Name = "pSPadToolStripMenuItem";
+      this.pSPadToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.pSPadToolStripMenuItem.Text = "PSPad";
+      // 
+      // toolStripSeparator7
+      // 
+      this.toolStripSeparator7.Name = "toolStripSeparator7";
+      this.toolStripSeparator7.Size = new System.Drawing.Size(257, 6);
+      // 
+      // richTextBoxToolStripMenuItem
+      // 
+      this.richTextBoxToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("richTextBoxToolStripMenuItem.Image")));
+      this.richTextBoxToolStripMenuItem.Name = "richTextBoxToolStripMenuItem";
+      this.richTextBoxToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.richTextBoxToolStripMenuItem.Text = "RichTextEditor(&R)";
+      // 
+      // scintillaCToolStripMenuItem
+      // 
+      this.scintillaCToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("scintillaCToolStripMenuItem.Image")));
+      this.scintillaCToolStripMenuItem.Name = "scintillaCToolStripMenuItem";
+      this.scintillaCToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.scintillaCToolStripMenuItem.Text = "Scintilla(&A)";
+      // 
+      // azukiEditorZToolStripMenuItem
+      // 
+      this.azukiEditorZToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("azukiEditorZToolStripMenuItem.Image")));
+      this.azukiEditorZToolStripMenuItem.Name = "azukiEditorZToolStripMenuItem";
+      this.azukiEditorZToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.azukiEditorZToolStripMenuItem.Text = "Azuki Editor(&Z)";
+      // 
+      // toolStripSeparator8
+      // 
+      this.toolStripSeparator8.Name = "toolStripSeparator8";
+      this.toolStripSeparator8.Size = new System.Drawing.Size(257, 6);
+      // 
+      // エクスプローラToolStripMenuItem
+      // 
+      this.エクスプローラToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("エクスプローラToolStripMenuItem.Image")));
+      this.エクスプローラToolStripMenuItem.Name = "エクスプローラToolStripMenuItem";
+      this.エクスプローラToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.エクスプローラToolStripMenuItem.Text = "エクスプローラ";
+      // 
+      // コマンドプロンプトToolStripMenuItem
+      // 
+      this.コマンドプロンプトToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("コマンドプロンプトToolStripMenuItem.Image")));
+      this.コマンドプロンプトToolStripMenuItem.Name = "コマンドプロンプトToolStripMenuItem";
+      this.コマンドプロンプトToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.コマンドプロンプトToolStripMenuItem.Text = "コマンドプロンプト";
+      // 
+      // toolStripSeparator9
+      // 
+      this.toolStripSeparator9.Name = "toolStripSeparator9";
+      this.toolStripSeparator9.Size = new System.Drawing.Size(257, 6);
+      // 
+      // ファイル名を指定して実行OToolStripMenuItem
+      // 
+      this.ファイル名を指定して実行OToolStripMenuItem.Name = "ファイル名を指定して実行OToolStripMenuItem";
+      this.ファイル名を指定して実行OToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.ファイル名を指定して実行OToolStripMenuItem.Text = "ファイル名を指定して実行(&O)";
+      // 
+      // リンクを開くLToolStripMenuItem
+      // 
+      this.リンクを開くLToolStripMenuItem.Name = "リンクを開くLToolStripMenuItem";
+      this.リンクを開くLToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.リンクを開くLToolStripMenuItem.Text = "リンクを開く(&L)";
+      // 
+      // 出力ToolStripMenuItem
+      // 
+      this.出力ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.consoleToolStripMenuItem,
+            this.documentToolStripMenuItem,
+            this.traceToolStripMenuItem});
+      this.出力ToolStripMenuItem.Name = "出力ToolStripMenuItem";
+      this.出力ToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
+      this.出力ToolStripMenuItem.Text = "出力";
+      // 
+      // consoleToolStripMenuItem
+      // 
+      this.consoleToolStripMenuItem.Checked = true;
+      this.consoleToolStripMenuItem.CheckOnClick = true;
+      this.consoleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.consoleToolStripMenuItem.Name = "consoleToolStripMenuItem";
+      this.consoleToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+      this.consoleToolStripMenuItem.Text = "Console";
+      // 
+      // documentToolStripMenuItem
+      // 
+      this.documentToolStripMenuItem.CheckOnClick = true;
+      this.documentToolStripMenuItem.Name = "documentToolStripMenuItem";
+      this.documentToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+      this.documentToolStripMenuItem.Text = "Document";
+      // 
+      // traceToolStripMenuItem
+      // 
+      this.traceToolStripMenuItem.CheckOnClick = true;
+      this.traceToolStripMenuItem.Name = "traceToolStripMenuItem";
+      this.traceToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+      this.traceToolStripMenuItem.Text = "Trace";
+      // 
+      // toolStripSeparator4
+      // 
+      this.toolStripSeparator4.Name = "toolStripSeparator4";
+      this.toolStripSeparator4.Size = new System.Drawing.Size(224, 6);
+      // 
+      // オプションToolStripMenuItem
+      // 
+      this.オプションToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.アイコン表示ToolStripMenuItem,
+            this.プロパティ表示ToolStripMenuItem,
+            this.子ノード表示ToolStripMenuItem,
+            this.ツールボタンToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.CSOutlinePanelMenuItem});
+      this.オプションToolStripMenuItem.Name = "オプションToolStripMenuItem";
+      this.オプションToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
+      this.オプションToolStripMenuItem.Text = "オプション";
+      // 
+      // アイコン表示ToolStripMenuItem
+      // 
+      this.アイコン表示ToolStripMenuItem.Checked = true;
+      this.アイコン表示ToolStripMenuItem.CheckOnClick = true;
+      this.アイコン表示ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.アイコン表示ToolStripMenuItem.Name = "アイコン表示ToolStripMenuItem";
+      this.アイコン表示ToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
+      this.アイコン表示ToolStripMenuItem.Text = "アイコン表示";
+      // 
+      // プロパティ表示ToolStripMenuItem
+      // 
+      this.プロパティ表示ToolStripMenuItem.CheckOnClick = true;
+      this.プロパティ表示ToolStripMenuItem.Name = "プロパティ表示ToolStripMenuItem";
+      this.プロパティ表示ToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
+      this.プロパティ表示ToolStripMenuItem.Text = "プロパティ表示";
+      // 
+      // 子ノード表示ToolStripMenuItem
+      // 
+      this.子ノード表示ToolStripMenuItem.Checked = true;
+      this.子ノード表示ToolStripMenuItem.CheckOnClick = true;
+      this.子ノード表示ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.子ノード表示ToolStripMenuItem.Name = "子ノード表示ToolStripMenuItem";
+      this.子ノード表示ToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
+      this.子ノード表示ToolStripMenuItem.Text = "子ノード表示";
+      // 
+      // ツールボタンToolStripMenuItem
+      // 
+      this.ツールボタンToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.新規作成ToolStripMenuItem,
+            this.名前を付けて保存ToolStripMenuItem,
+            this.imageListButtonToolStripMenuItem});
+      this.ツールボタンToolStripMenuItem.Name = "ツールボタンToolStripMenuItem";
+      this.ツールボタンToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
+      this.ツールボタンToolStripMenuItem.Text = "ツールボタン";
+      // 
+      // 新規作成ToolStripMenuItem
+      // 
+      this.新規作成ToolStripMenuItem.CheckOnClick = true;
+      this.新規作成ToolStripMenuItem.Name = "新規作成ToolStripMenuItem";
+      this.新規作成ToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
+      this.新規作成ToolStripMenuItem.Text = "新規作成";
+      // 
+      // 名前を付けて保存ToolStripMenuItem
+      // 
+      this.名前を付けて保存ToolStripMenuItem.Name = "名前を付けて保存ToolStripMenuItem";
+      this.名前を付けて保存ToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
+      this.名前を付けて保存ToolStripMenuItem.Text = "名前を付けて保存";
+      // 
+      // imageListButtonToolStripMenuItem
+      // 
+      this.imageListButtonToolStripMenuItem.CheckOnClick = true;
+      this.imageListButtonToolStripMenuItem.Name = "imageListButtonToolStripMenuItem";
+      this.imageListButtonToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
+      this.imageListButtonToolStripMenuItem.Text = "ImageListButton";
+      // 
+      // toolStripSeparator1
+      // 
+      this.toolStripSeparator1.Name = "toolStripSeparator1";
+      this.toolStripSeparator1.Size = new System.Drawing.Size(193, 6);
+      // 
+      // CSOutlinePanelMenuItem
+      // 
+      this.CSOutlinePanelMenuItem.Checked = true;
+      this.CSOutlinePanelMenuItem.CheckOnClick = true;
+      this.CSOutlinePanelMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.CSOutlinePanelMenuItem.Name = "CSOutlinePanelMenuItem";
+      this.CSOutlinePanelMenuItem.Size = new System.Drawing.Size(196, 26);
+      this.CSOutlinePanelMenuItem.Text = "CSOutlinePanel";
+      // 
+      // カスタマイズToolStripMenuItem
+      // 
+      this.カスタマイズToolStripMenuItem.Name = "カスタマイズToolStripMenuItem";
+      this.カスタマイズToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
+      this.カスタマイズToolStripMenuItem.Text = "カスタマイズ";
+      this.カスタマイズToolStripMenuItem.ToolTipText = "カスタマイズ";
+      // 
+      // toolStripButton2
+      // 
+      this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+      this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.toolStripButton2.Name = "toolStripButton2";
+      this.toolStripButton2.Size = new System.Drawing.Size(24, 24);
+      this.toolStripButton2.Text = "toolStripButton2";
       // 
       // DirTreePanel
       // 
@@ -475,8 +848,9 @@ namespace AntPlugin.Controls
 				+= new System.EventHandler(this.dirTreeView1_コンテキストメニューtoolStripMenuItem1_Click);
 			this.dirTreeView1.ファイルエクスプローラと同期toolStripMenuItem.Click += new System.EventHandler(this.ファイルエクスプローラと同期toolStripMenuItem_Click);
 			this.dirTreeView1.Antツリーに追加toolStripMenuItem.Click += new System.EventHandler(this.Antツリーに追加toolStripMenuItem_Click);
+      this.dirTreeView1.openAntPanel.Click += new System.EventHandler(this.openAntPanel_Click);
 
-			this.panel1.Controls.Add(dirTreeView1);
+      this.panel1.Controls.Add(dirTreeView1);
 			this.dirTreeView1.BringToFront();
 			this.ResumeLayout(false);
 		}
@@ -671,9 +1045,23 @@ namespace AntPlugin.Controls
 			catch (Exception exc)
 			{
 				MessageBox.Show(exc.Message.ToString());
-
 			}
 		}
+
+    private void openAntPanel_Click(object sender, EventArgs e)
+    {
+      this.antPanel.projectPath = this.dirTreeView1.filepath;
+      this.antPanel.ReadBuildFiles();
+      this.antPanel.RefreshData();
+      //this,antPanel.treeView.Nodes.Clear();
+      // bug fix 2018-03-16
+      // タブコントロールに組み込むと最初に加えたノードが表示されなくなる
+      // 間に合せのパッチ
+      //TreeNode dummy = new TreeNode("dummy");
+      //this.antPanel.treeView.Nodes.Add(dummy);
+      //this.antPanel.treeView.Nodes.Add(this.antPanel.menuTree.getXmlTreeNode(path, true));
+
+    }
 
     private void ヘルプLToolStripButton_Click(object sender, EventArgs e)
 		{

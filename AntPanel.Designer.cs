@@ -96,6 +96,7 @@ namespace AntPanelApplication
       this.試験ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.imageListStripButton = new System.Windows.Forms.ToolStripButton();
       this.csOutlineButton1 = new System.Windows.Forms.ToolStripButton();
+      this.gitButton = new System.Windows.Forms.ToolStripButton();
       this.syncronizeDodument = new System.Windows.Forms.ToolStripButton();
       this.syncronizeButton = new System.Windows.Forms.ToolStripButton();
       this.表示ToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -110,7 +111,6 @@ namespace AntPanelApplication
       this.tabPage4 = new System.Windows.Forms.TabPage();
       this.tabPage5 = new System.Windows.Forms.TabPage();
       this.propertyGrid3 = new System.Windows.Forms.PropertyGrid();
-      this.gitButton = new System.Windows.Forms.ToolStripButton();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.toolStrip.SuspendLayout();
@@ -564,6 +564,19 @@ namespace AntPanelApplication
       this.csOutlineButton1.Text = "csOutlineButton1";
       this.csOutlineButton1.ToolTipText = "アウトラインツリーを表示します";
       // 
+      // gitButton
+      // 
+      this.gitButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+      this.gitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.gitButton.Image = ((System.Drawing.Image)(resources.GetObject("gitButton.Image")));
+      this.gitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.gitButton.Name = "gitButton";
+      this.gitButton.Size = new System.Drawing.Size(24, 29);
+      this.gitButton.Text = "gitButton";
+      this.gitButton.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+      this.gitButton.ToolTipText = "Git Bash を起動します";
+      this.gitButton.Click += new System.EventHandler(this.gitButton_Click);
+      // 
       // syncronizeDodument
       // 
       this.syncronizeDodument.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -606,6 +619,7 @@ namespace AntPanelApplication
       this.homeStripButton.Name = "homeStripButton";
       this.homeStripButton.Size = new System.Drawing.Size(24, 29);
       this.homeStripButton.Text = "homeStripButton";
+      this.homeStripButton.Click += new System.EventHandler(this.homeStripButton_Click);
       // 
       // removeButton
       // 
@@ -762,19 +776,6 @@ namespace AntPanelApplication
       this.propertyGrid3.Size = new System.Drawing.Size(1177, 563);
       this.propertyGrid3.TabIndex = 0;
       this.propertyGrid3.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid3_PropertyValueChanged);
-      // 
-      // gitButton
-      // 
-      this.gitButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-      this.gitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.gitButton.Image = ((System.Drawing.Image)(resources.GetObject("gitButton.Image")));
-      this.gitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.gitButton.Name = "gitButton";
-      this.gitButton.Size = new System.Drawing.Size(24, 29);
-      this.gitButton.Text = "gitButton";
-      this.gitButton.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-      this.gitButton.ToolTipText = "Git Bash を起動します";
-      this.gitButton.Click += new System.EventHandler(this.gitButton_Click);
       // 
       // AntPanel
       // 

@@ -645,7 +645,7 @@ namespace AntPanelApplication
 			RefreshData();
 		}
 		
-		private void ReadBuildFiles()
+		public void ReadBuildFiles()
 		{
 			buildFilesList.Clear();
 			String folder = GetBuildFilesStorageFolder();
