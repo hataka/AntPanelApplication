@@ -424,5 +424,17 @@ namespace AntPanelApplication.Properties {
                 this["FTPClientDefaultFont"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\VCSharp\\Flashdevelop5.1.1-LL\\FlashDevelop\\Bin\\Debug")]
+        public string BaseDir {
+            get {
+                return ((string)(this["BaseDir"]));
+            }
+            set {
+                this["BaseDir"] = value;
+            }
+        }
     }
 }

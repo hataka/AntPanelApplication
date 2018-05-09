@@ -132,5 +132,8 @@
     <Setting Name="FTPClientDefaultFont" Type="System.Drawing.Font" Scope="User">
       <Value Profile="(Default)">Meiryo UI, 12pt</Value>
     </Setting>
+    <Setting Name="BaseDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

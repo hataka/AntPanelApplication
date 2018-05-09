@@ -54,7 +54,7 @@ namespace AntPanelApplication
 
 		public DirTreePanel dirTreePanel;
 		public FTPClientPanel ftpClientPanel;
-		//public XmlTreePanel xmlTreePanel;
+		public XmlTreePanel xmlTreePanel;
 
 		private String defaultTarget;
 		private ContextMenuStrip csOutlineMenu = null;
@@ -109,7 +109,7 @@ namespace AntPanelApplication
 			IntializeXmlMenuTree();
 			IntializeDirTreePanel();
 			IntializeFTPClientPanel();
-			//InitializeXmlTreePanel();
+			InitializeXmlTreePanel();
 
 			CreateMenus();
 
@@ -201,7 +201,6 @@ namespace AntPanelApplication
 
 		private void InitializeXmlTreePanel()
 		{
-			/*
 			try
 			{
 				this.xmlTreePanel = new XmlTreePanel(this);
@@ -212,7 +211,6 @@ namespace AntPanelApplication
 			{
 				MessageBox.Show(ex.Message.ToString(), "IntializeFTPClientPanel");
 			}
-			*/
 		}
 
 		private void CreateMenus()
@@ -296,7 +294,7 @@ namespace AntPanelApplication
 			}
 		}
 
-		private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+		public void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
 			// fixed 2018-2-23
 			TreeView tree = sender as TreeView;

@@ -166,6 +166,12 @@
     <Compile Include="XmlTreeMenu\XmlTreeMenu.Designer.cs">
       <DependentUpon>XmlTreeMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="XmlTreePanel\XmlTreePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="XmlTreePanel\XmlTreePanel.Designer.cs">
+      <DependentUpon>XmlTreePanel.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AntPanel.resx">
       <DependentUpon>AntPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -214,6 +220,9 @@
     </Compile>
     <EmbeddedResource Include="XmlTreeMenu\XmlTreeMenu.resx">
       <DependentUpon>XmlTreeMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XmlTreePanel\XmlTreePanel.resx">
+      <DependentUpon>XmlTreePanel.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="DirTreePanel\DirTreePanel.bak" />
     <None Include="Properties\Settings.settings">
