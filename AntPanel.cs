@@ -53,7 +53,7 @@ namespace AntPanelApplication
 		public XmlMenuTree menuTree = new XmlMenuTree();
 
 		public DirTreePanel dirTreePanel;
-		//public FTPClientPanel ftpClientPanel;
+		public FTPClientPanel ftpClientPanel;
 		//public XmlTreePanel xmlTreePanel;
 
 		private String defaultTarget;
@@ -108,7 +108,7 @@ namespace AntPanelApplication
 			InitializeGradleTree();
 			IntializeXmlMenuTree();
 			IntializeDirTreePanel();
-			//IntializeFTPClientPanel();
+			IntializeFTPClientPanel();
 			//InitializeXmlTreePanel();
 
 			CreateMenus();
@@ -186,7 +186,6 @@ namespace AntPanelApplication
 
 		private void IntializeFTPClientPanel()
 		{
-			/*
 			try
 			{
 				//this.ftpClientPanel = new FTPClientPanel(this.pluginMain);
@@ -198,7 +197,6 @@ namespace AntPanelApplication
 			{
 				MessageBox.Show(ex.Message.ToString(), "IntializeFTPClientPanel");
 			}
-			*/
 		}
 
 		private void InitializeXmlTreePanel()

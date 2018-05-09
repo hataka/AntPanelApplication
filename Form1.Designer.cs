@@ -109,6 +109,7 @@
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.ヘルプLToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.表示ToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.gradleButton = new System.Windows.Forms.ToolStripButton();
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -124,9 +125,10 @@
       this.tabPage6 = new System.Windows.Forms.TabPage();
       this.webBrowser1 = new System.Windows.Forms.WebBrowser();
       this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-      this.gradleButton = new System.Windows.Forms.ToolStripButton();
+      this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
       this.menuStrip1.SuspendLayout();
       this.toolStrip1.SuspendLayout();
+      this.statusStrip1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
       this.tabControl1.SuspendLayout();
@@ -789,9 +791,20 @@
       this.表示ToolStripButton.Text = "Property表示切替";
       this.表示ToolStripButton.Click += new System.EventHandler(this.表示ToolStripButton_Click);
       // 
+      // gradleButton
+      // 
+      this.gradleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.gradleButton.Image = global::AntPanelApplication.Properties.Resources.gradle;
+      this.gradleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.gradleButton.Name = "gradleButton";
+      this.gradleButton.Size = new System.Drawing.Size(24, 24);
+      this.gradleButton.Text = "gradleButton";
+      // 
       // statusStrip1
       // 
       this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+      this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
       this.statusStrip1.Location = new System.Drawing.Point(0, 572);
       this.statusStrip1.Name = "statusStrip1";
       this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 21, 0);
@@ -803,14 +816,14 @@
       // splitContainer1
       // 
       this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.splitContainer1.Location = new System.Drawing.Point(0, 62);
+      this.splitContainer1.Location = new System.Drawing.Point(0, 35);
       this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.splitContainer1.Name = "splitContainer1";
       // 
       // splitContainer1.Panel2
       // 
       this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-      this.splitContainer1.Size = new System.Drawing.Size(1311, 534);
+      this.splitContainer1.Size = new System.Drawing.Size(1311, 561);
       this.splitContainer1.SplitterDistance = 323;
       this.splitContainer1.SplitterWidth = 7;
       this.splitContainer1.TabIndex = 3;
@@ -828,7 +841,7 @@
       this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(981, 534);
+      this.tabControl1.Size = new System.Drawing.Size(981, 561);
       this.tabControl1.TabIndex = 0;
       // 
       // tabPage1
@@ -838,7 +851,7 @@
       this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-      this.tabPage1.Size = new System.Drawing.Size(973, 496);
+      this.tabPage1.Size = new System.Drawing.Size(973, 523);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "tabPage1";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -849,7 +862,7 @@
       this.richTextBox1.Font = new System.Drawing.Font("ＭＳ ゴシック", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
       this.richTextBox1.Location = new System.Drawing.Point(4, 5);
       this.richTextBox1.Name = "richTextBox1";
-      this.richTextBox1.Size = new System.Drawing.Size(965, 486);
+      this.richTextBox1.Size = new System.Drawing.Size(965, 513);
       this.richTextBox1.TabIndex = 8;
       this.richTextBox1.Text = "こんにちわ\nリッチテキストです\n";
       this.richTextBox1.UseWaitCursor = true;
@@ -948,14 +961,11 @@
       this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
       this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
       // 
-      // gradleButton
+      // toolStripStatusLabel1
       // 
-      this.gradleButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.gradleButton.Image = global::AntPanelApplication.Properties.Resources.gradle;
-      this.gradleButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.gradleButton.Name = "gradleButton";
-      this.gradleButton.Size = new System.Drawing.Size(24, 24);
-      this.gradleButton.Text = "gradleButton";
+      this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+      this.toolStripStatusLabel1.Size = new System.Drawing.Size(167, 19);
+      this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
       // 
       // Form1
       // 
@@ -963,8 +973,8 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1311, 596);
       this.Controls.Add(this.splitContainer1);
-      this.Controls.Add(this.toolStrip1);
       this.Controls.Add(this.statusStrip1);
+      this.Controls.Add(this.toolStrip1);
       this.Controls.Add(this.menuStrip1);
       this.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
       this.MainMenuStrip = this.menuStrip1;
@@ -975,6 +985,8 @@
       this.menuStrip1.PerformLayout();
       this.toolStrip1.ResumeLayout(false);
       this.toolStrip1.PerformLayout();
+      this.statusStrip1.ResumeLayout(false);
+      this.statusStrip1.PerformLayout();
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
       this.tabControl1.ResumeLayout(false);
@@ -1085,6 +1097,7 @@
     public System.Windows.Forms.PropertyGrid propertyGrid1;
     private System.Windows.Forms.ImageList imageList1;
     private System.Windows.Forms.ToolStripButton gradleButton;
+    public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
   }
 }
 
