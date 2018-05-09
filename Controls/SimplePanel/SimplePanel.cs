@@ -1287,7 +1287,6 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				Process process = Win32.MdiUtil.LoadProcessInControl(this.openFileDialog1.FileName, this.panel1);
         Win32.ShowMaximized(process.MainWindowHandle);
 				this.processList.Insert(0, process);
-				//((DockContent)base.Parent).TabText = Path.GetFileName(this.openFileDialog1.FileName);
 				this.AddPreviousDocuments(this.openFileDialog1.FileName);
 			}
 			catch (Exception)
@@ -1296,7 +1295,40 @@ namespace AntPlugin.XMLTreeMenu.Controls
 			}
 		}
 
-		private void graph371ToolStripMenuItem_Click(object sender, EventArgs e)
+    public void Open(String path)
+    {
+
+    }
+
+    public void ReOpen(String argstring)
+    {
+      String[] tmpstr = argstring.Split('|');
+      string command = tmpstr[0];
+      string args = (tmpstr.Length > 1) ? tmpstr[1] : String.Empty;// null;
+      string path = (tmpstr.Length > 2) ? tmpstr[2] : String.Empty; //Enull;
+      string option = (tmpstr.Length > 3) ? tmpstr[3] : String.Empty; //null;
+      // command前処理					
+      if (command == String.Empty) command = path;
+      else if (args == String.Empty) args = path;
+
+      this.全プロセスの停止ToolStripMenuItem_Click(null, null);
+      ProcessStartInfo processStartInfo = new ProcessStartInfo();
+      processStartInfo.FileName = command;
+      processStartInfo.Arguments = args;
+      try
+      { 
+        Process process = Win32.MdiUtil.LoadProcessInControl(processStartInfo, this.panel1);
+        Win32.ShowMaximized(process.MainWindowHandle);
+        this.processList.Insert(0, process);
+        this.AddPreviousDocuments(command);
+      }
+      catch (Exception exc)
+      {
+        MessageBox.Show(exc.Message.ToString(),"ReOpen Error",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+      }
+    }
+
+    private void graph371ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
       /*
       string text = Path.Combine(PathHelper.BaseDir, "DockableControls\\graph371.exe");

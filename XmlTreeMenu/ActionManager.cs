@@ -1,5 +1,6 @@
 ﻿using AntPanelApplication;
 using AntPlugin.CommonLibrary;
+using AntPlugin.XMLTreeMenu.Controls;
 using AxWMPLib;
 //using AntPlugin.XmlTreeMenu.Controls;
 //using AntPlugin.XMLTreeMenu.Controls;
@@ -368,8 +369,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void ExecuteInPlace(object sender, EventArgs e)
     {
-      /*
-      ToolStripMenuItem button = sender as ToolStripMenuItem;
+       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
 
       String command = String.Empty;// null;
@@ -402,33 +402,29 @@ namespace AntPlugin.XmlTreeMenu.Managers
       ///////////////////////////////////////////////////////////////	
       try
       {
-        SimplePanel simplePanel = new SimplePanel(menuTree.pluginUI);
-        ((Control)simplePanel.Tag).Tag = argstring;
-        simplePanel.Dock = DockStyle.Fill;
-        DockContent document = PluginBase.MainForm.CreateCustomDocument(simplePanel);
-        document.Tag = simplePanel;
-
+        ((Form1)menuTree.antPanel.Tag).panel.ReOpen(argstring);
+        ((Form1)menuTree.antPanel.Tag).panel.panel1.Tag = command;
         if (File.Exists(args) && File.Exists(command))
         {
-          document.TabText = Path.GetFileNameWithoutExtension(command) + "!" + Path.GetFileName(args);
+          ((Form1)menuTree.antPanel.Tag).Text 
+            = Path.GetFileNameWithoutExtension(command) + "!" + Path.GetFileName(args);
         }
         else if (File.Exists(command))
         {
-          document.TabText = Path.GetFileName(command);
+          ((Form1)menuTree.antPanel.Tag).Text = Path.GetFileName(command);
         }
         else
         {
-          document.TabText = "Execute In Place";
+          ((Form1)menuTree.antPanel.Tag).Text = "Execute In Place";
         }
         // Patch 2016-03-23
         //this.AddPreviousCustomDocuments("SimplePanel!" + command + "|" + args);
-        document.FormClosing += new FormClosingEventHandler(menuTree.CustomDocument_FormClosing);
+        //((Form1)menuTree.antPanel.Tag).FormClosing += new FormClosingEventHandler(menuTree.CustomDocument_FormClosing);
       }
       catch (Exception exc)
       {
         MessageBox.Show(Lib.OutputError(exc.Message.ToString()));
       }
-      */
     }
 
     public static void OpenDocument(object sender, EventArgs e)
@@ -473,8 +469,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
       String file = command;
       Directory.SetCurrentDirectory(Path.GetDirectoryName(file));
-      //PluginBase.MainForm.WorkingDirectory = Path.GetDirectoryName(file);
-      //実行出力
       try
       {
         if (Lib.IsImageFile(file))
@@ -488,15 +482,13 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.BrowseEx(file);
           return;
         }
-        //if (Lib.IsSoundFile(file) || Lib.IsVideoFile(file))
-        //{
-        //this.Player(file);
-        //return;
-        //}
+        if (Lib.IsSoundFile(file) || Lib.IsVideoFile(file))
+        {
+          ActionManager.Player(file);
+          return;
+        }
         else if (!Lib.IsExecutableFile(file) && !Lib.IsSoundFile(file) && !Lib.IsVideoFile(file))
         {
-          //MessageBox.Show(file);
-          //PluginBase.MainForm.OpenEditableDocument(file);
           Process.Start(menuTree.antPanel.devenv15Path, "/edit " + "\"" + path + "\"");
           return;
         }
