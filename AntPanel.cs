@@ -1212,23 +1212,41 @@ namespace AntPanelApplication
 
 		private void 試験ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			// 次の例では、現在選択されているコード セクションで、
-			//"somestring" という語を、大文字と小文字を区別して検索します。
-			//Edit.Find somestring / sel /case  
-			//Process.Start(this.devenv15Path, "/Edit "+ this.itemPath+ " /Command \"Edit.Find IMainForm /doc\"");
-			Process.Start(this.devenv15Path, "/Edit "+ this.itemPath+ " /Command \"Edit.Goto 200\"");
-		}
+
+      //System.Configuration.ConfigurationSettings config = new System.Configuration.ConfigurationSettings(;
+       /* 
+        System.Configuration.ConfigurationManager.OpenExeConfiguration(
+        System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal);
+      */
+      //Console.WriteLine(config.FilePath);
+      
+
+
+
+
+
+      // 次の例では、現在選択されているコード セクションで、
+      //"somestring" という語を、大文字と小文字を区別して検索します。
+      //Edit.Find somestring / sel /case  
+      //Process.Start(this.devenv15Path, "/Edit "+ this.itemPath+ " /Command \"Edit.Find IMainForm /doc\"");
+      //Process.Start(this.devenv15Path, "/Edit "+ this.itemPath+ " /Command \"Edit.Goto 200\"");
+
+
+
+    }
 
 		private void SaveSettings()
 		{
-			//this.settings.PreviousDocuments.Clear();
-			//this.settings.PreviousDocuments.AddRange(this.previousDocuments.ToArray());
-			//this.settings.MenuBarVisible = this.menuStrip1.Visible;
-			//this.settings.ToolBarVisible = this.toolStrip1.Visible;
-			//this.settings.StatusBarVisible = this.statusStrip1.Visible;
-			//this.settings.BookMarks.Clear();
-			//this.settings.BookMarks.AddRange(this.favorateDocuments.ToArray());
-			this.settings.Save();
+      //this.settings.PreviousDocuments.Clear();
+      //this.settings.PreviousDocuments.AddRange(this.previousDocuments.ToArray());
+      //this.settings.MenuBarVisible = this.menuStrip1.Visible;
+      //this.settings.ToolBarVisible = this.toolStrip1.Visible;
+      //this.settings.StatusBarVisible = this.statusStrip1.Visible;
+      //this.settings.BookMarks.Clear();
+      //this.settings.BookMarks.AddRange(this.favorateDocuments.ToArray());
+
+      // F:\VCSharp\Flashdevelop5.1.1-LL\External\CustomControl\AntPanelApplication\bin\Debug\AntPanelApplication.exe.config
+      this.settings.Save();
 		}
 
 		private void propertyGrid3_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
