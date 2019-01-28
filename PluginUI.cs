@@ -1,22 +1,21 @@
-﻿using System;
+﻿using AntPlugin.CommonLibrary;
+using AntPlugin.Controls;
+using AntPlugin.XmlTreeMenu;
+using AntPlugin.XmlTreeMenu.Managers;
+using CSParser.BuildTree;
+using PluginCore;
+using PluginCore.Helpers;
+using ScintillaNet;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
-//using FlashDevelop;
-using PluginCore;
-using ScintillaNet;
-using System.Collections.Generic;
-using CSParser.BuildTree;
-using PluginCore.Helpers;
-using System.ComponentModel;
-using System.Text;
-using System.Diagnostics;
-using AntPlugin.CommonLibrary;
-using AntPlugin.XmlTreeMenu;
-using AntPlugin.XmlTreeMenu.Managers;
-using AntPlugin.Controls;
 //using MDIForm;
 
 namespace AntPlugin
@@ -101,7 +100,6 @@ namespace AntPlugin
       IntializeDirTreePanel();
 			IntializeFTPClientPanel();
       InitializeXmlTreePanel();
-
       RefreshData();
 
 			// TODO: 実装
@@ -213,7 +211,7 @@ namespace AntPlugin
 			}
 		}
 
-    private void InitializeXmlTreePanel()
+    public void InitializeXmlTreePanel()
     {
       try
       {
@@ -1685,7 +1683,10 @@ namespace AntPlugin
       // 間に合せのパッチ
       TreeNode dummy = new TreeNode("dummy");
       treeView.Nodes.Add(dummy);
-      treeView.Nodes.Add(this.menuTree.getXmlTreeNode(this.settings.HomeMenuPath, true));
+
+      // herehere
+      //treeView.Nodes.Add(this.menuTree.getXmlTreeNode(this.settings.HomeMenuPath, true));
+      treeView.Nodes.Add(this.menuTree.getXmlTreeNode(XmlTreePanel.menuPath, true));
     }
 
     public TreeView outlineTreeView = new TreeView();

@@ -32,10 +32,10 @@ namespace AntPlugin.XmlTreeMenu.Managers
       get { return GetCurrentDocumentPath(); }
     }
 
-
     public static string ProcessVariable(string strVar)
     {
       string arg = string.Empty;
+      //XmlMenuTree tree = new XmlMenuTree();
       try
       {
         arg = PluginBase.MainForm.ProcessArgString(strVar);
@@ -58,48 +58,21 @@ namespace AntPlugin.XmlTreeMenu.Managers
         //arg = arg.Replace("$(ControlCurFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
         //arg = arg.Replace("$(CurControlFilePath)", this.controlCurrentFilePath);
         //arg = arg.Replace("$(CurControlFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
+        arg = ApplyAntProperties(arg);
       }
       catch { }
       return arg;
     }
 
-
-
-
-
-    //public string type;
-    //public string title;
-    //public string tooltip;
-    //public bool expand;
-
-    /*
-       tn.BackColor;
-       //tn.Checked;
-       //tn.Expand;
-       tn.ForeColor;
-       //tn.IsVisible;
-      tn.NodeFont;
-      //tn.TreeView; //現在割り当てられている親TreeViewを取得
-      //tn.IsVisible;
-      //tn.FullPath;
-      //tn.ContextMenu;
-    */
-    //public string backColor;
-    //public string foreColor;
-    //public string nodeFont;
-    //public string nodeChecked;
-
-    //public string pathbase;
-    //public string action;
-    //public string command;
-    //public string path;
-    //public string icon;
-    //public string args;
-    //public string option;
-    //public string innerText;
-    //public string comment;
-    //public XmlNode xmlNode;
-
+    public static string ApplyAntProperties(string strVar)
+    {
+      foreach (KeyValuePair<string, string> item in XmlMenuTree.AntProperties)
+      {
+        //Console.WriteLine("[{0}:{1}]", item.Key, item.Value);
+        strVar = strVar.Replace("$(" + item.Key + ")", item.Value);
+      }
+      return strVar;
+    }
 
     public static void NodeAction(object sender, EventArgs e)
     {
@@ -233,11 +206,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
         case "runprocess":
           ActionManager.RunProcess(button, null);
           break;
-
         //case "runprocessdialog":
         //RunProcessDialog();
         //break;
-
         case "openeditabledocument":
         case "opendocument":
         case "openproject":
@@ -247,16 +218,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.OpenDocument(button, null);
           break;
         case "picture":
-          //ActionManager.
-          //FIXED
-          // Plugins のディレクトリにmediaplayerのdllをコピーするので廃止。
-          // CustomDocumentに処理を移す
-          //case "player":
-          //this.Player(path);
-          //break;
           ActionManager.Picture(command + "|" + args + "|" + path + "|" + option);
-          //button.Tag = "PlayerPanel" + "|" + args + "|" + path + "|" + option;
-          //ActionManager.CustomDocument(button, null);
           break;
         // opengl.dllが,NET4.0で互換性がないので廃止 
         //.NET3.5 のFlashdevelop 5.2.0ではdockableControlで処理
@@ -268,16 +230,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
         case "customdoc":
           ActionManager.CustomDocument(button, null);
           break;
-
-
-
-        //  2013-02-27 追加
-        // excel13 のspredheetはwindows8以上で使用不可
-        // 代替のReogrid.dll は.NET4.0で互換性なし(.NET3.5のFD5.2.0はdockablecontrol
-        //case "spreadsheet":
-        //  this.SpreadSheet(path);
-        //  break;
-
         //case "executescript":
         //ActionManager.ExecuteScript(button, null);
         //break;
@@ -301,7 +253,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
           break;
       }
     }
-
 
     public static void AddBuildFiles(object sender, EventArgs e)
     {

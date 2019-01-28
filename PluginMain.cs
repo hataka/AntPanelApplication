@@ -265,6 +265,7 @@ namespace AntPlugin
       arguments += " -buildfile \"" + file + "\" \"" + target + "\"";
       //arguments += " -buildfile \"" + file + "\" \"" + target + "\"";
       arguments += " -DprojectDir=\"" + Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath) + "\"";
+      arguments += " -DprojectName=\"" + Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath) + "\"";
       arguments += " -DcurDir=\"" + PluginBase.MainForm.ProcessArgString("$(CurDir)") + "\"";
 
       //kahata: Time-stamp: <2016-04-23 5:41:26 kahata>
@@ -296,8 +297,14 @@ namespace AntPlugin
       String command = Environment.SystemDirectory + @"\Wscript.exe";
       //file = "\"" + file + "\"";
       String arguments = " //job:" + job;
-      arguments += " \"" + file + "\"";
       //kahata: Time-stamp: <2017-06-23 08:27:26 kahata>
+      arguments += " \"" + file + "\"";
+
+      //kahata: Time-stamp: <2019-01-27 08:58:26 kahata>
+      // https://win.just4fun.biz/?WSH/WSH%E3%81%A7%E5%BC%95%E6%95%B0%E3%82%92%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%83%BBArguments%E3%83%BBNamed%2C%20Unnamed
+      arguments += " /projectDir:" + Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
+      arguments += " /projectName:" + Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath);
+      arguments += " -/curDir:" + PluginBase.MainForm.ProcessArgString("$(CurDir)");
       try
       {
         System.IO.Directory.SetCurrentDirectory(Path.GetDirectoryName(file));
@@ -310,8 +317,16 @@ namespace AntPlugin
     {
       String command = @"F:\gradle-3.5\bin\gradle.bat";
       String arguments = "/k " + command + " -q " + target + " -b ";
-      arguments += " \"" + file + "\"";
       //kahata: Time-stamp: <2017-06-23 08:27:26 kahata>
+      arguments += " \"" + file + "\"";
+
+      //kahata: Time-stamp: <2017-06-23 08:27:26 kahata>
+      //タスクの実行 ''' gradle hogeTask -Pfoo="bar" '''
+      //http://gihara2624.hatenablog.com/entry/2016/12/03/005048
+      arguments += " -PprojectDir=\"" + Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath) + "\"";
+      arguments += " -PprojectName=\"" + Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath) + "\"";
+      arguments += " -PcurDir=\"" + PluginBase.MainForm.ProcessArgString("$(CurDir)") + "\"";
+
       try
       {
         System.IO.Directory.SetCurrentDirectory(Path.GetDirectoryName(file));

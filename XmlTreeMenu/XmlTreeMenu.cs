@@ -1,29 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
-using System.Xml;
-using System.Net;
-using System.Diagnostics;
-using System.Reflection;
-using System.Collections;
-
-using PluginCore;
-using PluginCore.Helpers;
-using PluginCore.Managers;
-using WeifenLuo.WinFormsUI.Docking;
-
-using PluginCore.Utilities;
-using AntPlugin.CommonLibrary;
+﻿using AntPlugin.CommonLibrary;
+using AntPlugin.Controls;
 using AntPlugin.XmlTreeMenu.Managers;
 using AntPlugin.XMLTreeMenu.Controls;
 using AntPlugin.XMLTreeMenu.Dialogs;
-using PluginCore.Controls;
-using ScintillaNet;
-using System.Text.RegularExpressions;
-using PluginCore.FRService;
 using MDIForm;
+using PluginCore;
+using PluginCore.Controls;
+using PluginCore.FRService;
+using PluginCore.Helpers;
+using PluginCore.Managers;
+using PluginCore.Utilities;
+using ScintillaNet;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace AntPlugin.XmlTreeMenu
 {
@@ -47,35 +46,6 @@ namespace AntPlugin.XmlTreeMenu
       InitializeXmlMenuTree();
     }
 
-    /*
-    public XmlMenuTree(TreeView tv, ImageList imgList)
-    {
-      this.treeView = tv;
-      this.imageList = imgList;
-      InitializeComponent();
-      InitializeXmlMenuTree();
-    }
- 
-    public XmlMenuTree(PluginMain pm, TreeView tv, ImageList imgList)
-    {
-      this.pluginMain = pm;
-      this.treeView = tv;
-      this.imageList = imgList;
-      InitializeComponent();
-      InitializeXmlMenuTree();
-    }
- 
-    public XmlMenuTree(PluginMain pm, PluginUI ui, TreeView tv, ImageList imgList)
-    {
-      this.pluginMain = pm;
-      this.pluginUI = ui;
-      this.treeView = tv;
-      this.imageList = imgList;
-      InitializeComponent();
-      InitializeXmlMenuTree();
-    }
-    */
-
     public XmlMenuTree(PluginUI ui)
     {
       this.pluginMain = ui.pluginMain;
@@ -90,7 +60,6 @@ namespace AntPlugin.XmlTreeMenu
     private void InitializeXmlMenuTree()
     {
       ActionManager.menuTree = this;
-
       //this.treeView.ItemDrag += new ItemDragEventHandler(this.treeView_ItemDrag);
       //this.treeView.DragOver += new DragEventHandler(this.treeView_DragOver);
       //this.treeView.DragDrop += new DragEventHandler(this.treeView_DragDrop);
@@ -149,7 +118,6 @@ namespace AntPlugin.XmlTreeMenu
     {
       TreeView tv = (TreeView)sender;
       TreeNode selectedNode = tv.SelectedNode;
-      //this.ShowNodeInfo(selectedNode);
       this.ShowNodeInfo(selectedNode,tv);
     }
 
@@ -157,7 +125,6 @@ namespace AntPlugin.XmlTreeMenu
     {
       if (treeNode != null && treeNode.Tag.GetType().Name == "NodeInfo" && treeNode.Tag != null)
       {
-        //MessageBox.Show(treeNode.GetType().FullName);
         NodeInfo selectedObject = new NodeInfo();
         selectedObject = (NodeInfo)treeNode.Tag;
         this.pluginUI.propertyGrid1.SelectedObject = selectedObject;
@@ -183,19 +150,16 @@ namespace AntPlugin.XmlTreeMenu
           mainForm = treeView.Tag as MDIForm.ParentFormClass;
           mainForm.propertyGrid1.SelectedObject = selectedObject;
         }
-
         else if (treeNode.Tag is XmlElement)
         {
           mainForm = treeView.Tag as MDIForm.ParentFormClass;
           mainForm.propertyGrid1.SelectedObject = (XmlElement)treeNode.Tag;
         }
-
         else if (treeNode.Tag is CSParser.Model.MemberModel)
         {
           mainForm = treeView.Tag as MDIForm.ParentFormClass;
           mainForm.propertyGrid1.SelectedObject = (CSParser.Model.MemberModel)treeNode.Tag;
         }
-
         else if (treeNode.Tag is String)
         {
           String path = treeNode.Tag as String;
@@ -483,11 +447,9 @@ namespace AntPlugin.XmlTreeMenu
 
           break;
         default:
-          //treeNode = new TreeNode(Path.GetFileName(file), 10, 10);
           NodeInfo ni1 = new NodeInfo();
           ni1.Path = file;
           treeNode = new TreeNode(nodeInfo.Title, 10, 10);
-          //treeNode.SelectedImageIndex = treeNode.ImageIndex = this.getImageIndexFromNodeInfo(ni1);
           treeNode.Tag = nodeInfo;
           treeNode.ToolTipText = file;
           break;
@@ -530,14 +492,11 @@ namespace AntPlugin.XmlTreeMenu
         case ".fdp":
         case ".wsf":
           treeNode = pluginUI.GetBuildFileNode(file);
-
           break;
         default:
-          //treeNode = new TreeNode(Path.GetFileName(file), 10, 10);
           NodeInfo ni1 = new NodeInfo();
           ni1.Path = file;
           treeNode = new TreeNode(nodeInfo.Title, 10, 10);
-          //treeNode.SelectedImageIndex = treeNode.ImageIndex = this.getImageIndexFromNodeInfo(ni1);
           treeNode.Tag = nodeInfo;
           treeNode.ToolTipText = file;
           break;
@@ -548,9 +507,6 @@ namespace AntPlugin.XmlTreeMenu
     public TreeNode loadfile(NodeInfo nodeInfo, Int32 imageIndex)
     {
       TreeNode treeNode = null;
-
-      //if (!String.IsNullOrEmpty(nodeInfo.Option)) MessageBox.Show(nodeInfo.Option);
- 
       if (Lib.IsWebSite(nodeInfo.Path))
       {
         //「+」が半角スペースにデコードされるようにするには、次のようにする
@@ -570,18 +526,28 @@ namespace AntPlugin.XmlTreeMenu
         //treeView.Nodes.Clear();
         DirectoryInfo rootDirectoryInfo = new DirectoryInfo(nodeInfo.Path);
         TreeNode tn = this.RecursiveCreateDirectoryNode(rootDirectoryInfo);
-        /*
-        if (!String.IsNullOrEmpty(nodeInfo.Title))
-        {
-          //MessageBox.Show(nodeInfo.Title);
-          tn.Name = nodeInfo.Title;
-          tn.Text = nodeInfo.Title;
-        }
+        tn.Tag = nodeInfo;
+        if (nodeInfo.Title != String.Empty) tn.Text = nodeInfo.Title;
         if (!String.IsNullOrEmpty(nodeInfo.icon)) tn.ImageIndex = GetIconImageIndexFromIconPath(nodeInfo.icon);
         if (!String.IsNullOrEmpty(nodeInfo.Tooltip)) tn.ToolTipText = nodeInfo.Tooltip;
-        //tn.Tag = rootDirectoryInfo;
-        */
-        tn.Tag = nodeInfo;
+        if (nodeInfo.Expand == true) tn.Expand();
+        if (nodeInfo.BackColor != string.Empty) tn.BackColor = Color.FromName(nodeInfo.BackColor);
+        if (nodeInfo.ForeColor != string.Empty) tn.ForeColor = Color.FromName(nodeInfo.ForeColor);
+        if (nodeInfo.NodeFont != string.Empty)
+        {
+          //this.Font = new Font("Meiryo UI", 12.0f, FontStyle.Bold, GraphicsUnit.Point, 128);
+          var cvt = new FontConverter();
+          //string s = cvt.ConvertToString(this.Font);
+          //MessageBox.Show(s);
+          Font f = cvt.ConvertFromString(nodeInfo.NodeFont) as Font;
+          tn.NodeFont = f;
+        }
+
+        if (nodeInfo.NodeChecked != string.Empty)
+        {
+          if (nodeInfo.NodeChecked == "true") tn.Checked = true;
+          else tn.Checked = false;
+        }
         return tn;
       }
 
@@ -592,12 +558,10 @@ namespace AntPlugin.XmlTreeMenu
         case ".wax":
           if (nodeInfo.Option.ToLower() == "fullnode")
           {
-            //MessageBox.Show(nodeInfo.Option);
             treeNode = this.getXmlTreeNode(nodeInfo.Path, true);
           }
           else
           {
-            //MessageBox.Show(nodeInfo.Path);
             treeNode = this.getXmlTreeNode(nodeInfo.Path);
           }
           if(String.IsNullOrEmpty(treeNode.ToolTipText))treeNode.ToolTipText = nodeInfo.Path;
@@ -623,7 +587,6 @@ namespace AntPlugin.XmlTreeMenu
           NodeInfo ni1 = new NodeInfo();
           ni1.Path = nodeInfo.Path;
           nodeInfo.Title = Path.GetFileName(nodeInfo.Path);
-          //treeNode = new TreeNode(nodeInfo.Title, 10, 10);
           treeNode = new TreeNode(nodeInfo.Title, imageIndex, imageIndex);
           treeNode.Tag = nodeInfo;
           treeNode.ToolTipText = nodeInfo.Path;
@@ -650,7 +613,6 @@ namespace AntPlugin.XmlTreeMenu
       if (String.IsNullOrEmpty(ni.Title)) ni.Title = Path.GetFileName(directoryInfo.Name);
       // FIXME
       int imageIndex = this.GetIconImageIndex(@"C:\windows"); //this.getImageIndexFromNodeInfo_safe(ni);
-      //MessageBox.Show(imageIndex.ToString());
       TreeNode directoryNode = new TreeNode(ni.Title, imageIndex, imageIndex);
 
       // ノードに属性を設定
@@ -717,21 +679,6 @@ namespace AntPlugin.XmlTreeMenu
       nodeInfo.Title = Path.GetFileName(path);
       nodeInfo.Type = "file";
       nodeInfo.Path = path;
-      /*
-      nodeInfo.PathBase = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("base"));
-      nodeInfo.Action = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("action"));
-      nodeInfo.Command = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("command"));
-      //nodeInfo.Path = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("path"));
-      nodeInfo.Path = path;
-      nodeInfo.Args = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("args"));
-      nodeInfo.Option = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("option"));
-      nodeInfo.XmlNode = xmlNode;
-      nodeInfo.Icon = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("icon"));
-      if (((XmlElement)xmlNode).GetAttribute("expand") == "true")
-      {
-        nodeInfo.Expand = true;
-      }
-      */
       return nodeInfo;
     }
 
@@ -782,7 +729,7 @@ namespace AntPlugin.XmlTreeMenu
       }
       else
       {
-        treeNode = new TreeNode(nodeInfo.xmlNode.Name, imageIndex, imageIndex);
+        treeNode = new TreeNode(this.ProcessVariable(nodeInfo.xmlNode.Name), imageIndex, imageIndex);
       }
       treeNode.ToolTipText = path;
       treeNode.Tag = nodeInfo;
@@ -801,19 +748,13 @@ namespace AntPlugin.XmlTreeMenu
       {
         arg = arg.Replace("$(CurProjectDir)", Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath));
         arg = arg.Replace("$(CurProjectName)", Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath));
-        //arg = arg.Replace("$(CurProjectUrl)", Lib.Path2Url(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), this.settings.DocumentRoot, this.settings.ServerRoot));
         arg = arg.Replace("$(CurProjectUrl)", Lib.Path2Url(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), "localhost"));
         arg = arg.Replace("$(Quote)", "\"");
         arg = arg.Replace("$(Dollar)", "$");
         arg = arg.Replace("$(AppDir)", PathHelper.AppDir);
         arg = arg.Replace("$(BaseDir)", PathHelper.BaseDir);
         arg = arg.Replace("$(CurSciText)", PluginBase.MainForm.CurrentDocument.SciControl.Text);
-        //arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(PluginBase.MainForm.CurrentDocument.FileName, this.settings.DocumentRoot, this.settings.ServerRoot));
         arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(PluginBase.MainForm.CurrentDocument.FileName, "localhost"));
-        //arg = arg.Replace("$(ControlCurFilePath)", this.controlCurrentFilePath);
-        //arg = arg.Replace("$(ControlCurFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
-        //arg = arg.Replace("$(CurControlFilePath)", this.controlCurrentFilePath);
-        //arg = arg.Replace("$(CurControlFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
       }
       catch { }
       return arg;
@@ -872,10 +813,6 @@ namespace AntPlugin.XmlTreeMenu
               else ni.Type = "null";
               break;
           }
-
-          // 属性を取得
-          //ProcessVariable(((XmlElement)childXmlNode.ParentNode).GetAttribute("base"));
-
           String nodeName = String.Empty;
 
           ni.Title = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("title"));
@@ -911,51 +848,27 @@ namespace AntPlugin.XmlTreeMenu
           ni.ForeColor = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("forecolor"));
           ni.NodeFont = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("nodefont"));
           ni.NodeChecked = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("nodechecked"));
-
-
           ni.Option = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("option"));
-
-          //if (fullNode == true) ni.Tooltip = GetTitleFromXmlNode(childXmlNode);
-
-          if (fullNode == true && childXmlNode.InnerText != String.Empty)
-          {
-            ni.InnerText = childXmlNode.InnerText;
-          }
           // 「Expand」属性を取得
           if (((XmlElement)childXmlNode).GetAttribute("expand") == "true")
           {
             ni.Expand = true;
           }
+          // 重要追加  kahata FIX 2019-01-25
+          ni.innerText = childXmlNode.InnerXml;//"kokokokokokpko";
           ni.XmlNode = childXmlNode;
           // TreeNodeを新規作成
-          //TreeNode tn = new TreeNode(ni.Title);
           TreeNode tn = new TreeNode(nodeName);
 
           if (fullNode == true) tn.ToolTipText = GetHeadTagFromXmlNode(childXmlNode);
-
           if (ni.Tooltip != string.Empty) tn.ToolTipText = ni.Tooltip;
-          /*
-          tn.BackColor;
-          tn.Checked;
-          tn.Expand;
-          tn.ForeColor;
-          tn.IsVisible;
-          tn.NodeFont;
-          tn.TreeView; //現在割り当てられている親TreeViewを取得
-          tn.IsVisible;
-          tn.FullPath;
-          tn.ContextMenu;
-          */
           if (ni.BackColor != string.Empty) tn.BackColor = Color.FromName(ni.BackColor);
           if (ni.ForeColor != string.Empty) tn.ForeColor = Color.FromName(ni.ForeColor);
-
-
           if (ni.NodeFont != string.Empty)
           {
             //this.Font = new Font("Meiryo UI", 12.0f, FontStyle.Bold, GraphicsUnit.Point, 128);
             var cvt = new FontConverter();
             //string s = cvt.ConvertToString(this.Font);
-            //MessageBox.Show(s);
             Font f = cvt.ConvertFromString(ni.NodeFont) as Font;
             tn.NodeFont = f;            
           }
@@ -980,11 +893,10 @@ namespace AntPlugin.XmlTreeMenu
             try
             {
               TreeNode inctn = loadfile(ni, imageIndex);
-
-
               if (!String.IsNullOrEmpty(ni.Title)) tn.Text = ni.Title;
               if (!String.IsNullOrEmpty(ni.icon)) tn.ImageIndex = GetIconImageIndexFromIconPath(ni.icon);
               if (!String.IsNullOrEmpty(ni.Tooltip)) tn.ToolTipText = ni.Tooltip;
+              if (ni.Expand == true) tn.Expand();
               if (ni.BackColor != string.Empty) inctn.BackColor = Color.FromName(ni.BackColor);
               if (ni.ForeColor != string.Empty) inctn.ForeColor = Color.FromName(ni.ForeColor);
               if (ni.NodeFont != string.Empty)
@@ -1275,7 +1187,6 @@ namespace AntPlugin.XmlTreeMenu
           this.ToolBarSettings(xmlNode);
           break;
         case "menubar":
-          //MessageBox.Show("menubar");
           // 未完成
           this.MenuBarSettings(xmlNode);
           break;
@@ -1283,10 +1194,10 @@ namespace AntPlugin.XmlTreeMenu
           this.AutoRunSetting(xmlNode);
           break;
         case "settings":
-          //this.ProjectSettings(xmlNode);
+          this.ProjectSettings(xmlNode);
           break;
         case "property":
-          //this.AntPropertySettings(xmlNode);
+          this.AntPropertySettings(xmlNode);
           break;
       }
 
@@ -1298,8 +1209,7 @@ namespace AntPlugin.XmlTreeMenu
 
     public void ToolBarSettings_try(XmlNode xmlNode)
     {
-      //MessageBox.Show(this.currentTreeMenuFilepath);
-      try
+       try
       {
         dynamicToolStrip = StripBarManager.GetToolStripFromString(xmlNode.OuterXml);
         if (!toolStripList.Contains(dynamicToolStrip))
@@ -1399,26 +1309,48 @@ namespace AntPlugin.XmlTreeMenu
     }
 
     public static List<String> ProjectSettingsFiles = new List<string>();
+
+
     public void ProjectSettings(XmlNode parentNode)
     {
-      /*
       try
       {
         if (!ProjectSettingsFiles.Contains(this.currentTreeMenuFilepath))
         {
+          //this.menuPath = this.pluginUI.settings.HomeMenuPath;
+          this.currentTreeMenuFilepath = this.pluginUI.settings.HomeMenuPath;
           ProjectSettingsFiles.Add(this.currentTreeMenuFilepath);
           for (int i = 0; i < parentNode.ChildNodes.Count; i++)
           {
-            switch (parentNode.ChildNodes[i].Name)
+            switch ((parentNode.ChildNodes[i].Name).ToLower())
             {
-              case "documentroot": this.settings.DocumentRoot = parentNode.ChildNodes[i].InnerXml; break;
-              case "serverroot": this.settings.ServerRoot = parentNode.ChildNodes[i].InnerXml; break;
+              case "documentroot":
+                this.pluginUI.settings.DocumentRoot = parentNode.ChildNodes[i].InnerXml;
+                break;
+              case "serverroot":
+                this.pluginUI.settings.ServerRoot = parentNode.ChildNodes[i].InnerXml;
+                break;
+              case "homemenupath":
+                if (File.Exists(this.pluginUI.ProcessVariable(parentNode.ChildNodes[i].InnerXml)))
+                {
+                  //this.pluginUI.settings.HomeMenuPath =
+                   XmlTreePanel.menuPath =
+                    this.pluginUI.ProcessVariable(parentNode.ChildNodes[i].InnerXml);
+                  this.pluginUI.InitializeXmlTreePanel();
+                }
+                else
+                {
+                  MessageBox.Show("File not exists :"
+                    + this.pluginUI.ProcessVariable(parentNode.ChildNodes[i].InnerXml), 
+                    "ProjectSettings");
+                }
+                break;
             }
           }
-          DialogResult result = MessageBox.Show("DocumentRoot: " + this.settings.DocumentRoot
-            + "\nServerRoot: " + this.settings.ServerRoot,
-              "設定変更",
-              MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+          //DialogResult result = MessageBox.Show("DocumentRoot: " + this.settings.DocumentRoot
+          //  + "\nServerRoot: " + this.settings.ServerRoot,
+          //    "設定変更",
+          //    MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
       }
       catch (Exception ex1)
@@ -1427,153 +1359,42 @@ namespace AntPlugin.XmlTreeMenu
         //this.settings.DocumentRoot = @"C:\Apache2.2\htdocs";
         //this.settings.ServerRoot = "http://localhost";
       }
-    */
-    }
-
-    public Dictionary<String, String> AntProperties = new Dictionary<string, string>();
-    public static List<String> AntPropertiesFiles = new List<string>();
-    public void AntPropertySettings(XmlNode parentNode)
-    {
-      if (Path.GetFileName(this.currentTreeMenuFilepath) != "FDTreeMenu.xml") return;
-      //MessageBox.Show(Path.GetFileName(this.currentTreeMenuFilepath));
-      //MessageBox.Show(string.Format("Key : {0} / Value : {1}",
-      //  ((XmlElement)parentNode).GetAttribute("name"), ((XmlElement)parentNode).GetAttribute("value")));
-      if (!AntPropertiesFiles.Contains(this.currentTreeMenuFilepath))
-      {
-        AntPropertiesFiles.Add(this.currentTreeMenuFilepath);
-        try
-        {
-          if (parentNode.HasChildNodes)
-          {
-            AntProperties[this.ProcessVariable(((XmlElement)parentNode).GetAttribute("name"))] = parentNode.InnerText;
-          }
-          else
-          {
-            AntProperties[this.ProcessVariable(((XmlElement)parentNode).GetAttribute("name"))]
-              = this.ProcessVariable(((XmlElement)parentNode).GetAttribute("value"));
-          }
-        }
-        catch (Exception ex1)
-        {
-          MessageBox.Show(ex1.Message.ToString(),"TreeMenu:AntPropertySettings:1309");
-        }
-      }
-    }
-
-
-
-
-
-
-
-    /*
-     * 
-     * 
-     * 
-     * 
-     *
-
-
-    public static List<String> ToolBarSettingsFiles = new List<string>();
-    public void ToolBarSettings(XmlNode xmlNode)
-    {
-      //MessageBox.Show(this.currentTreeMenuFilepath);
-      try
-      {
-        if (!ToolBarSettingsFiles.Contains(this.currentTreeMenuFilepath))
-        {
-          ToolStrip toolStrip = StripBarManager.GetToolStripFromString(xmlNode.OuterXml);
-          ToolStripManager.Merge(toolStrip, PluginBase.MainForm.ToolStrip);
-          ToolBarSettingsFiles.Add(this.currentTreeMenuFilepath);
-        }
-      }
-      catch (Exception ex1)
-      {
-        MessageBox.Show(ex1.Message.ToString());
-      }
-    }
-
-    public static List<String> ProjectSettingsFiles = new List<string>();
-    public void ProjectSettings(XmlNode parentNode)
-    {
-      try
-      {
-        if (!ProjectSettingsFiles.Contains(this.currentTreeMenuFilepath))
-        {
-          ProjectSettingsFiles.Add(this.currentTreeMenuFilepath);
-          for (int i = 0; i < parentNode.ChildNodes.Count; i++)
-          {
-            switch (parentNode.ChildNodes[i].Name)
-            {
-              case "documentroot": this.settings.DocumentRoot = parentNode.ChildNodes[i].InnerXml; break;
-              case "serverroot": this.settings.ServerRoot = parentNode.ChildNodes[i].InnerXml; break;
-            }
-          }
-          DialogResult result = MessageBox.Show("DocumentRoot: " + this.settings.DocumentRoot
-            + "\nServerRoot: " + this.settings.ServerRoot,
-              "設定変更",
-              MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-        }
-      }
-      catch (Exception ex1)
-      {
-        MessageBox.Show(ex1.Message.ToString());
-        this.settings.DocumentRoot = @"C:\Apache2.2\htdocs";
-        this.settings.ServerRoot = "http://localhost";
-      }
-    }
-
-    public Dictionary<String, String> AntProperties = new Dictionary<string, string>();
-    public static List<String> AntPropertiesFiles = new List<string>();
-
-    public void AntPropertySettings(XmlNode parentNode)
-    {
-      if (Path.GetFileName(this.currentTreeMenuFilepath) != "FDTreeMenu.xml") return;
-      //MessageBox.Show(Path.GetFileName(this.currentTreeMenuFilepath));
-      //MessageBox.Show(string.Format("Key : {0} / Value : {1}",
-      //  ((XmlElement)parentNode).GetAttribute("name"), ((XmlElement)parentNode).GetAttribute("value")));
-      if (!AntPropertiesFiles.Contains(this.currentTreeMenuFilepath))
-      {
-        AntPropertiesFiles.Add(this.currentTreeMenuFilepath);
-        try
-        {
-          if (parentNode.HasChildNodes)
-          {
-            AntProperties[this.ProcessVariable(((XmlElement)parentNode).GetAttribute("name"))] = parentNode.InnerText;
-          }
-          else
-          {
-            AntProperties[this.ProcessVariable(((XmlElement)parentNode).GetAttribute("name"))]
-              = this.ProcessVariable(((XmlElement)parentNode).GetAttribute("value"));
-          }
-        }
-        catch (Exception ex1)
-        {
-          MessageBox.Show(ex1.Message.ToString());
-        }
-      }
-    }
-
-
-
-
-
-
-
-
-
-
     
-     * 
-     * 
-     * 
-     * 
-     */
+    }
+
+    public static Dictionary<String, String> AntProperties = new Dictionary<string, string>();
+    public static List<String> AntPropertiesFiles = new List<string>();
+
+    public void AntPropertySettings(XmlNode parentNode)
+    {
+      String key = this.ProcessVariable(((XmlElement)parentNode).GetAttribute("name"));
+      String value = this.ProcessVariable(((XmlElement)parentNode).GetAttribute("value"));
+
+      if(value==String.Empty && parentNode.HasChildNodes)
+      {
+        value = parentNode.InnerXml;
+      }
+      if (!AntProperties.ContainsKey(key)) AntProperties.Add(key, value);
+      else
+      {
+        // TODO 後から置き換え
+        AntProperties[key] = value;
+      }
+    }
+    public string ApplyAntProperties(string strVar)
+    {
+      foreach (KeyValuePair<string, string> item in AntProperties)
+      {
+        //Console.WriteLine("[{0}:{1}]", item.Key, item.Value);
+        strVar = strVar.Replace("$(" + item.Key + ")", item.Value);
+      }
+      return strVar;
+    }
 
 
-    #region treeView Doulbe Click Handler and Functions
+      #region treeView Doulbe Click Handler and Functions
 
-    public void treeView_DoubleClick(object sender, EventArgs e)
+      public void treeView_DoubleClick(object sender, EventArgs e)
     {
       // fixed 2018-2-23
       //TreeNode treeNode = treeView.SelectedNode;
@@ -2642,8 +2463,7 @@ namespace AntPlugin.XmlTreeMenu
       String outerXML = nodeInfo.XmlNode.OuterXml;
       String innerXML = nodeInfo.XmlNode.InnerXml;
       if (!String.IsNullOrEmpty(innerXML)) outerXML = outerXML.Replace(innerXML, "");
-
-      /*
+       /*
       string input = "This is   text with   far  too   much   " +
                      "whitespace.";
       string pattern = "\\s+";
