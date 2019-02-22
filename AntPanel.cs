@@ -24,7 +24,13 @@ namespace AntPanelApplication
     private List<String> buildFilesList = new List<string>();
 
     private const String STORAGE_FILE_NAME = "antPluginData.txt";
-    public String projectPath = @"F:\codingground\java\Nashorn\Nashorn.fdp";
+    public String projectPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath)
+      ,@"Nashorn.fdp");
+
+    //public String projectPath = "./Nashorn.fdp";
+
+
+    //public String projectPath = @"F:\codingground\java\Nashorn\Nashorn.fdp";
     //public String antPath = @"F:\ant\apache-ant-1.10.1\bin\ant.bat"; //String.Empty;
     public String antPath = @"F:\ant\apache-ant-1.10.1";
     
@@ -163,6 +169,8 @@ namespace AntPanelApplication
     
     private void addButton_Click(object sender, EventArgs e)
     {
+      MessageBox.Show(projectPath);
+      /*
       OpenFileDialog dialog = new OpenFileDialog();
       dialog.Filter = "BuildFiles (*.xml)|*.XML|" + "All files (*.*)|*.*";
       dialog.Multiselect = true;
@@ -172,6 +180,7 @@ namespace AntPanelApplication
       {
         AddBuildFiles(dialog.FileNames);
       }
+      */
     }
 
     private void runButton_Click(object sender, EventArgs e)
@@ -188,18 +197,31 @@ namespace AntPanelApplication
     
     public void RunTarget(String file, String target)
     {
-      String command = Environment.SystemDirectory + "\\cmd.exe";
-
-      String arguments = "/k ";
-      
-      if (antPath.Length > 0)arguments += Path.Combine(antPath, "bin") + "\\ant";
+      //OSの情報を取得する
+      System.OperatingSystem os = System.Environment.OSVersion;
+      //MessageBox.Show(os.ToString());
+      if ((os.ToString()).IndexOf("Unix")>=0)
+      {
+        String command = "gnome-terminal";
+        String arguments = "-e \"sh -c \'" + "ant -buildfile " + file + " " + target +"; exec bash\'\""; 
+        Process.Start(command, arguments);
+        return;
+      }
       else
-        arguments += "ant";
-      if (!string.IsNullOrEmpty(addArgs)) arguments += " " + addArgs;
-      arguments += " -buildfile \"" + file + "\" \"" + target + "\"";
-      //TraceManager.Add(command + " " + arguments);
-      //Globals.MainForm.CallCommand("RunProcessCaptured", command + ";" + arguments);
-      Process.Start(command, arguments);
+      {
+        String command = Environment.SystemDirectory + "\\cmd.exe";
+
+        String arguments = "/k ";
+
+        if (antPath.Length > 0) arguments += Path.Combine(antPath, "bin") + "\\ant";
+        else
+          arguments += "ant";
+        if (!string.IsNullOrEmpty(addArgs)) arguments += " " + addArgs;
+        arguments += " -buildfile \"" + file + "\" \"" + target + "\"";
+        //TraceManager.Add(command + " " + arguments);
+        //Globals.MainForm.CallCommand("RunProcessCaptured", command + ";" + arguments);
+        Process.Start(command, arguments);
+      }
     }
     
     public void AddBuildFiles(String[] files)
@@ -224,7 +246,7 @@ namespace AntPanelApplication
     {
       buildFilesList.Clear();
       String folder = GetBuildFilesStorageFolder();
-      String fullName = folder + "\\" + STORAGE_FILE_NAME;
+      String fullName = Path.Combine(folder,STORAGE_FILE_NAME);
 
       if (File.Exists(fullName))
       {
@@ -242,7 +264,7 @@ namespace AntPanelApplication
     private void SaveBuildFiles()
     {
       String folder = GetBuildFilesStorageFolder();
-      String fullName = folder + "\\" + STORAGE_FILE_NAME;
+      String fullName = Path.Combine(folder,STORAGE_FILE_NAME);
       if (!Directory.Exists(folder))
         Directory.CreateDirectory(folder);
       StreamWriter file = new StreamWriter(fullName);
@@ -291,9 +313,11 @@ namespace AntPanelApplication
       treeView.Nodes.Add(dummy);
       foreach (String file in BuildFilesList)
       {
+        //MessageBox.Show(file);
         if (File.Exists(file))
         {
-          if(GetBuildFileNode(file) != null) treeView.Nodes.Add(GetBuildFileNode(file));
+          //MessageBox.Show(file,"exists");
+          if (GetBuildFileNode(file) != null) treeView.Nodes.Add(GetBuildFileNode(file));
         }
       }
       treeView.EndUpdate();
