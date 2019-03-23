@@ -126,5 +126,11 @@
     <Setting Name="GitPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Program Files\Git\git-bash.exe</Value>
     </Setting>
+    <Setting Name="NextFTPPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\NextFTP\NEXTFTP.EXE</Value>
+    </Setting>
+    <Setting Name="FTPClientDefaultFont" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Meiryo UI, 12pt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

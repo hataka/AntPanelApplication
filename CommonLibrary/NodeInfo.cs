@@ -4,7 +4,7 @@ using System.Drawing.Design;
 using System.Windows.Forms.Design;
 using System.Xml;
 
-namespace AntPlugin.XmlTreeMenu
+namespace CommonLibrary
 {
 	public class NodeInfo
 	{

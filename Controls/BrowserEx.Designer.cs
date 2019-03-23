@@ -82,7 +82,7 @@ namespace CommonLibrary.Controls
       this.GoHomeButton = new System.Windows.Forms.ToolStripButton();
       this.printButton = new System.Windows.Forms.ToolStripButton();
       this.goButton = new System.Windows.Forms.ToolStripButton();
-      this.addressComboBox = new ToolStripSpringComboBox2();
+      this.addressComboBox = new System.Windows.Forms.ToolStripSpringComboBox2();
       this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.toolStrip.SuspendLayout();
       this.SuspendLayout();
@@ -90,10 +90,10 @@ namespace CommonLibrary.Controls
       // webBrowser1
       // 
       this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.webBrowser1.Location = new System.Drawing.Point(0, 30);
+      this.webBrowser1.Location = new System.Drawing.Point(0, 33);
       this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
       this.webBrowser1.Name = "webBrowser1";
-      this.webBrowser1.Size = new System.Drawing.Size(764, 429);
+      this.webBrowser1.Size = new System.Drawing.Size(764, 426);
       this.webBrowser1.TabIndex = 5;
       this.webBrowser1.CanGoBackChanged += new System.EventHandler(this.WebBrowserPropertyUpdated);
       this.webBrowser1.CanGoForwardChanged += new System.EventHandler(this.WebBrowserPropertyUpdated);
@@ -110,7 +110,7 @@ namespace CommonLibrary.Controls
       this.backButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.backButton.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
       this.backButton.Name = "backButton";
-      this.backButton.Size = new System.Drawing.Size(24, 25);
+      this.backButton.Size = new System.Drawing.Size(24, 28);
       this.backButton.Text = "Back";
       this.backButton.Click += new System.EventHandler(this.BackButtonClick);
       // 
@@ -122,7 +122,7 @@ namespace CommonLibrary.Controls
       this.forwardButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.forwardButton.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
       this.forwardButton.Name = "forwardButton";
-      this.forwardButton.Size = new System.Drawing.Size(24, 25);
+      this.forwardButton.Size = new System.Drawing.Size(24, 28);
       this.forwardButton.Text = "Forward";
       this.forwardButton.Click += new System.EventHandler(this.ForwardButtonClick);
       // 
@@ -132,7 +132,7 @@ namespace CommonLibrary.Controls
       this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
       this.stopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.stopButton.Name = "stopButton";
-      this.stopButton.Size = new System.Drawing.Size(24, 24);
+      this.stopButton.Size = new System.Drawing.Size(24, 27);
       this.stopButton.Text = "StopButton";
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
@@ -143,23 +143,14 @@ namespace CommonLibrary.Controls
       this.refreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.refreshButton.Margin = new System.Windows.Forms.Padding(0, 1, 1, 1);
       this.refreshButton.Name = "refreshButton";
-      this.refreshButton.Size = new System.Drawing.Size(24, 25);
+      this.refreshButton.Size = new System.Drawing.Size(24, 28);
       this.refreshButton.Text = "Refresh";
       this.refreshButton.Click += new System.EventHandler(this.RefreshButtonClick);
-      // 
-      // addressComboBox
-      // 
-      this.addressComboBox.Name = "addressComboBox";
-      this.addressComboBox.Padding = new Padding(0, 0, 1, 0);
-      this.addressComboBox.Size = new Size(363, 23);
-      //this.addressComboBox.SelectedIndexChanged += new EventHandler(this.AddressComboBoxSelectedIndexChanged);
-      this.addressComboBox.KeyPress += new KeyPressEventHandler(this.AddressComboBoxKeyPress);
-
       // 
       // toolStripSeparator7
       // 
       this.toolStripSeparator7.Name = "toolStripSeparator7";
-      this.toolStripSeparator7.Size = new System.Drawing.Size(6, 27);
+      this.toolStripSeparator7.Size = new System.Drawing.Size(6, 30);
       // 
       // toolStripDropDownButton1
       // 
@@ -186,7 +177,7 @@ namespace CommonLibrary.Controls
       this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
       this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-      this.toolStripDropDownButton1.Size = new System.Drawing.Size(34, 24);
+      this.toolStripDropDownButton1.Size = new System.Drawing.Size(34, 27);
       this.toolStripDropDownButton1.Text = "toolStripDropDownButton1";
       // 
       // iEで開くToolStripMenuItem
@@ -455,7 +446,7 @@ namespace CommonLibrary.Controls
       this.searchButton.Image = ((System.Drawing.Image)(resources.GetObject("searchButton.Image")));
       this.searchButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.searchButton.Name = "searchButton";
-      this.searchButton.Size = new System.Drawing.Size(24, 24);
+      this.searchButton.Size = new System.Drawing.Size(24, 27);
       this.searchButton.Text = "GoogleSearch";
       this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
       // 
@@ -465,7 +456,7 @@ namespace CommonLibrary.Controls
       this.GoHomeButton.Image = ((System.Drawing.Image)(resources.GetObject("GoHomeButton.Image")));
       this.GoHomeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.GoHomeButton.Name = "GoHomeButton";
-      this.GoHomeButton.Size = new System.Drawing.Size(24, 24);
+      this.GoHomeButton.Size = new System.Drawing.Size(24, 27);
       this.GoHomeButton.Text = "GoHome";
       this.GoHomeButton.Click += new System.EventHandler(this.GoHomeButton_Click);
       // 
@@ -475,7 +466,7 @@ namespace CommonLibrary.Controls
       this.printButton.Image = ((System.Drawing.Image)(resources.GetObject("printButton.Image")));
       this.printButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.printButton.Name = "printButton";
-      this.printButton.Size = new System.Drawing.Size(24, 24);
+      this.printButton.Size = new System.Drawing.Size(24, 27);
       this.printButton.Text = "print";
       this.printButton.Click += new System.EventHandler(this.printButton_Click);
       // 
@@ -487,9 +478,22 @@ namespace CommonLibrary.Controls
       this.goButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.goButton.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
       this.goButton.Name = "goButton";
-      this.goButton.Size = new System.Drawing.Size(24, 25);
+      this.goButton.Size = new System.Drawing.Size(24, 28);
       this.goButton.Text = "Go";
       this.goButton.Click += new System.EventHandler(this.BrowseButtonClick);
+      // 
+      // addressComboBox
+      // 
+      this.addressComboBox.BackColor = System.Drawing.SystemColors.Window;
+      this.addressComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+      this.addressComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
+      this.addressComboBox.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.addressComboBox.Name = "addressComboBox";
+      this.addressComboBox.Padding = new System.Windows.Forms.Padding(0, 0, 1, 0);
+      this.addressComboBox.SelectedIndex = -1;
+      this.addressComboBox.SelectedItem = null;
+      this.addressComboBox.Size = new System.Drawing.Size(488, 27);
+      this.addressComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddressComboBoxKeyPress);
       // 
       // toolStrip
       // 
@@ -511,7 +515,7 @@ namespace CommonLibrary.Controls
       this.toolStrip.Location = new System.Drawing.Point(0, 0);
       this.toolStrip.Name = "toolStrip";
       this.toolStrip.Padding = new System.Windows.Forms.Padding(2, 1, 2, 2);
-      this.toolStrip.Size = new System.Drawing.Size(764, 30);
+      this.toolStrip.Size = new System.Drawing.Size(764, 33);
       this.toolStrip.TabIndex = 4;
       // 
       // BrowserEx
@@ -522,7 +526,9 @@ namespace CommonLibrary.Controls
       this.Controls.Add(this.toolStrip);
       this.Name = "BrowserEx";
       this.Size = new System.Drawing.Size(764, 459);
+      this.Tag = this.webBrowser1;
       this.Load += new System.EventHandler(this.Browser_Load);
+      this.Enter += new System.EventHandler(this.BrowserEx_Enter);
       this.toolStrip.ResumeLayout(false);
       this.toolStrip.PerformLayout();
       this.ResumeLayout(false);

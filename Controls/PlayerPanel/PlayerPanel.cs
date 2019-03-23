@@ -14,6 +14,7 @@ using System.Diagnostics;
 using AntPlugin;
 //using MDIform;
 using MDIForm;
+using CommonLibrary;
 
 namespace AntPlugin.XMLTreeMenu.Controls
 {
@@ -98,7 +99,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
         if (!string.IsNullOrEmpty(path) && File.Exists(path))
         {
           this.axWindowsMediaPlayer1.URL = (string)this.axWindowsMediaPlayer1.Tag;
-          ((Form)this.Parent).Text = Path.GetFileNameWithoutExtension(path);
+          ((TabPage)this.Parent).Text = Path.GetFileNameWithoutExtension(path);
 
         }
 
@@ -111,7 +112,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
       if (!string.IsNullOrEmpty(path) && File.Exists(path))
       {
           this.axWindowsMediaPlayer1.URL = (string)this.axWindowsMediaPlayer1.Tag;
-          ((Form)this.Parent).Text = Path.GetFileNameWithoutExtension(path);
+        ((TabPage)this.Parent).Text = Path.GetFileNameWithoutExtension(path);
+        //MessageBox.Show(this.Parent.GetType().Name);
       }
 
       try
@@ -124,8 +126,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
           //this.previousDocuments = this.settings.PreviousPlayerPanelDocuments;
           this.PopulatePreviousDocumentsMenu();
           this.AddPreviousDocuments(path);
-          
-          ((Form)this.Parent).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
+          //FIXME
+          //((TabPage)this.Parent).ControlRemoved += new EventHandler(this.parentForm_Closing);
 
 
       }
@@ -210,7 +212,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
           {
             this.axWindowsMediaPlayer1.URL = text;
             this.axWindowsMediaPlayer1.Tag = text;
-            ((Form)this.Parent).Text = Path.GetFileName(text);
+            ((TabPage)this.Parent).Text = Path.GetFileName(text);
             this.AddPreviousDocuments(text);
           }
           catch (Exception ex)
@@ -270,7 +272,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.axWindowsMediaPlayer1.URL = text;
             this.axWindowsMediaPlayer1.BringToFront();
             this.axWindowsMediaPlayer1.Tag = text;
-            ((Form)this.Parent).Text = Path.GetFileNameWithoutExtension(text);
+            ((TabPage)this.Parent).Text = Path.GetFileNameWithoutExtension(text);
             this.AddPreviousDocuments(text);
           }
         }
@@ -288,7 +290,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
       private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
       {
-        ((Form)this.Parent).Close();
+        //((TabPage)this.Parent).Close();
       }
 
       private void バージョン情報AToolStripMenuItem_Click(object sender, EventArgs e)

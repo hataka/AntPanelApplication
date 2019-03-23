@@ -1,10 +1,11 @@
+using CommonLibrary;
 using System;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 //using XMLTreeMenu;
 
-namespace AntPlugin.CommonLibrary
+namespace CommonLibrary
 {
 	public class PSPadProject
 	{

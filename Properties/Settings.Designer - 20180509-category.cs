@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.ComponentModel;
+
 namespace AntPanelApplication.Properties {
     
     
@@ -34,7 +36,10 @@ namespace AntPanelApplication.Properties {
                 this["Name"] = value;
             }
         }
-        
+
+        [Category("表示")]
+        [DisplayName("MenuBarVisible")]
+        [Description("MenuBarVisible")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
@@ -46,7 +51,10 @@ namespace AntPanelApplication.Properties {
                 this["MenuBarVisible"] = value;
             }
         }
-        
+
+        [Category("表示")]
+        [DisplayName("ToolBarVisible")]
+        [Description("ToolBarVisible")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
@@ -58,7 +66,10 @@ namespace AntPanelApplication.Properties {
                 this["ToolBarVisible"] = value;
             }
         }
-        
+
+        [Category("表示")]
+        [DisplayName("StatusBarVisible")]
+        [Description("StatusBarVisible")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
@@ -70,7 +81,10 @@ namespace AntPanelApplication.Properties {
                 this["StatusBarVisible"] = value;
             }
         }
-        
+
+        [Category("ファイル状態")]
+        [DisplayName("BookMarks")]
+        [Description("BookMarks")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
@@ -90,7 +104,10 @@ namespace AntPanelApplication.Properties {
                 this["BookMarks"] = value;
             }
         }
-        
+
+        [Category("ファイル状態")]
+        [DisplayName("PreviousDocuments")]
+        [Description("PreviousDocuments")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
@@ -119,7 +136,10 @@ namespace AntPanelApplication.Properties {
                 this["PreviousDocuments"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("ServerRoot")]
+        [Description("ServerRoot")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://localhost")]
@@ -131,7 +151,10 @@ namespace AntPanelApplication.Properties {
                 this["ServerRoot"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("DocumentRoot")]
+        [Description("DocumentRoot")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Apache2.2\\htdocs")]
@@ -143,7 +166,10 @@ namespace AntPanelApplication.Properties {
                 this["DocumentRoot"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("SakuraPath")]
+        [Description("SakuraPath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\sakura\\sakura.exe")]
@@ -155,7 +181,10 @@ namespace AntPanelApplication.Properties {
                 this["SakuraPath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("PSPadPath")]
+        [Description("PSPadPath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\PSPad editor\\PSPad.exe")]
@@ -167,7 +196,10 @@ namespace AntPanelApplication.Properties {
                 this["PspadPath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("FlashdevelopPath")]
+        [Description("AFlashdevelop 5.2.0 Path")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("F:\\VCSharp\\Flashdevelop5.1.1-LL\\FlashDevelop\\Bin\\Debug\\FlashDevelop.exe")]
@@ -179,7 +211,10 @@ namespace AntPanelApplication.Properties {
                 this["FlashdevelopPath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("Devenv15Path")]
+        [Description("Devenv15Path")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\devenv.exe")]
@@ -191,7 +226,10 @@ namespace AntPanelApplication.Properties {
                 this["Devenv15Path"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("Devenv17Path")]
+        [Description("Devenv17Path")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\IDE\\devenv." +
@@ -204,7 +242,10 @@ namespace AntPanelApplication.Properties {
                 this["Devenv17Path"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("MediaPlayerPath")]
+        [Description("MediaPlayerPath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Windows Media Player\\wmplayer.exe")]
@@ -216,7 +257,10 @@ namespace AntPanelApplication.Properties {
                 this["MediaPlayerPath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("VlcPath")]
+        [Description("VlcPath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\VideoLAN\\VLC\\vlc.exe")]
@@ -228,7 +272,10 @@ namespace AntPanelApplication.Properties {
                 this["VlcPath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("AntExecutablePath")]
+        [Description("AntExecutablePath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("F:\\ant\\apache-ant-1.10.1\\bin\\ant.bat")]
@@ -240,7 +287,10 @@ namespace AntPanelApplication.Properties {
                 this["AntExecutablePath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("GradlePath")]
+        [Description("gradlePath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("F:\\gradle-3.5\\bin\\gradle.bat")]
@@ -252,7 +302,10 @@ namespace AntPanelApplication.Properties {
                 this["GradlePath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("ChromePath")]
+        [Description("ChromePath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe")]
@@ -264,7 +317,10 @@ namespace AntPanelApplication.Properties {
                 this["ChromePath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("IePath")]
+        [Description("IePath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Internet Explorer\\iexplore.exe")]
@@ -276,7 +332,10 @@ namespace AntPanelApplication.Properties {
                 this["IePath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("CmdPath")]
+        [Description("CmdPath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Windows\\system32\\cmd.exe")]
@@ -288,7 +347,10 @@ namespace AntPanelApplication.Properties {
                 this["CmdPath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("ExplorerPath")]
+        [Description("ExplorerPath")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Windows\\explorer.exe")]
@@ -312,7 +374,10 @@ namespace AntPanelApplication.Properties {
                 this["DefaultFont"] = value;
             }
         }
-        
+
+        [Category("表示")]
+        [DisplayName("MenuStripItemEnabled")]
+        [Description("メニューアイテムの表示状態")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
@@ -331,8 +396,12 @@ namespace AntPanelApplication.Properties {
                 this["MenuStripItemEnabled"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
+
+
+    [Category("表示")]
+    [DisplayName("FileMenuVisible")]
+    [Description("FileMenuVisible")]
+    [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
@@ -351,7 +420,10 @@ namespace AntPanelApplication.Properties {
                 this["FileMenuVisible"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("AntPath")]
+        [Description("Antのディレクトリ")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("F:\\ant\\apache-ant-1.10.1")]
@@ -363,7 +435,10 @@ namespace AntPanelApplication.Properties {
                 this["AntPath"] = value;
             }
         }
-        
+
+        [Category("Options")]
+        [DisplayName("StorageFileName")]
+        [Description("StorageFileName AntTreeの保存データファイル")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("antPluginData.txt")]
@@ -375,7 +450,10 @@ namespace AntPanelApplication.Properties {
                 this["StorageFileName"] = value;
             }
         }
-        
+
+        [Category("Options")]
+        [DisplayName("HomeMenuPath")]
+        [Description("HomeMenuのパスを設定します")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("F:\\VCSharp\\Flashdevelop5.1.1-LL\\FlashDevelop\\Bin\\Debug\\SettingData\\FDTreeMenu.xml" +
@@ -388,7 +466,10 @@ namespace AntPanelApplication.Properties {
                 this["HomeMenuPath"] = value;
             }
         }
-        
+
+        [Category("アプリケーションパス")]
+        [DisplayName("GitPath")]
+        [Description("Git.exeのパスを設定します")]
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Git\\git-bash.exe")]
@@ -398,30 +479,6 @@ namespace AntPanelApplication.Properties {
             }
             set {
                 this["GitPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\NextFTP\\NEXTFTP.EXE")]
-        public string NextFTPPath {
-            get {
-                return ((string)(this["NextFTPPath"]));
-            }
-            set {
-                this["NextFTPPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Meiryo UI, 12pt")]
-        public global::System.Drawing.Font FTPClientDefaultFont {
-            get {
-                return ((global::System.Drawing.Font)(this["FTPClientDefaultFont"]));
-            }
-            set {
-                this["FTPClientDefaultFont"] = value;
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using AntPanelApplication.Properties;
 using AntPlugin.XMLTreeMenu.Controls;
+using CommonLibrary;
 using CommonLibrary.Controls;
 using System;
 using System.Drawing;
@@ -10,111 +11,106 @@ namespace AntPanelApplication
 {
   public partial class Form1 : Form
   {
+    #region Variables
     global::AntPanelApplication.Properties.Settings
       settings = new global::AntPanelApplication.Properties.Settings();
     global::AntPanelApplication.Properties.Resources 
       resources = new global::AntPanelApplication.Properties.Resources();
 
+    public static OperatingSystem os = Environment.OSVersion;
+    public static bool IsRunningOnMono = (Type.GetType("Mono.Runtime") != null);
+    public static bool IsRunningUnix = ((Environment.OSVersion.ToString()).IndexOf("Unix") >= 0) ? true : false;
+    public static bool IsRunningWindows = ((Environment.OSVersion.ToString()).IndexOf("Windows") >= 0) ? true : false;
+
     public AntPanel antPanel;
     public BrowserEx browser;
     public PicturePanel picturePanel;
     public RichTextEditor editor;
-    public AntPlugin.XMLTreeMenu.Controls.PlayerPanel player;
+    public PlayerPanel player;
     public SimplePanel panel;
 
     public bool showIcon = true;
+    /* Singleton */
+    public static Boolean Silent;
+    public static Boolean IsFirst;
+    public static String[] Arguments;
+    #endregion
 
     public Form1()
     {
-      InitializeComponent();
+      Globals.MainForm = this;
       this.antPanel = new AntPanel();
-      InitializeForm(antPanel);
-    }
-
-    public Form1(String path)
-    {
-      InitializeComponent();
-      this.antPanel = new AntPanel(path);
-      antPanel.AccessibleDescription = path;
-      InitializeForm(antPanel);
-    }
-
-    public Form1(String[] args)
-    {
-      InitializeComponent();
-      AntPanel antPanel = new AntPanel(args);
-      if (args.Length > 1 && !String.IsNullOrEmpty(args[0]))
+      if (Arguments.Length > 1 && !String.IsNullOrEmpty(Arguments[0]))
       {
-        antPanel.AccessibleDescription = args[0];
+        antPanel.AccessibleDescription = Arguments[0];
       }
-      InitializeForm(antPanel);
+      Globals.AntPanel = this.antPanel;
+      InitializeComponent();
+      InitializeForm();
     }
 
-    private void InitializeForm(AntPanel antpanel)
+    private void InitializeForm()
     {
-      LoadControls(antpanel);
-      this.Text = "AntPanel : " + Path.GetFileName(antpanel.AccessibleDescription);
+      this.splitContainer1.Panel1.Controls.Add(Globals.AntPanel);
+      //this.splitContainer1.Panel2Collapsed = true;
+      //this.splitContainer1.Panel1Collapsed = false;
+      Globals.AntPanel.Dock = DockStyle.Fill;
+      //Globals.AntPanel.Tag = this; //??
+
+
+      LoadControls();
+
+      this.Text = "AntPanel : " + Path.GetFileName(Globals.AntPanel.AccessibleDescription);
       this.Size = new Size(1200, 800);
       this.StartPosition = FormStartPosition.CenterScreen;
     }
 
-    private void LoadControls(AntPanel antpanel)
+    private void LoadControls()
     {
-      this.splitContainer1.Panel1.Controls.Add(antpanel);
-      this.splitContainer1.Panel2Collapsed = true;
-      this.splitContainer1.Panel1Collapsed = false;
-      antpanel.Dock = DockStyle.Fill;
-      antpanel.Tag = this;
 
-      this.tabPage1.Controls.Clear();
-      this.tabPage1.Text = "Editor";
+      this.documentTabControl.TabPages.Clear();
+
       this.editor = new RichTextEditor();
       this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
-      editor.Tag = this;
-      this.tabPage1.Controls.Add(this.editor);
-      //this.tabPage1.Controls.Add(this.richTextBox1);
+      this.editor.AccessibleDescription = "Editor";
+      ((Control)this.editor.Tag).Tag = "無題";
+      TabPageManager.AddTabPage(this.editor, this.documentTabControl);
 
-      this.tabPage2.Controls.Clear();
-      this.browser = new BrowserEx();
+      if (IsRunningUnix) return;   
+
+      this.picturePanel = new PicturePanel();
+      this.picturePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.picturePanel.AccessibleDescription = "夏樹東京歓送会";
+      ((Control)this.picturePanel.Tag).Tag = @"F:\VirtualBox\ShareFolder\Picture\DSCN0166.JPG";
+      TabPageManager.AddTabPage(this.picturePanel, this.documentTabControl);
       // 
       // webBrowser
       // 
+      this.browser = new BrowserEx();
       this.browser.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.browser.Location = new System.Drawing.Point(0, 0);
-      this.browser.MinimumSize = new System.Drawing.Size(20, 20);
-      this.browser.Name = "Browser";
-      this.browser.Size = new System.Drawing.Size(973, 474);
-      this.browser.TabIndex = 0;
-      this.browser.Tag = this;
-      this.tabPage2.Text = "Browser";
-      this.tabPage2.Controls.Add(this.browser);
-
-      this.tabPage3.Controls.Clear();
-      this.picturePanel = new PicturePanel();
-      this.picturePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.picturePanel.Tag = this;
-      this.tabPage3.Text = "Picture";
-      this.tabPage3.Controls.Add(this.picturePanel);
-
-      this.tabPage4.Controls.Clear();
+      this.browser.AccessibleDescription = "pukiwiki2016";
+      ((Control)this.browser.Tag).Tag = "http://192.168.0.13/pukiwiki2016/index.php";
+      TabPageManager.AddTabPage(this.browser, this.documentTabControl);
       this.player = new AntPlugin.XMLTreeMenu.Controls.PlayerPanel();
       this.player.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tabPage4.Text = "Player";
-      //this.axWindowsMediaPlayer1.Tag = this;
-      this.player.Tag = this;
-      //this.tabPage4.Controls.Add(this.axWindowsMediaPlayer1);
-      this.tabPage4.Controls.Add(this.player);
+      this.player.AccessibleDescription = "二つのミサ曲";
+      ((Control)this.player.Tag).Tag = @"F:\VirtualBox\ShareFolder\Music\03-Monteverdi.mp3";
+      TabPageManager.AddTabPage(this.player, this.documentTabControl);
 
-      this.tabPage5.Controls.Clear();
       this.panel = new SimplePanel();
       this.panel.Dock = DockStyle.Fill;
-      this.tabPage5.Text = "Panel";
-      this.panel.Tag = this;
-      this.tabPage5.Controls.Add(this.panel);
+      this.panel.AccessibleDescription = "Lesson5";
+      ((Control)this.panel.Tag).Tag = @"F:\c_program\OpenGL\NeHe_1200x900\Lesson05\lesson5.exe";
+      TabPageManager.AddTabPage(this.panel, this.documentTabControl);
 
       this.tabPage6.Controls.Clear();
-      //this.tabPage6.Controls.Add(this.axWindowsMediaPlayer1);
+      this.documentTabControl.Controls.Remove(this.tabPage6);
 
+      //RichTextBox textBox = new RichTextBox();
+      //textBox.Dock = DockStyle.Fill;
+      //textBox.Text = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+      //textBox.AccessibleDescription = "無題";
+      //TabPageManager.AddTabPage(textBox, this.documentTabControl);
     }
 
     private void ApplySettings()
@@ -127,6 +123,14 @@ namespace AntPanelApplication
       //this.gradleButton.Image = Resources.gradle;
     }
 
+
+    #region Event Handler
+    private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      TabControl tabControl = sender as TabControl;
+      //MessageBox.Show(tabControl.Name);
+    }
+    #endregion
 
     #region Click Handler
     private int toggleIndex = 1;
@@ -178,35 +182,12 @@ namespace AntPanelApplication
     }
     #endregion
 
-
-
     public void ActivatePlayer()
     {
       //this.splitContainer1.Panel2Collapsed = false;
       //this.splitContainer1.Panel1Collapsed = false;
       //this.t.tabControl1.SelectedIndex = 3;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     #region Icon Management
 
@@ -222,5 +203,5 @@ namespace AntPanelApplication
 
     #endregion
 
-   }
+  }
 }

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace AntPlugin.CommonLibrary
+namespace CommonLibrary
 {
 	internal class OsVersion
 	{

@@ -14,22 +14,12 @@ namespace AntPanelApplication
     [STAThread]
     static void Main(String[] args)
     {
-      /*
-       public static void Main(string[] args)
-      {
-        for (int i = 0; i < args.Length; ++i)
-          Console.Write("{0}番目のコマンドライン引数は{1}です。\n", i, args[i]);
-      }
-      */
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
-      if (args.Length>0)
-      {
-        //String projectPath = args[0];
-        //Application.Run(new Form1(projectPath));
-        Application.Run(new Form1(args));
-      }
-      else Application.Run(new Form1());
+
+      Form1.Arguments = args;
+      Form1 mainForm = new Form1();
+      Application.Run(mainForm);
     }
   }
 }

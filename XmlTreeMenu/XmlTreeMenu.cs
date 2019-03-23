@@ -22,12 +22,12 @@ namespace AntPlugin.XmlTreeMenu
 
     private ContextMenuStrip buildFileMenu;
     private ContextMenuStrip targetMenu;
-
+    
     public XmlMenuTree()
     {
       InitializeComponent();
     }
-
+    
     public XmlMenuTree(AntPanel ui)
     {
       this.antPanel = ui;

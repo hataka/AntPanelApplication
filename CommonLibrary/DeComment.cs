@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AntPlugin.CommonLibrary
+namespace CommonLibrary
 {
   /// <summary>
   /// C#で コメントの削除

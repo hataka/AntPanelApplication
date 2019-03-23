@@ -1,5 +1,6 @@
 ﻿using AntPlugin.CommonLibrary;
 using AntPlugin.XmlTreeMenu;
+using CommonLibrary;
 //using AntPlugin.XmlTreeMenu;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace AntPanelApplication
     {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AntPanel));
-      this.tabControl1 = new System.Windows.Forms.TabControl();
+      this.antPanelTabControl = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.addButton = new System.Windows.Forms.ToolStripButton();
@@ -111,7 +112,7 @@ namespace AntPanelApplication
       this.tabPage4 = new System.Windows.Forms.TabPage();
       this.tabPage5 = new System.Windows.Forms.TabPage();
       this.propertyGrid3 = new System.Windows.Forms.PropertyGrid();
-      this.tabControl1.SuspendLayout();
+      this.antPanelTabControl.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.toolStrip.SuspendLayout();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -120,21 +121,21 @@ namespace AntPanelApplication
       this.tabPage5.SuspendLayout();
       this.SuspendLayout();
       // 
-      // tabControl1
+      // antPanelTabControl
       // 
-      this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-      this.tabControl1.Controls.Add(this.tabPage1);
-      this.tabControl1.Controls.Add(this.tabPage2);
-      this.tabControl1.Controls.Add(this.tabPage3);
-      this.tabControl1.Controls.Add(this.tabPage4);
-      this.tabControl1.Controls.Add(this.tabPage5);
-      this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tabControl1.Location = new System.Drawing.Point(0, 0);
-      this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-      this.tabControl1.Name = "tabControl1";
-      this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(1193, 611);
-      this.tabControl1.TabIndex = 6;
+      this.antPanelTabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+      this.antPanelTabControl.Controls.Add(this.tabPage1);
+      this.antPanelTabControl.Controls.Add(this.tabPage2);
+      this.antPanelTabControl.Controls.Add(this.tabPage3);
+      this.antPanelTabControl.Controls.Add(this.tabPage4);
+      this.antPanelTabControl.Controls.Add(this.tabPage5);
+      this.antPanelTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.antPanelTabControl.Location = new System.Drawing.Point(0, 0);
+      this.antPanelTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+      this.antPanelTabControl.Name = "antPanelTabControl";
+      this.antPanelTabControl.SelectedIndex = 0;
+      this.antPanelTabControl.Size = new System.Drawing.Size(1193, 611);
+      this.antPanelTabControl.TabIndex = 6;
       // 
       // tabPage1
       // 
@@ -781,12 +782,13 @@ namespace AntPanelApplication
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.tabControl1);
+      this.Controls.Add(this.antPanelTabControl);
       this.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
       this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.Name = "AntPanel";
       this.Size = new System.Drawing.Size(1193, 611);
-      this.tabControl1.ResumeLayout(false);
+      this.Load += new System.EventHandler(this.AntPanel_Load);
+      this.antPanelTabControl.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage1.PerformLayout();
       this.toolStrip.ResumeLayout(false);
@@ -801,7 +803,7 @@ namespace AntPanelApplication
 
     #endregion
 
-    private System.Windows.Forms.TabControl tabControl1;
+    public System.Windows.Forms.TabControl antPanelTabControl;
     private System.Windows.Forms.TabPage tabPage1;
     public System.Windows.Forms.ToolStrip toolStrip;
     public System.Windows.Forms.ToolStripButton addButton;

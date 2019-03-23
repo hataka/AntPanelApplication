@@ -15,6 +15,7 @@ using CSParser.BuildTree;
 using AntPlugin.Controls;
 using CSParser.Model;
 using AntPlugin.XmlTreeMenu.Managers;
+using CommonLibrary;
 
 namespace AntPanelApplication
 {
@@ -53,7 +54,7 @@ namespace AntPanelApplication
 		public XmlMenuTree menuTree = new XmlMenuTree();
 
 		public DirTreePanel dirTreePanel;
-		//public FTPClientPanel ftpClientPanel;
+		public FTPClientPanel ftpClientPanel;
 		//public XmlTreePanel xmlTreePanel;
 
 		private String defaultTarget;
@@ -82,15 +83,16 @@ namespace AntPanelApplication
 			InitializeComponent();
 			InitializeAntPanel();
 		}
-
+    /*
 		public AntPanel(string projpath)
 		{
 			projectPath = projpath;
 			InitializeComponent();
 			InitializeAntPanel();
 		}
-
-		public AntPanel(string[] args)
+    */
+    /*
+    public AntPanel(string[] args)
 		{
 			if (args.Length > 0 && !String.IsNullOrEmpty(args[0])) this.projectPath = args[0];
 			if (args.Length > 1 && !String.IsNullOrEmpty(args[1])) this.itemPath = args[1];
@@ -99,19 +101,18 @@ namespace AntPanelApplication
       InitializeComponent();
 			InitializeAntPanel();
 		}
-
+    */
     #region Initialization
     private void InitializeAntPanel()
 		{
 			InitializeGraphics();
-
 			InitializeGradleTree();
-			IntializeXmlMenuTree();
-			IntializeDirTreePanel();
-			//IntializeFTPClientPanel();
-			//InitializeXmlTreePanel();
+      LoadControls();
 
-			CreateMenus();
+
+
+
+      CreateMenus();
 
       this.homeStripButton.Click += new System.EventHandler(this.homeStripButton_Click);
 
@@ -126,8 +127,19 @@ namespace AntPanelApplication
 			RefreshData();
 
 		}
+    private void LoadControls()
+    {
+      this.menuTree = new XmlMenuTree(this);
+      this.tabPage1.Name = this.tabPage1.AccessibleDescription = "AntPanel;Ant";
+      this.tabPage1.Tag = this.treeView;// this.antPanelTabControl;
+      IntializeDirTreePanel();
+      IntializeFTPClientPanel();
+      InitializeXmlTreePanel();
+      this.tabPage5.Name = this.tabPage5.AccessibleDescription = "AntPanel;Settings";
+      this.tabPage5.Tag = this.antPanelTabControl;
+    }
 
-		private void InitializeGraphics()
+    private void InitializeGraphics()
 		{
 			this.imageList2 = new ImageList();
 			Bitmap value = ((System.Drawing.Bitmap)(this.imageListStripButton.Image));
@@ -144,7 +156,7 @@ namespace AntPanelApplication
 
 			this.imageList.Tag = "Ant";
 
-			this.tabControl1.ImageList = imageList2;
+			this.antPanelTabControl.ImageList = imageList2;
 			this.tabPage1.ImageIndex = 53;  //61;  //Ant
 			this.tabPage2.ImageIndex = 61;  //Dir
 			this.tabPage3.ImageIndex = 99;  //FTP
@@ -172,38 +184,35 @@ namespace AntPanelApplication
 			this.gradleTree = new GradleTree(this);
 		}
 
-		private void IntializeXmlMenuTree()
-		{
-			this.menuTree = new XmlMenuTree(this);
-		}
-
-		private void IntializeDirTreePanel()
+ 		private void IntializeDirTreePanel()
 		{
 			this.dirTreePanel = new DirTreePanel(this,this.projectPath);
-			dirTreePanel.Dock = DockStyle.Fill;
-			this.tabPage2.Controls.Add(dirTreePanel);
-		}
+			this.dirTreePanel.Dock = DockStyle.Fill;
+      this.tabPage2.Name = this.tabPage2.AccessibleDescription = "AntPanel;Dir";
+      this.tabPage2.Tag = this.dirTreePanel;// this.antPanelTabControl;
+      this.tabPage2.Controls.Add(dirTreePanel);
+    }
 
-		private void IntializeFTPClientPanel()
+    private void IntializeFTPClientPanel()
 		{
-			/*
 			try
 			{
 				//this.ftpClientPanel = new FTPClientPanel(this.pluginMain);
 				this.ftpClientPanel = new FTPClientPanel(this);
 				this.ftpClientPanel.Dock = DockStyle.Fill;
-				this.tabPage3.Controls.Add(this.ftpClientPanel);
-			}
-			catch (Exception ex)
+        this.tabPage3.Name = this.tabPage3.AccessibleDescription = "AntPanel;FTP";
+        this.tabPage3.Tag = this.ftpClientPanel;// this.antPanelTabControl;
+        this.tabPage3.Controls.Add(this.ftpClientPanel);
+      }
+      catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message.ToString(), "IntializeFTPClientPanel");
 			}
-			*/
 		}
 
-		private void InitializeXmlTreePanel()
-		{
-			/*
+    private void InitializeXmlTreePanel()
+    {
+      /*
 			try
 			{
 				this.xmlTreePanel = new XmlTreePanel(this);
@@ -215,9 +224,11 @@ namespace AntPanelApplication
 				MessageBox.Show(ex.Message.ToString(), "IntializeFTPClientPanel");
 			}
 			*/
-		}
-
-		private void CreateMenus()
+      this.tabPage4.Name = this.tabPage4.AccessibleDescription = "AntPanel;Link";
+      //this.tabPage4.Tag = this.antPanelTabControl;
+      //TabPageManager.AddTabPageList(this.tabPage4);
+    }
+    private void CreateMenus()
 		{
 			buildFileMenu = new ContextMenuStrip();
 			buildFileMenu.Items.Add("Run default target", runButton.Image, MenuRunClick);
@@ -1205,7 +1216,7 @@ namespace AntPanelApplication
 			//((Form)this.Parent).Text = Path.GetFileNameWithoutExtension(this.axWindowsMediaPlayer1.URL);
 			//((DockContent)base.Parent).TabText = "環境設定";// Path.GetFileName(this.axWindowsMediaPlayer1.URL);
 			//this.propertyGrid3.SelectedObject = this.settings;
-			tabControl1.SelectedIndex = 4;
+			antPanelTabControl.SelectedIndex = 4;
 			//this.propertyGrid1.BringToFront();
 
 		}
@@ -1277,6 +1288,16 @@ namespace AntPanelApplication
     {
       Directory.SetCurrentDirectory(Path.GetDirectoryName(this.projectPath));
       Process.Start(this.settings.GitPath);
+    }
+
+    private void AntPanel_Load(object sender, EventArgs e)
+    {
+      TabPageManager.AddTabPageList(this.tabPage1,this.antPanelTabControl);
+      TabPageManager.AddTabPageList(this.tabPage2, this.antPanelTabControl);
+      TabPageManager.AddTabPageList(this.tabPage3, this.antPanelTabControl);
+      TabPageManager.AddTabPageList(this.tabPage4, this.antPanelTabControl);
+      TabPageManager.AddTabPageList(this.tabPage5, this.antPanelTabControl);
+      //MessageBox.Show(TabPageManager.tabPageList.Count.ToString());
     }
   }
 

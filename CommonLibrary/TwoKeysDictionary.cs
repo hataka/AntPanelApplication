@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace AntPlugin.CommonLibrary
+namespace CommonLibrary
 {
 	internal class TwoKeysDictionary<T, U> : IEnumerable<KeyValuePair<T, Dictionary<U, object>>>, IEnumerable
 	{

@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace AntPlugin.CommonLibrary
+namespace CommonLibrary
 {
 	public class Lib : IDisposable
 	{

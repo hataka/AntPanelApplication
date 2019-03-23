@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Net;
 using AntPlugin.CommonLibrary;
+using AntPanelApplication;
 
 namespace CommonLibrary.Controls
 {
@@ -36,7 +37,7 @@ namespace CommonLibrary.Controls
       //this.GoHomeButton.Image = ImageManager.FindImage(224);
       //this.printButton.Image = ImageManager.FindImage(113);
       //this.stopButton.Image = ImageManager.FindImage(153);
-      string text = "0538077E-8C37-4A2B-962B-8FB77DC9F325";
+      //string text = "0538077E-8C37-4A2B-962B-8FB77DC9F325";
       //this.xmlTreeMenu = (PluginMain)PluginBase.MainForm.FindPlugin(text);
       //this.settings = (XMLTreeMenu.Settings)this.xmlTreeMenu.Settings;
       //this.documentRoot = this.settings.DocumentRoot;
@@ -58,11 +59,23 @@ namespace CommonLibrary.Controls
       //this.addressComboBox.FlatStyle = PluginBase.Settings.ComboBoxFlatStyle;
     }
 
+    private void BrowserEx_Enter(object sender, EventArgs e)
+    {
+      String url = this.webBrowser1.Tag as String;
+      //if (!String.IsNullOrEmpty(url)) this.webBrowser1.Url = new Uri(url);
+      if (!String.IsNullOrEmpty(url)) this.webBrowser1.Navigate(url);
+    }
+
+
     private void WebBrowserNewWindow(object sender, CancelEventArgs e)
     {
-      //MessageBox.Show(this.browseEx1.StatusText)
-      //PluginBase.MainForm.CallCommand("PluginCommand", "XMLTreeMenu.BrowseEx;" + this.webBrowser.StatusText);
-      //e.Cancel = true;
+      //Globals.MainForm.OpenCustomDocument("BrowserEx", this.webBrowser1.StatusText);
+      BrowserEx browser = new BrowserEx();
+      browser.Dock = System.Windows.Forms.DockStyle.Fill;
+      browser.AccessibleDescription = this.webBrowser1.StatusText;
+      ((Control)browser.Tag).Tag = browser.AccessibleDescription;
+      TabPageManager.AddTabPage(browser, Globals.MainForm.documentTabControl);
+      e.Cancel = true;
     }
 
     private void WebBrowserPropertyUpdated(object sender, EventArgs e)

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace AntPlugin.CommonLibrary
+namespace CommonLibrary
 {
 	public class TwoKeysHashTable
 	{

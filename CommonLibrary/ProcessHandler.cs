@@ -1,3 +1,4 @@
+using CommonLibrary;
 using Microsoft.CSharp;
 //using PluginCore.Helpers;
 using System;
@@ -7,7 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace AntPlugin.CommonLibrary
+namespace CommonLibrary
 {
 	public class ProcessHandler
 	{

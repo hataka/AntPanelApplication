@@ -8,7 +8,7 @@ using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace AntPlugin.CommonLibrary
+namespace CommonLibrary
 {
 	public class ImageHander
 	{

@@ -1071,7 +1071,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
       }
 			this.IntializeSettings();
 			this.AddPreviousDocuments(argstring);
-			((Form1)this.Tag).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
+			//FIXME
+      //((Form1)this.Tag).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
     }
 
 		public void IntializeSettings()
@@ -1510,7 +1511,10 @@ namespace AntPlugin.XMLTreeMenu.Controls
         Win32.ShowMaximized(process.MainWindowHandle);
 				this.processList.Insert(0, process);
         //((DockContent)base.Parent).TabText = Path.GetFileName(array[0]);
-        ((Form1)this.Tag).Text = Path.GetFileName(array[0]);
+
+        //FIXME
+        //((Form1)this.Tag).Text = Path.GetFileName(array[0]);
+
         this.AddPreviousDocuments(array[0]);
 			}
 			catch (Exception)
@@ -1553,7 +1557,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
     private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      ((Form)this.Parent).Close();
+      // FIXME
+      //((Form)this.Parent).Close();
     }
   }
 }
