@@ -103,6 +103,8 @@ namespace AntPanelApplication
       this.表示ToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.homeStripButton = new System.Windows.Forms.ToolStripButton();
       this.removeButton = new System.Windows.Forms.ToolStripButton();
+      this.fdImageButton = new System.Windows.Forms.ToolStripButton();
+      this.fdImage32Button = new System.Windows.Forms.ToolStripButton();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.treeView = new System.Windows.Forms.TreeView();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -112,6 +114,20 @@ namespace AntPanelApplication
       this.tabPage4 = new System.Windows.Forms.TabPage();
       this.tabPage5 = new System.Windows.Forms.TabPage();
       this.propertyGrid3 = new System.Windows.Forms.PropertyGrid();
+      this.antPanelTabcontextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.他を非表示toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+      this.全て非表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+      this.表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.全て表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.追加ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+      this.再読込みToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.複製ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripMenuItem13 = new System.Windows.Forms.ToolStripMenuItem();
       this.antPanelTabControl.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.toolStrip.SuspendLayout();
@@ -119,11 +135,12 @@ namespace AntPanelApplication
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
       this.tabPage5.SuspendLayout();
+      this.antPanelTabcontextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // antPanelTabControl
       // 
-      this.antPanelTabControl.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+      this.antPanelTabControl.Alignment = System.Windows.Forms.TabAlignment.Left;
       this.antPanelTabControl.Controls.Add(this.tabPage1);
       this.antPanelTabControl.Controls.Add(this.tabPage2);
       this.antPanelTabControl.Controls.Add(this.tabPage3);
@@ -132,6 +149,7 @@ namespace AntPanelApplication
       this.antPanelTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.antPanelTabControl.Location = new System.Drawing.Point(0, 0);
       this.antPanelTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+      this.antPanelTabControl.Multiline = true;
       this.antPanelTabControl.Name = "antPanelTabControl";
       this.antPanelTabControl.SelectedIndex = 0;
       this.antPanelTabControl.Size = new System.Drawing.Size(1193, 611);
@@ -141,11 +159,11 @@ namespace AntPanelApplication
       // 
       this.tabPage1.Controls.Add(this.toolStrip);
       this.tabPage1.Controls.Add(this.splitContainer1);
-      this.tabPage1.Location = new System.Drawing.Point(4, 4);
+      this.tabPage1.Location = new System.Drawing.Point(36, 4);
       this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-      this.tabPage1.Size = new System.Drawing.Size(1185, 573);
+      this.tabPage1.Size = new System.Drawing.Size(1153, 603);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "Ant";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -167,11 +185,13 @@ namespace AntPanelApplication
             this.syncronizeButton,
             this.表示ToolStripButton,
             this.homeStripButton,
-            this.removeButton});
+            this.removeButton,
+            this.fdImageButton,
+            this.fdImage32Button});
       this.toolStrip.Location = new System.Drawing.Point(4, 5);
       this.toolStrip.Name = "toolStrip";
       this.toolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-      this.toolStrip.Size = new System.Drawing.Size(1177, 32);
+      this.toolStrip.Size = new System.Drawing.Size(1145, 32);
       this.toolStrip.TabIndex = 4;
       this.toolStrip.Text = "toolStrip1";
       // 
@@ -632,6 +652,26 @@ namespace AntPanelApplication
       this.removeButton.Text = "toolStripButton2";
       this.removeButton.Visible = false;
       // 
+      // fdImageButton
+      // 
+      this.fdImageButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.fdImageButton.Image = ((System.Drawing.Image)(resources.GetObject("fdImageButton.Image")));
+      this.fdImageButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.fdImageButton.Name = "fdImageButton";
+      this.fdImageButton.Size = new System.Drawing.Size(24, 29);
+      this.fdImageButton.Text = "fdImageButton";
+      this.fdImageButton.Visible = false;
+      // 
+      // fdImage32Button
+      // 
+      this.fdImage32Button.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.fdImage32Button.Image = ((System.Drawing.Image)(resources.GetObject("fdImage32Button.Image")));
+      this.fdImage32Button.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.fdImage32Button.Name = "fdImage32Button";
+      this.fdImage32Button.Size = new System.Drawing.Size(24, 29);
+      this.fdImage32Button.Text = "fdImage32Button";
+      this.fdImage32Button.Visible = false;
+      // 
       // splitContainer1
       // 
       this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -647,8 +687,8 @@ namespace AntPanelApplication
       // splitContainer1.Panel2
       // 
       this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
-      this.splitContainer1.Size = new System.Drawing.Size(1177, 563);
-      this.splitContainer1.SplitterDistance = 347;
+      this.splitContainer1.Size = new System.Drawing.Size(1145, 593);
+      this.splitContainer1.SplitterDistance = 365;
       this.splitContainer1.SplitterWidth = 7;
       this.splitContainer1.TabIndex = 3;
       // 
@@ -664,7 +704,7 @@ namespace AntPanelApplication
       this.treeView.Name = "treeView";
       this.treeView.SelectedImageIndex = 0;
       this.treeView.ShowNodeToolTips = true;
-      this.treeView.Size = new System.Drawing.Size(1177, 347);
+      this.treeView.Size = new System.Drawing.Size(1145, 365);
       this.treeView.TabIndex = 1;
       this.treeView.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeCollapse);
       this.treeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeExpand);
@@ -723,36 +763,36 @@ namespace AntPanelApplication
       this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
       this.propertyGrid1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.propertyGrid1.Name = "propertyGrid1";
-      this.propertyGrid1.Size = new System.Drawing.Size(1177, 209);
+      this.propertyGrid1.Size = new System.Drawing.Size(1145, 221);
       this.propertyGrid1.TabIndex = 1;
       // 
       // tabPage2
       // 
-      this.tabPage2.Location = new System.Drawing.Point(4, 4);
+      this.tabPage2.Location = new System.Drawing.Point(36, 4);
       this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-      this.tabPage2.Size = new System.Drawing.Size(1185, 573);
+      this.tabPage2.Size = new System.Drawing.Size(1153, 603);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Dir";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
       // tabPage3
       // 
-      this.tabPage3.Location = new System.Drawing.Point(4, 4);
+      this.tabPage3.Location = new System.Drawing.Point(36, 4);
       this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabPage3.Name = "tabPage3";
-      this.tabPage3.Size = new System.Drawing.Size(1185, 573);
+      this.tabPage3.Size = new System.Drawing.Size(1153, 603);
       this.tabPage3.TabIndex = 2;
       this.tabPage3.Text = "FTP";
       this.tabPage3.UseVisualStyleBackColor = true;
       // 
       // tabPage4
       // 
-      this.tabPage4.Location = new System.Drawing.Point(4, 4);
+      this.tabPage4.Location = new System.Drawing.Point(36, 4);
       this.tabPage4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabPage4.Name = "tabPage4";
-      this.tabPage4.Size = new System.Drawing.Size(1185, 573);
+      this.tabPage4.Size = new System.Drawing.Size(1153, 603);
       this.tabPage4.TabIndex = 3;
       this.tabPage4.Text = "Link";
       this.tabPage4.UseVisualStyleBackColor = true;
@@ -760,11 +800,11 @@ namespace AntPanelApplication
       // tabPage5
       // 
       this.tabPage5.Controls.Add(this.propertyGrid3);
-      this.tabPage5.Location = new System.Drawing.Point(4, 4);
+      this.tabPage5.Location = new System.Drawing.Point(36, 4);
       this.tabPage5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
       this.tabPage5.Name = "tabPage5";
       this.tabPage5.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-      this.tabPage5.Size = new System.Drawing.Size(1185, 573);
+      this.tabPage5.Size = new System.Drawing.Size(1153, 603);
       this.tabPage5.TabIndex = 4;
       this.tabPage5.Text = "Settings";
       this.tabPage5.UseVisualStyleBackColor = true;
@@ -774,9 +814,105 @@ namespace AntPanelApplication
       this.propertyGrid3.Dock = System.Windows.Forms.DockStyle.Fill;
       this.propertyGrid3.Location = new System.Drawing.Point(4, 5);
       this.propertyGrid3.Name = "propertyGrid3";
-      this.propertyGrid3.Size = new System.Drawing.Size(1177, 563);
+      this.propertyGrid3.Size = new System.Drawing.Size(1145, 593);
       this.propertyGrid3.TabIndex = 0;
       this.propertyGrid3.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid3_PropertyValueChanged);
+      // 
+      // antPanelTabcontextMenuStrip
+      // 
+      this.antPanelTabcontextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+      this.antPanelTabcontextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.非表示ToolStripMenuItem,
+            this.他を非表示toolStripMenuItem1,
+            this.全て非表示ToolStripMenuItem,
+            this.toolStripSeparator8,
+            this.表示ToolStripMenuItem,
+            this.全て表示ToolStripMenuItem,
+            this.追加ToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.再読込みToolStripMenuItem,
+            this.複製ToolStripMenuItem,
+            this.toolStripSeparator10,
+            this.toolStripMenuItem12,
+            this.toolStripMenuItem13});
+      this.antPanelTabcontextMenuStrip.Name = "contextMenuStrip1";
+      this.antPanelTabcontextMenuStrip.Size = new System.Drawing.Size(177, 262);
+      // 
+      // 非表示ToolStripMenuItem
+      // 
+      this.非表示ToolStripMenuItem.Name = "非表示ToolStripMenuItem";
+      this.非表示ToolStripMenuItem.Size = new System.Drawing.Size(176, 24);
+      this.非表示ToolStripMenuItem.Text = "非表示";
+      // 
+      // 他を非表示toolStripMenuItem1
+      // 
+      this.他を非表示toolStripMenuItem1.CheckOnClick = true;
+      this.他を非表示toolStripMenuItem1.Name = "他を非表示toolStripMenuItem1";
+      this.他を非表示toolStripMenuItem1.Size = new System.Drawing.Size(176, 24);
+      this.他を非表示toolStripMenuItem1.Text = "他を非表示";
+      // 
+      // 全て非表示ToolStripMenuItem
+      // 
+      this.全て非表示ToolStripMenuItem.Name = "全て非表示ToolStripMenuItem";
+      this.全て非表示ToolStripMenuItem.Size = new System.Drawing.Size(176, 24);
+      this.全て非表示ToolStripMenuItem.Text = "全非表示";
+      // 
+      // toolStripSeparator8
+      // 
+      this.toolStripSeparator8.Name = "toolStripSeparator8";
+      this.toolStripSeparator8.Size = new System.Drawing.Size(173, 6);
+      // 
+      // 表示ToolStripMenuItem
+      // 
+      this.表示ToolStripMenuItem.Name = "表示ToolStripMenuItem";
+      this.表示ToolStripMenuItem.Size = new System.Drawing.Size(176, 24);
+      this.表示ToolStripMenuItem.Text = "表示";
+      // 
+      // 全て表示ToolStripMenuItem
+      // 
+      this.全て表示ToolStripMenuItem.Name = "全て表示ToolStripMenuItem";
+      this.全て表示ToolStripMenuItem.Size = new System.Drawing.Size(176, 24);
+      this.全て表示ToolStripMenuItem.Text = "全て表示";
+      // 
+      // 追加ToolStripMenuItem
+      // 
+      this.追加ToolStripMenuItem.Name = "追加ToolStripMenuItem";
+      this.追加ToolStripMenuItem.Size = new System.Drawing.Size(176, 24);
+      this.追加ToolStripMenuItem.Text = "追加";
+      // 
+      // toolStripSeparator9
+      // 
+      this.toolStripSeparator9.Name = "toolStripSeparator9";
+      this.toolStripSeparator9.Size = new System.Drawing.Size(173, 6);
+      // 
+      // 再読込みToolStripMenuItem
+      // 
+      this.再読込みToolStripMenuItem.Name = "再読込みToolStripMenuItem";
+      this.再読込みToolStripMenuItem.Size = new System.Drawing.Size(176, 24);
+      this.再読込みToolStripMenuItem.Text = "再読込み";
+      // 
+      // 複製ToolStripMenuItem
+      // 
+      this.複製ToolStripMenuItem.Name = "複製ToolStripMenuItem";
+      this.複製ToolStripMenuItem.Size = new System.Drawing.Size(176, 24);
+      this.複製ToolStripMenuItem.Text = "複製";
+      // 
+      // toolStripSeparator10
+      // 
+      this.toolStripSeparator10.Name = "toolStripSeparator10";
+      this.toolStripSeparator10.Size = new System.Drawing.Size(173, 6);
+      // 
+      // toolStripMenuItem12
+      // 
+      this.toolStripMenuItem12.Name = "toolStripMenuItem12";
+      this.toolStripMenuItem12.Size = new System.Drawing.Size(176, 24);
+      this.toolStripMenuItem12.Text = "コマンドプロンプト";
+      // 
+      // toolStripMenuItem13
+      // 
+      this.toolStripMenuItem13.Name = "toolStripMenuItem13";
+      this.toolStripMenuItem13.Size = new System.Drawing.Size(176, 24);
+      this.toolStripMenuItem13.Text = "エクスプローラ";
       // 
       // AntPanel
       // 
@@ -797,6 +933,7 @@ namespace AntPanelApplication
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
       this.tabPage5.ResumeLayout(false);
+      this.antPanelTabcontextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -995,5 +1132,21 @@ namespace AntPanelApplication
     private ToolStripMenuItem 試験ToolStripMenuItem;
     private PropertyGrid propertyGrid3;
     private ToolStripButton gitButton;
+    private ToolStripButton fdImageButton;
+    private ToolStripButton fdImage32Button;
+    private ContextMenuStrip antPanelTabcontextMenuStrip;
+    private ToolStripMenuItem 非表示ToolStripMenuItem;
+    private ToolStripMenuItem 他を非表示toolStripMenuItem1;
+    private ToolStripMenuItem 全て非表示ToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator8;
+    private ToolStripMenuItem 表示ToolStripMenuItem;
+    private ToolStripMenuItem 全て表示ToolStripMenuItem;
+    private ToolStripMenuItem 追加ToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator9;
+    private ToolStripMenuItem 再読込みToolStripMenuItem;
+    private ToolStripMenuItem 複製ToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator10;
+    private ToolStripMenuItem toolStripMenuItem12;
+    private ToolStripMenuItem toolStripMenuItem13;
   }
 }

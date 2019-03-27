@@ -61,11 +61,39 @@ namespace CommonLibrary.Controls
 
     private void BrowserEx_Enter(object sender, EventArgs e)
     {
-      String url = this.webBrowser1.Tag as String;
+      String url = String.Empty;
+      if (!String.IsNullOrEmpty(this.AccessibleName))
+      {
+        url = this.AccessibleName;
+        this.webBrowser1.Tag = url;
+        this.webBrowser1.AccessibleName = url;
+      }
+      else if (!String.IsNullOrEmpty(this.AccessibleDescription))
+      {
+        url = this.AccessibleDescription;
+        this.webBrowser1.Tag = url;
+        this.webBrowser1.AccessibleName = url;
+      }
+      else if (this.webBrowser1.Tag as String != string.Empty)
+      {
+        url = this.webBrowser1.Tag as String;
+        this.webBrowser1.AccessibleName = url;
+      }
       //if (!String.IsNullOrEmpty(url)) this.webBrowser1.Url = new Uri(url);
       if (!String.IsNullOrEmpty(url)) this.webBrowser1.Navigate(url);
+      switch (this.Parent.GetType().Name)
+      {
+        case "DockContent":
+          //try { ((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath); } catch { }
+          //break;
+        case "Form":
+          try { ((Form)this.Parent).Text = Path.GetFileName(url); } catch { };
+          break;
+        case "PabPage":
+          try { ((TabPage)this.Parent).Text = Path.GetFileName(url); } catch { }
+          break;
+      }
     }
-
 
     private void WebBrowserNewWindow(object sender, CancelEventArgs e)
     {

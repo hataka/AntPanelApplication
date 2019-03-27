@@ -228,10 +228,10 @@ namespace AntPlugin.Controls
 
     private void InitializeSettings()
     {
-      if (this.pspadPath != this.settings.PspadPath) this.pspadPath = this.settings.PspadPath;
-      if (this.sakuraPath != this.settings.SakuraPath) this.sakuraPath = this.settings.SakuraPath;
-      if (this.nextFTPPath != this.settings.NextFTPPath) this.nextFTPPath = this.settings.NextFTPPath;
-      if (this.chromePath != this.settings.ChromePath) this.chromePath = this.settings.ChromePath;
+      if (this.pspadPath != this.settings.win_PspadPath) this.pspadPath = this.settings.win_PspadPath;
+      if (this.sakuraPath != this.settings.win_SakuraPath) this.sakuraPath = this.settings.win_SakuraPath;
+      if (this.nextFTPPath != this.settings.win_NextFTPPath) this.nextFTPPath = this.settings.win_NextFTPPath;
+      if (this.chromePath != this.settings.win_ChromePath) this.chromePath = this.settings.win_ChromePath;
       this.toolStrip1.Font = this.settings.FTPClientDefaultFont;
       this.lviFolder.Font = this.settings.FTPClientDefaultFont;
     }
@@ -464,8 +464,11 @@ namespace AntPlugin.Controls
       this.serverUrl = String.Empty;
       this.serverDirectory = String.Empty;
       this.currentFilePath = String.Empty;
-      ((Form1)this.antPanel.Tag).toolStripStatusLabel1.Text = "切断";
-     }
+
+     // FIXME
+      // ((Form1)this.antPanel.Tag).toolStripStatusLabel1.Text = "切断";
+
+    }
 
     private void parentDirButton_Click(object sender, EventArgs e)
     {
@@ -850,7 +853,7 @@ namespace AntPlugin.Controls
       string path = this.GetSelectedDocumentPath();
       if (File.Exists(path))
       {
-        Process.Start(this.settings.SakuraPath, path);
+        Process.Start(this.settings.win_SakuraPath, path);
       }
     }
 
@@ -1008,7 +1011,7 @@ namespace AntPlugin.Controls
       // 以下を指定すると自動アップロードが開始されるので外す
       //String connectionString = connectionKey 
       //+"\" - local = \"" + System.IO.Path.GetDirectoryName(this.GetSelectedDocumentPath()) + "\"";
-     Process.Start(this.settings.NextFTPPath, connectionKey);
+     Process.Start(this.settings.win_NextFTPPath, connectionKey);
     }
 
 

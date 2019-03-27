@@ -12,7 +12,7 @@ namespace AntPanelApplication.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,7 +25,7 @@ namespace AntPanelApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("AntPanel")]
+        [global::System.Configuration.DefaultSettingValueAttribute("AntPanelApplication")]
         public string Name {
             get {
                 return ((string)(this["Name"]));
@@ -122,49 +122,49 @@ namespace AntPanelApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost")]
-        public string ServerRoot {
+        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.0.13")]
+        public string win_ServerRoot {
             get {
-                return ((string)(this["ServerRoot"]));
+                return ((string)(this["win_ServerRoot"]));
             }
             set {
-                this["ServerRoot"] = value;
+                this["win_ServerRoot"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Apache2.2\\htdocs")]
-        public string DocumentRoot {
+        public string win_DocumentRoot {
             get {
-                return ((string)(this["DocumentRoot"]));
+                return ((string)(this["win_DocumentRoot"]));
             }
             set {
-                this["DocumentRoot"] = value;
+                this["win_DocumentRoot"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\sakura\\sakura.exe")]
-        public string SakuraPath {
+        public string win_SakuraPath {
             get {
-                return ((string)(this["SakuraPath"]));
+                return ((string)(this["win_SakuraPath"]));
             }
             set {
-                this["SakuraPath"] = value;
+                this["win_SakuraPath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\PSPad editor\\PSPad.exe")]
-        public string PspadPath {
+        public string win_PspadPath {
             get {
-                return ((string)(this["PspadPath"]));
+                return ((string)(this["win_PspadPath"]));
             }
             set {
-                this["PspadPath"] = value;
+                this["win_PspadPath"] = value;
             }
         }
         
@@ -220,60 +220,60 @@ namespace AntPanelApplication.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\VideoLAN\\VLC\\vlc.exe")]
-        public string VlcPath {
+        public string win_VlcPath {
             get {
-                return ((string)(this["VlcPath"]));
+                return ((string)(this["win_VlcPath"]));
             }
             set {
-                this["VlcPath"] = value;
+                this["win_VlcPath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("F:\\ant\\apache-ant-1.10.1\\bin\\ant.bat")]
-        public string AntExecutablePath {
+        public string win_AntExecutablePath {
             get {
-                return ((string)(this["AntExecutablePath"]));
+                return ((string)(this["win_AntExecutablePath"]));
             }
             set {
-                this["AntExecutablePath"] = value;
+                this["win_AntExecutablePath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("F:\\gradle-3.5\\bin\\gradle.bat")]
-        public string GradlePath {
+        public string win_GradlePath {
             get {
-                return ((string)(this["GradlePath"]));
+                return ((string)(this["win_GradlePath"]));
             }
             set {
-                this["GradlePath"] = value;
+                this["win_GradlePath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe")]
-        public string ChromePath {
+        public string win_ChromePath {
             get {
-                return ((string)(this["ChromePath"]));
+                return ((string)(this["win_ChromePath"]));
             }
             set {
-                this["ChromePath"] = value;
+                this["win_ChromePath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Internet Explorer\\iexplore.exe")]
-        public string IePath {
+        public string win_IePath {
             get {
-                return ((string)(this["IePath"]));
+                return ((string)(this["win_IePath"]));
             }
             set {
-                this["IePath"] = value;
+                this["win_IePath"] = value;
             }
         }
         
@@ -292,18 +292,18 @@ namespace AntPanelApplication.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Windows\\explorer.exe")]
-        public string ExplorerPath {
+        public string win_ExplorerPath {
             get {
-                return ((string)(this["ExplorerPath"]));
+                return ((string)(this["win_ExplorerPath"]));
             }
             set {
-                this["ExplorerPath"] = value;
+                this["win_ExplorerPath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ＭＳ ゴシック, 16.2pt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Meiryo UI, 12pt")]
         public global::System.Drawing.Font DefaultFont {
             get {
                 return ((global::System.Drawing.Font)(this["DefaultFont"]));
@@ -392,36 +392,107 @@ namespace AntPanelApplication.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\Git\\git-bash.exe")]
-        public string GitPath {
+        public string win_GitPath {
             get {
-                return ((string)(this["GitPath"]));
+                return ((string)(this["win_GitPath"]));
             }
             set {
-                this["GitPath"] = value;
+                this["win_GitPath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files\\NextFTP\\NEXTFTP.EXE")]
-        public string NextFTPPath {
+        public string win_NextFTPPath {
             get {
-                return ((string)(this["NextFTPPath"]));
+                return ((string)(this["win_NextFTPPath"]));
             }
             set {
-                this["NextFTPPath"] = value;
+                this["win_NextFTPPath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Meiryo UI, 12pt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Meiryo UI, 10.8pt")]
         public global::System.Drawing.Font FTPClientDefaultFont {
             get {
                 return ((global::System.Drawing.Font)(this["FTPClientDefaultFont"]));
             }
             set {
                 this["FTPClientDefaultFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection PreviousProjects {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["PreviousProjects"]));
+            }
+            set {
+                this["PreviousProjects"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1200, 800")]
+        public global::System.Drawing.Size WindowSize {
+            get {
+                return ((global::System.Drawing.Size)(this["WindowSize"]));
+            }
+            set {
+                this["WindowSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Meiryo UI, 10.8pt")]
+        public global::System.Drawing.Font DefaultEditorFont {
+            get {
+                return ((global::System.Drawing.Font)(this["DefaultEditorFont"]));
+            }
+            set {
+                this["DefaultEditorFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("RichTextEditor")]
+        public string DefaultEditor {
+            get {
+                return ((string)(this["DefaultEditor"]));
+            }
+            set {
+                this["DefaultEditor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("42")]
+        public int DefaultBottomPanelHeight {
+            get {
+                return ((int)(this["DefaultBottomPanelHeight"]));
+            }
+            set {
+                this["DefaultBottomPanelHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("56")]
+        public int DefaultRightPanelWidth {
+            get {
+                return ((int)(this["DefaultRightPanelWidth"]));
+            }
+            set {
+                this["DefaultRightPanelWidth"] = value;
             }
         }
     }

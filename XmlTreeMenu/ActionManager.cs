@@ -39,13 +39,13 @@ namespace AntPlugin.XmlTreeMenu.Managers
         arg = arg.Replace("$(CurProjectDir)", Path.GetDirectoryName(menuTree.antPanel.projectPath));
         arg = arg.Replace("$(CurProjectName)", Path.GetFileNameWithoutExtension(menuTree.antPanel.projectPath));
         arg = arg.Replace("$(CurProjectUrl)", Lib.Path2Url(Path.GetDirectoryName(menuTree.antPanel.projectPath), 
-          settings.DocumentRoot, settings.ServerRoot));
+          settings.win_DocumentRoot, settings.win_ServerRoot));
         arg = arg.Replace("$(Quote)", "\"");
         arg = arg.Replace("$(Dollar)", "$");
         arg = arg.Replace("$(AppDir)", Path.GetDirectoryName(menuTree.antPanel.targetPath));
         arg = arg.Replace("$(BasePath)", settings.Devenv15Path);
         arg = arg.Replace("$(CurSciText)", menuTree.antPanel.curSelText);
-        arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(menuTree.antPanel.itemPath,settings.DocumentRoot, settings.ServerRoot));
+        arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(menuTree.antPanel.itemPath,settings.win_DocumentRoot, settings.win_ServerRoot));
         /*
         //arg = arg.Replace("$(ControlCurFilePath)", this.controlCurrentFilePath);
         //arg = arg.Replace("$(ControlCurFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
@@ -570,10 +570,10 @@ namespace AntPlugin.XmlTreeMenu.Managers
           switch (ni.Option.ToLower())
           {
             case "sakura":
-              Process.Start(settings.SakuraPath, file);
+              Process.Start(settings.win_SakuraPath, file);
               break;
             case "pspad":
-              Process.Start(settings.PspadPath, file);
+              Process.Start(settings.win_PspadPath, file);
               break;
             case "flashdevelop":
             case "fd":
@@ -1388,7 +1388,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
         else
         {
           //Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", url);
-          Process.Start(settings.ChromePath, url);
+          Process.Start(settings.win_ChromePath, url);
         }
       }
       catch (Exception exc)
@@ -1434,11 +1434,11 @@ namespace AntPlugin.XmlTreeMenu.Managers
             else ((Form1)menuTree.antPanel.Tag).browser.webBrowser1.GoHome();
             break;
           case "ie":
-            Process.Start(settings.IePath, url);
+            Process.Start(settings.win_IePath, url);
             break;
           case "chrome":
           default:
-            Process.Start(settings.ChromePath, url);
+            Process.Start(settings.win_ChromePath, url);
             break;
         }
       }

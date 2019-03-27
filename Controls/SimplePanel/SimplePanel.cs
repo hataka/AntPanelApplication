@@ -1034,7 +1034,21 @@ namespace AntPlugin.XMLTreeMenu.Controls
 			string argstring = string.Empty;
 			try
 			{
-				argstring = this.panel1.Tag.ToString();
+        if (!String.IsNullOrEmpty(this.AccessibleName))
+        {
+          argstring = this.AccessibleName;
+          this.panel1.Tag = argstring;
+        }
+        else if (!String.IsNullOrEmpty(this.AccessibleDescription))
+        {
+          argstring = this.AccessibleDescription;
+           this.panel1.Tag = argstring;
+        }
+        else if ((string)this.panel1.Tag != string.Empty)
+        {
+          argstring = this.panel1.Tag.ToString();
+        }
+        argstring = this.panel1.Tag.ToString();
 				string[] array = argstring.Split('|');
 				//command = this.antPanel.xmlTree.ProcessVariable(array[0]);
 				//args = ((array.Length > 1) ? this.pluginUI.ProcessVariable(array[1]) : string.Empty);
@@ -1064,12 +1078,26 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				{
 					processStartInfo.WorkingDirectory = Path.GetDirectoryName(command);
 				}
-
         Process process = Win32.MdiUtil.LoadProcessInControl(processStartInfo, this.panel1);
 				Win32.ShowMaximized(process.MainWindowHandle);
 				this.processList.Insert(0, process);
       }
-			this.IntializeSettings();
+      if (!string.IsNullOrEmpty(command))
+      {
+        switch (this.Parent.GetType().Name)
+        {
+          case "DockContent":
+            //try { ((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath); } catch { }
+            //break;
+          case "Form":
+            try { ((Form)this.Parent).Text = Path.GetFileName(command); } catch { };
+            break;
+          case "PabPage":
+            try { ((TabPage)this.Parent).Text = Path.GetFileName(command); } catch { }
+            break;
+        }
+      }
+      this.IntializeSettings();
 			this.AddPreviousDocuments(argstring);
 			//FIXME
       //((Form1)this.Tag).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);

@@ -276,11 +276,23 @@ namespace AntPlugin.XMLTreeMenu.Controls
 	  private void PicturePanel_Load(object sender, EventArgs e)
 	  {
       //MessageBox.Show(this.pictureBox1.Tag.ToString());
-		  if ((string)this.pictureBox1.Tag != string.Empty)
+      if(!String.IsNullOrEmpty(this.AccessibleName))
+      {
+        this.path = this.AccessibleName;
+        pictureBox1.AccessibleName = this.AccessibleName;
+        pictureBox1.Tag = this.path;
+      }
+      else if(!String.IsNullOrEmpty(this.AccessibleDescription) && File.Exists(this.AccessibleDescription))
+      {
+        this.path = this.AccessibleDescription;
+        pictureBox1.AccessibleName = this.AccessibleName;
+        pictureBox1.Tag = this.path;
+      }
+      else if ((string)this.pictureBox1.Tag != string.Empty)
 		  {
         this.path = (string)this.pictureBox1.Tag;
-        //ここを通る
-        //MessageBox.Show(this.path);
+        pictureBox1.AccessibleName = this.path;
+        pictureBox1.Tag = this.path;
       }
 
       if (!string.IsNullOrEmpty(this.path))
@@ -289,11 +301,20 @@ namespace AntPlugin.XMLTreeMenu.Controls
 		    { 
           this.pictureBox1.Tag = this.path;
           this.pictureBox1.Image = new Bitmap(this.path);
-			    
-          // FIXME
-          //((Form)base.Parent).Text = Path.GetFileNameWithoutExtension(this.path);
-		    }
-		    else
+          switch (this.Parent.GetType().Name)
+          {
+            case "DockContent":
+              //try { ((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath); } catch { }
+              //break;
+            case "Form":
+              try { ((Form)this.Parent).Text = Path.GetFileNameWithoutExtension(this.path); } catch { };
+              break;
+            case "PabPage":
+              try { ((TabPage)this.Parent).Text = Path.GetFileNameWithoutExtension(this.path);} catch { }
+              break;
+          }
+        }
+        else
 		    {
 			    ToolStripMenuItem toolStripMenuItem = this.FindQcGraphMenuItem(this.path);
 			    if (!string.IsNullOrEmpty(this.path) && toolStripMenuItem != null)
@@ -304,17 +325,19 @@ namespace AntPlugin.XMLTreeMenu.Controls
       }
 		  this.IntializeSettings();
 		  this.AddPreviousDocuments(this.path);
-
-      //System.InvalidCastException: 型
-      //  'System.Windows.Forms.TabPage' のオブジェクトを型 'System.Windows.Forms.Form' にキャストできません。
-      
-      //((Form)this.Parent).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
-	    //OK!
-      //MessageBox.Show(this.AccessibleDescription);
-      //MessageBox.Show(((PluginUI)this.MainForm.xmlTreeMenu_pluginUI).ImageList2.Images.Count.ToString());
+      switch (this.Parent.GetType().Name)
+      {
+        case "DockContent":
+        case "Form":
+          try { ((Form)this.Parent).FormClosing += new FormClosingEventHandler(this.parentForm_Closing); } catch { };
+          break;
+        case "PabPage":
+          //try { ((TabPage)this.Parent).Text = Path.GetFileNameWithoutExtension(this.path); } catch { }
+          break;
+      }
     }
 
-	  private ToolStripMenuItem FindQcGraphMenuItem(string theme)
+    private ToolStripMenuItem FindQcGraphMenuItem(string theme)
 	  {
 		  ToolStripMenuItem result;
 		  foreach (ToolStripMenuItem toolStripMenuItem in this.qcgraphToolStripMenuItem.DropDownItems)
@@ -418,8 +441,9 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				{
 					this.pictureBox1.Image = new Bitmap(text);
 					this.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-					((Form)base.Parent).Text = Path.GetFileName(text);
-					this.pictureBox1.Tag = text;
+					//((Form)base.Parent).Text = Path.GetFileName(text);
+            ((TabPage)base.Parent).Text = Path.GetFileName(text);
+            this.pictureBox1.Tag = text;
 					this.AddPreviousDocuments(text);
 					this.pictureBox1.Refresh();
 				}
@@ -520,7 +544,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				{
 					this.pictureBox1.Image = new Bitmap(text4);
 					this.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-					((Form)base.Parent).Text = Path.GetFileName(text4);
+					((TabPage)base.Parent).Text = Path.GetFileName(text4);
 					this.pictureBox1.Tag = text4;
 					this.AddPreviousDocuments(text4);
 					this.pictureBox1.Refresh();
@@ -603,7 +627,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
 	private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
 	{
-		((Form)this.Parent).Close();
+		//((Form)this.Parent).Close();
 	}
 
 	private void 元に戻すUToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1018,7 +1042,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				this.RubberBandMode = (this.rubberBandToolStripMenuItem.Checked = false);
 			}
 			this.pictureBox1.Tag = "Scribble";
-			((Form)base.Parent).Text = "Scribble";
+			((TabPage)base.Parent).Text = "Scribble";
 			this.ActivateScribbleMode(null, null);
 		}
 		else
@@ -1050,7 +1074,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 		this.opt.Dispose();
 		this.pictureBox1.Tag = text;
 		this.pictureBox1.Image = new Bitmap(text);
-		((Form)base.Parent).Text = Path.GetFileNameWithoutExtension(text);
+		((TabPage)base.Parent).Text = Path.GetFileNameWithoutExtension(text);
 	}
 
 	private void scribble_MouseDown(object sender, MouseEventArgs e)
@@ -1122,7 +1146,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				this.ScribbleMode = (this.scribbleToolStripMenuItem.Checked = false);
 			}
 			this.pictureBox1.Tag = "RubberBand";
-			((Form)base.Parent).Text = "RubberBand";
+			((TabPage)base.Parent).Text = "RubberBand";
 			this.ActivateRubberBandMode(null, null);
 		}
 		else
@@ -1191,7 +1215,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 		this.rub.Dispose();
 		this.pictureBox1.Tag = text;
 		this.pictureBox1.Image = new Bitmap(text);
-		((Form)base.Parent).Text = Path.GetFileNameWithoutExtension(text);
+		((TabPage)base.Parent).Text = Path.GetFileNameWithoutExtension(text);
 	}
 
 	private void SetRubberbandOption()
@@ -1462,7 +1486,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 		this.pictureBox1.Refresh();
 		this.pictureBox1.Tag = theme;
 		this.AddPreviousDocuments("qcgraph!" + theme);
-		((Form)base.Parent).Text = Path.GetFileNameWithoutExtension(theme);
+		((TabPage)base.Parent).Text = Path.GetFileNameWithoutExtension(theme);
 		//this.newDocumentFlag = false;
 	}
 	#endregion

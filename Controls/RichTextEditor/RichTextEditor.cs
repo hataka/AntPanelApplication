@@ -34,7 +34,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
     private string printingText = string.Empty;
     private int printingPosition = 0;
     private Font printFont = null;
+
     public string currentPath = string.Empty;
+    public String assemblyFullName = String.Empty;
+    public String baseFullName = String.Empty;
+    public String baseFullPath = String.Empty;
+    public String option = String.Empty;
+
     public Point currentPoint = new Point(0, 0);
     public bool modifiedFlag = false;
     public List<string> previousDocuments = new List<string>();
@@ -170,6 +176,21 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.toolStripDropDownButton2.Image = imageList1.Images[61];
       this.toolStripDropDownButton3.Image = imageList1.Images[15];
       this.toolStripDropDownButton4.Image = imageList1.Images[117];
+
+      this.printingText = this.richTextBox1.Text;
+      this.printingPosition = 0;
+      this.printFont = new Font("ＭＳ Ｐゴシック", 10f);
+      this.IntializeSettings();
+      //MessageBox.Show(base.Parent.GetType().Name);
+      try
+      {
+        //if (base.Parent.GetType().Name == "TabbedDocument")
+        //{
+        //((Form)base.Parent).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
+        //}
+      }
+      catch { }
+      this.richTextBox1.Modified = (this.modifiedFlag = false);
     }
 
     public void InitializeImageList()
@@ -227,34 +248,42 @@ namespace AntPlugin.XMLTreeMenu.Controls
     #region Event Handler
     private void RichTextEditor_Load(object sender, EventArgs e)
     {
-      this.printingText = this.richTextBox1.Text;
-      this.printingPosition = 0;
-      this.printFont = new Font("ＭＳ Ｐゴシック", 10f);
-      this.IntializeSettings();
-      //MessageBox.Show(base.Parent.GetType().Name);
-      try
-      {
-        //if (base.Parent.GetType().Name == "TabbedDocument")
-        //{
-        ((Form)base.Parent).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
-        //}
-      }
-      catch { }
-      this.richTextBox1.Modified = (this.modifiedFlag = false);
-
-#if Interface
       string[] array =  null;
       if (this.currentPath != string.Empty)
       {
-        array = this.currentPath.Split(new char[]{'!'});
+        array = this.currentPath.Split(new char[] { '!' });
         this.richTextBox1.Tag = this.currentPath;
+        this.richTextBox1.AccessibleName = this.currentPath;
+      }
+      else if (!String.IsNullOrEmpty(this.AccessibleName))
+      {
+        //array = this.AccessibleName.Split(new char[] { '!' });
+        if (this.AccessibleName.IndexOf(";") > -1)
+        {
+          this.assemblyFullName = this.AccessibleName.Split(';')[0];
+          this.currentPath = this.AccessibleName.Split(';')[1];
+          this.richTextBox1.AccessibleName = this.currentPath;
+        }
+        else
+        {
+          this.currentPath = this.AccessibleName;
+          this.richTextBox1.AccessibleName = this.currentPath;
+        }
+      }
+      else if (!String.IsNullOrEmpty(this.AccessibleDescription))
+      {
+        this.option = this.AccessibleDescription;
+        if (File.Exists(this.AccessibleName))
+        {
+          this.currentPath = this.AccessibleDescription;
+          this.richTextBox1.AccessibleName = this.currentPath;
+        }
       }
       else if ((string)this.richTextBox1.Tag != string.Empty)
       {
-				//array = PluginBase.MainForm.ProcessArgString((string)this.richTextBox1.Tag).Split(new char[]{'!'});
         array = ((string)this.richTextBox1.Tag).Split(new char[] { '!' });
         this.currentPath = array[0];
-        //MessageBox.Show(this.currentPath);
+        this.richTextBox1.AccessibleName = this.currentPath;
       }
       // KAHATA: 一応FIX?
       if (array != null && array.Length > 1)
@@ -268,15 +297,22 @@ namespace AntPlugin.XMLTreeMenu.Controls
         {
           this.richTextBox1.Text = text;
         }
-        this.richTextBox1.Modified = (this.modifiedFlag = true);
-				
-        //FIXME
-        //((DockContent)base.Parent).TabText = "[出力]" + Path.GetFileName(array[0]);
-				//((Form)this.Parent).Text = "[出力]" + Path.GetFileName(array[0]);
-        
-				this.AddPreviousDocuments((string)this.richTextBox1.Tag);
+        switch (this.Parent.GetType().Name)
+        {
+          case "DockContent":
+            //try { ((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath); } catch { }
+            break;
+          case "Form":
+            try { ((Form)this.Parent).Text = "[出力]" + Path.GetFileName(array[0]); } catch { }
+            break;
+          case "PabPage":
+            try { ((TabPage)this.Parent).Text = "[出力]" + Path.GetFileName(array[0]); } catch { }
+            break;
+        }
+        this.AddPreviousDocuments((string)this.richTextBox1.Tag);
       }
-      else if (File.Exists(this.currentPath) && Lib.IsTextFile(this.currentPath))
+      //else if (File.Exists(this.currentPath) && Lib.IsTextFile(this.currentPath))
+      else if (File.Exists(this.currentPath))
       {
         if (Path.GetExtension(this.currentPath) == ".rtf")
         {
@@ -286,28 +322,29 @@ namespace AntPlugin.XMLTreeMenu.Controls
         {
           this.richTextBox1.Text = Lib.File_ReadToEndDecode(this.currentPath);
         }
-        this.richTextBox1.Modified = (this.modifiedFlag = false);
-       //FIXME
-				//((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath);
-
-				((Form)this.Parent).Text = Path.GetFileName(this.currentPath);
-
-				this.AddPreviousDocuments(this.currentPath);
+        switch (this.Parent.GetType().Name)
+        {
+          case "DockContent":
+            //try { ((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath); } catch { }
+            //break;
+          case "Form":
+            try { ((Form)this.Parent).Text = Path.GetFileName(this.currentPath); } catch { }
+            break;
+          case "PabPage":
+            try { ((TabPage)this.Parent).Text = Path.GetFileName(this.currentPath); } catch { }
+            break;
+        }
+        this.AddPreviousDocuments(this.currentPath);
       }
       this.UpdateStatusText(this.currentPath);
-#endif
-
-
     }
 
     public void IntializeSettings()
     {
-#if Interface      
 			//this.previousDocuments = this.settings.PreviousRichTextEditorDocuments;
       //this.toolStrip1.Visible = this.settings.RichTextEditorToolBarVisible;
       //this.statusStrip1.Visible = this.settings.RichTextEditorStatusBarVisible;
       //this.richTextBox1.Font = this.settings.RichTextEditorDefaultFont;
-#endif			
 			this.ツールバーTToolStripMenuItem.Checked = this.toolStrip1.Visible;
 			this.ステータスバーSToolStripMenuItem.Checked = this.statusStrip1.Visible;
       this.PopulatePreviousDocumentsMenu();
@@ -332,15 +369,11 @@ namespace AntPlugin.XMLTreeMenu.Controls
           }
         }
       }
-#if Interface
-/*
-      this.settings.PreviousRichTextEditorDocuments = this.previousDocuments;
-      this.settings.RichTextEditorMenuBarVisible = this.menuStrip1.Visible;
-      this.settings.RichTextEditorToolBarVisible = this.toolStrip1.Visible;
-      this.settings.RichTextEditorStatusBarVisible = this.statusStrip1.Visible;
-      this.settings.RichTextEditorDefaultFont = this.richTextBox1.Font
-    */    ;
-#endif
+      //this.settings.PreviousRichTextEditorDocuments = this.previousDocuments;
+      //this.settings.RichTextEditorMenuBarVisible = this.menuStrip1.Visible;
+      //this.settings.RichTextEditorToolBarVisible = this.toolStrip1.Visible;
+      //this.settings.RichTextEditorStatusBarVisible = this.statusStrip1.Visible;
+      //this.settings.RichTextEditorDefaultFont = this.richTextBox1.Font
     }
 
     private void RichTextEditor_Leave(object sender, EventArgs e)
@@ -438,7 +471,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       }
     }
 
-    private void 上書き保存SToolStripMenuItem_Click(object sender, EventArgs e)
+    public void 上書き保存SToolStripMenuItem_Click(object sender, EventArgs e)
     {
       string[] array = ((string)this.richTextBox1.Tag).Split(new char[]{'!'});
       if (array.Length > 1)

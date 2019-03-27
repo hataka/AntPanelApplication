@@ -29,12 +29,15 @@ namespace AntPanelApplication
 		public const int ICON_FDP_FILE = 37;
 		public const int ICON_MENU_ROOT = 38;
 
-		//public String projectPath = @"F:\codingground\java\Nashorn\Nashorn.fdp";
-		//public String projectPath = @"F:\codingground\codingground.fdp";
-		//public String projectPath = @"F:\codingground\java\swt-snippets\swt-snippets.fdp";
-		//public String projectPath = @"F:\codingground\java\swt-snippets\Snippet001\Snippet1.fdp";
-		public String projectPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop-531.fdp";
-		public string itemPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop\MainForm.cs";// String.Empty;
+    //public String projectPath = @"F:\codingground\java\Nashorn\Nashorn.fdp";
+    //public String projectPath = @"F:\codingground\codingground.fdp";
+    //public String projectPath = @"F:\codingground\java\swt-snippets\swt-snippets.fdp";
+    //public String projectPath = @"F:\codingground\java\swt-snippets\Snippet001\Snippet1.fdp";
+    //public static String projectPath = Application.ExecutablePath;
+    public String projectPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop-531.fdp";
+    public static String projectDir = Path.GetDirectoryName(Application.ExecutablePath);
+    public static String projectName = "AntPanel";
+    public string itemPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop\MainForm.cs";// String.Empty;
 		public string curSelText = String.Empty;
     public string targetPath = String.Empty;
 
@@ -48,8 +51,10 @@ namespace AntPanelApplication
 		public String addArgs;
 		private int toggleIndex = 1;
 		public ImageList imageList2;
+    public static Image fdImage;
+    public static Image fdImage32;
 
-		public BuildTree buildTree = new BuildTree();
+    public BuildTree buildTree = new BuildTree();
 		public GradleTree gradleTree = new GradleTree();
 		public XmlMenuTree menuTree = new XmlMenuTree();
 
@@ -83,35 +88,13 @@ namespace AntPanelApplication
 			InitializeComponent();
 			InitializeAntPanel();
 		}
-    /*
-		public AntPanel(string projpath)
-		{
-			projectPath = projpath;
-			InitializeComponent();
-			InitializeAntPanel();
-		}
-    */
-    /*
-    public AntPanel(string[] args)
-		{
-			if (args.Length > 0 && !String.IsNullOrEmpty(args[0])) this.projectPath = args[0];
-			if (args.Length > 1 && !String.IsNullOrEmpty(args[1])) this.itemPath = args[1];
-			if (args.Length > 2 && !String.IsNullOrEmpty(args[2])) this.curSelText = args[2];
-      if (args.Length > 3 && !String.IsNullOrEmpty(args[3])) this.targetPath = args[3];
-      InitializeComponent();
-			InitializeAntPanel();
-		}
-    */
+
     #region Initialization
     private void InitializeAntPanel()
 		{
 			InitializeGraphics();
 			InitializeGradleTree();
-      LoadControls();
-
-
-
-
+      InitializeControls();
       CreateMenus();
 
       this.homeStripButton.Click += new System.EventHandler(this.homeStripButton_Click);
@@ -127,8 +110,13 @@ namespace AntPanelApplication
 			RefreshData();
 
 		}
-    private void LoadControls()
+    private void InitializeControls()
     {
+      // https://dobon.net/vb/dotnet/control/tabpagehide.html
+      //TabPageManagerオブジェクトの作成
+      TabPageManager.AddTabControl(this.antPanelTabControl);
+      this.settings = new global::AntPanelApplication.Properties.Settings();
+
       this.menuTree = new XmlMenuTree(this);
       this.tabPage1.Name = this.tabPage1.AccessibleDescription = "AntPanel;Ant";
       this.tabPage1.Tag = this.treeView;// this.antPanelTabControl;
@@ -163,9 +151,11 @@ namespace AntPanelApplication
 			this.tabPage4.ImageIndex = 100; //お気に入り
 			this.tabPage5.ImageIndex = 93; //settings
 
-		}
+      AntPanel.fdImage = this.fdImageButton.Image;
+      AntPanel.fdImage32 = this.fdImage32Button.Image;
+    }
 
-		private void InitializeInterface()
+    private void InitializeInterface()
 		{
 			// TODO 実装 必要性検討 
 		 /* 
@@ -1287,11 +1277,16 @@ namespace AntPanelApplication
     private void gitButton_Click(object sender, EventArgs e)
     {
       Directory.SetCurrentDirectory(Path.GetDirectoryName(this.projectPath));
-      Process.Start(this.settings.GitPath);
+      Process.Start(this.settings.win_GitPath);
     }
 
     private void AntPanel_Load(object sender, EventArgs e)
     {
+      if (Form1.Arguments.Length > 0 && !String.IsNullOrEmpty(Form1.Arguments[0])) this.projectPath = Form1.Arguments[0];
+      if (Form1.Arguments.Length > 1 && !String.IsNullOrEmpty(Form1.Arguments[1])) this.itemPath = Form1.Arguments[1];
+      if (Form1.Arguments.Length > 2 && !String.IsNullOrEmpty(Form1.Arguments[2])) this.curSelText = Form1.Arguments[2];
+      if (Form1.Arguments.Length > 3 && !String.IsNullOrEmpty(Form1.Arguments[3])) this.targetPath = Form1.Arguments[3];
+
       TabPageManager.AddTabPageList(this.tabPage1,this.antPanelTabControl);
       TabPageManager.AddTabPageList(this.tabPage2, this.antPanelTabControl);
       TabPageManager.AddTabPageList(this.tabPage3, this.antPanelTabControl);

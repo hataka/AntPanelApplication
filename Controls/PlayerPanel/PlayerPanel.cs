@@ -93,29 +93,60 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
     private void PlayerPanel_Load(object sender, EventArgs e)
     {
-
-        string path = (string)this.axWindowsMediaPlayer1.Tag;
-
-        if (!string.IsNullOrEmpty(path) && File.Exists(path))
+      String path = String.Empty;
+      if (!String.IsNullOrEmpty(this.AccessibleName))
+      {
+        path = this.AccessibleName;
+        this.axWindowsMediaPlayer1.AccessibleName = path;
+        this.axWindowsMediaPlayer1.Tag = path;
+      }
+      else if (!String.IsNullOrEmpty(this.AccessibleDescription) && File.Exists(this.AccessibleDescription))
+      {
+        path = this.AccessibleDescription;
+        this.axWindowsMediaPlayer1.AccessibleName = path;
+        this.axWindowsMediaPlayer1.Tag = path;
+      }
+      else if ((string)this.axWindowsMediaPlayer1.Tag != string.Empty)
+      {
+        path = (string)this.axWindowsMediaPlayer1.Tag;
+        this.axWindowsMediaPlayer1.AccessibleName = path;
+      }
+      if (!string.IsNullOrEmpty(path) && File.Exists(path))
+      {
+        switch (this.Parent.GetType().Name)
         {
-          this.axWindowsMediaPlayer1.URL = (string)this.axWindowsMediaPlayer1.Tag;
-          ((TabPage)this.Parent).Text = Path.GetFileNameWithoutExtension(path);
-
+          case "DockContent":
+            //try { ((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath); } catch { }
+            //break;
+          case "Form":
+            try { ((Form)this.Parent).Text = Path.GetFileNameWithoutExtension(path); } catch { };
+            break;
+          case "PabPage":
+            try { ((TabPage)this.Parent).Text = Path.GetFileNameWithoutExtension(path); } catch { }
+            break;
         }
-
+      }
      }
  
     private void axWindowsMediaPlayer1_Enter(object sender, EventArgs e)
     {
       string path = (string)this.axWindowsMediaPlayer1.Tag;
-
       if (!string.IsNullOrEmpty(path) && File.Exists(path))
       {
-          this.axWindowsMediaPlayer1.URL = (string)this.axWindowsMediaPlayer1.Tag;
-        ((TabPage)this.Parent).Text = Path.GetFileNameWithoutExtension(path);
-        //MessageBox.Show(this.Parent.GetType().Name);
+        this.axWindowsMediaPlayer1.URL = (string)this.axWindowsMediaPlayer1.Tag;
+        switch (this.Parent.GetType().Name)
+        {
+          case "DockContent":
+            //try { ((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath); } catch { }
+            //break;
+          case "Form":
+            try { ((Form)this.Parent).Text = Path.GetFileName(path); } catch { };
+            break;
+          case "PabPage":
+            try { ((TabPage)this.Parent).Text = Path.GetFileName(path); } catch { }
+            break;
+        }
       }
-
       try
       {
           //this.toolStrip1.Visible = this.settings.PlayerPanelToolBarVisible;
@@ -128,8 +159,6 @@ namespace AntPlugin.XMLTreeMenu.Controls
           this.AddPreviousDocuments(path);
           //FIXME
           //((TabPage)this.Parent).ControlRemoved += new EventHandler(this.parentForm_Closing);
-
-
       }
       catch (Exception ex)
       {

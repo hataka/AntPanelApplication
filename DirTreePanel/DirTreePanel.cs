@@ -995,7 +995,7 @@ namespace AntPlugin.Controls
 			url = url.Replace("\\", "/");
       // TODO 実装
       //PluginBase.MainForm.CallCommand("Browse", url);
-      Process.Start(settings.ChromePath, url);
+      Process.Start(settings.win_ChromePath, url);
     }
 
 		private void dirTreeView1_コンテキストメニューtoolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1067,7 +1067,7 @@ namespace AntPlugin.Controls
 		{
 			String path = "http://localhost/f/VCSharp/Flashdevelop5.1.1-LL/External/Plugins/DirTreePanel/doxygen/html/index.html";
       //PluginBase.MainForm.CallCommand("Browse", path);
-      Process.Start(settings.ChromePath, path);
+      Process.Start(settings.win_ChromePath, path);
         
     }
 
