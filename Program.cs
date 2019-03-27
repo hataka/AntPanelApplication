@@ -14,22 +14,16 @@ namespace AntPanelApplication
     [STAThread]
     static void Main(String[] args)
     {
-
-      /*
-       public static void Main(string[] args)
-      {
-        for (int i = 0; i < args.Length; ++i)
-          Console.Write("{0}番目のコマンドライン引数は{1}です。\n", i, args[i]);
-      }
-      */
+      MainForm mainForm = new MainForm();
       Application.EnableVisualStyles();
-      Application.SetCompatibleTextRenderingDefault(false);
-      if (args.Length>0)
-      {
-        String projectPath = args[0];
-        Application.Run(new Form1(projectPath));
-      }
-      else Application.Run(new Form1());
-    }
+
+      // 例外発生
+      // https://dobon.net/vb/dotnet/control/setcompatibletextrenderingdefault.html
+      // 特定のコントロールで定義された UseCompatibleTextRendering プロパティに
+      //アプリケーション全体で有効な既定値を設定します。
+      //Application.SetCompatibleTextRenderingDefault(false);
+      MainForm.Arguments = args;
+      Application.Run(mainForm);
+     }
   }
 }
