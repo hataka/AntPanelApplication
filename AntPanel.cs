@@ -16,6 +16,8 @@ using AntPlugin.Controls;
 using CSParser.Model;
 using AntPlugin.XmlTreeMenu.Managers;
 using CommonLibrary;
+using MDIForm;
+using AntPanelApplication.Managers;
 
 namespace AntPanelApplication
 {
@@ -33,10 +35,10 @@ namespace AntPanelApplication
     //public String projectPath = @"F:\codingground\codingground.fdp";
     //public String projectPath = @"F:\codingground\java\swt-snippets\swt-snippets.fdp";
     //public String projectPath = @"F:\codingground\java\swt-snippets\Snippet001\Snippet1.fdp";
-    //public static String projectPath = Application.ExecutablePath;
-    public String projectPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop-531.fdp";
-    public static String projectDir = Path.GetDirectoryName(Application.ExecutablePath);
-    public static String projectName = "AntPanel";
+    public String projectPath = Application.ExecutablePath;
+    //public String projectPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop-531.fdp";
+    public String projectDir = Path.GetDirectoryName(Application.ExecutablePath);
+    public String projectName = "AntPanel";
     public string itemPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop\MainForm.cs";// String.Empty;
 		public string curSelText = String.Empty;
     public string targetPath = String.Empty;
@@ -78,7 +80,13 @@ namespace AntPanelApplication
 
 		public TreeNode currentNode = new TreeNode();//null;
 
-		public List<string> BuildFilesList
+    public static OperatingSystem os = Environment.OSVersion;
+    public static bool IsRunningOnMono = (Type.GetType("Mono.Runtime") != null);
+    public static bool IsRunningUnix = ((Environment.OSVersion.ToString()).IndexOf("Unix") >= 0) ? true : false;
+    public static bool IsRunningWindows = ((Environment.OSVersion.ToString()).IndexOf("Windows") >= 0) ? true : false;
+
+
+    public List<string> BuildFilesList
 		{
 			get { return buildFilesList; }
 		}
@@ -92,7 +100,8 @@ namespace AntPanelApplication
     #region Initialization
     private void InitializeAntPanel()
 		{
-			InitializeGraphics();
+      ApplyArgumentSettings();
+      InitializeGraphics();
 			InitializeGradleTree();
       InitializeControls();
       CreateMenus();
@@ -108,8 +117,45 @@ namespace AntPanelApplication
 
 			ReadBuildFiles();
 			RefreshData();
-
 		}
+
+    private void ApplyArgumentSettings()
+    {
+      if (Form1.Arguments.Length > 0 && !String.IsNullOrEmpty(Form1.Arguments[0]))
+      {
+        if (File.Exists(Form1.Arguments[0]))
+        {
+          this.projectPath = Form1.Arguments[0];
+          this.projectDir = Path.GetDirectoryName(this.projectPath);
+          this.projectName = Path.GetFileNameWithoutExtension(this.projectPath);
+          //this.OpenDocument(this.projectPath);
+        }
+        else if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), this.projectPath)))
+        {
+          this.projectPath = Path.Combine(Directory.GetCurrentDirectory(), this.projectPath);
+          this.projectDir = Path.GetDirectoryName(this.projectPath);
+          this.projectName = Path.GetFileNameWithoutExtension(this.projectPath);
+        }
+        else if (Directory.Exists(this.projectPath))
+        {
+          this.projectDir = this.projectPath;
+          this.projectName = Path.GetFileNameWithoutExtension(this.projectPath);
+        }
+      }
+      if (Form1.Arguments.Length > 1 && !String.IsNullOrEmpty(Form1.Arguments[1]))
+      {
+        this.itemPath = Form1.Arguments[1];
+      }
+      if (Form1.Arguments.Length > 2 && !String.IsNullOrEmpty(Form1.Arguments[2]))
+      {
+        this.curSelText = Form1.Arguments[2];
+      }
+      if (Form1.Arguments.Length > 3 && !String.IsNullOrEmpty(Form1.Arguments[3]))
+      {
+        this.targetPath = Form1.Arguments[3];
+      }
+    }
+
     private void InitializeControls()
     {
       // https://dobon.net/vb/dotnet/control/tabpagehide.html
@@ -119,12 +165,27 @@ namespace AntPanelApplication
 
       this.menuTree = new XmlMenuTree(this);
       this.tabPage1.Name = this.tabPage1.AccessibleDescription = "AntPanel;Ant";
-      this.tabPage1.Tag = this.treeView;// this.antPanelTabControl;
+      this.tabPage1.AccessibleName = this.projectPath;
+      this.tabPage1.Tag = new PageInfo(this.treeView, this.antPanelTabControl, this.projectPath, true);
+      //this.tabPage1.Tag = this.treeView;// this.antPanelTabControl;
       IntializeDirTreePanel();
       IntializeFTPClientPanel();
       InitializeXmlTreePanel();
       this.tabPage5.Name = this.tabPage5.AccessibleDescription = "AntPanel;Settings";
-      this.tabPage5.Tag = this.antPanelTabControl;
+      this.tabPage5.AccessibleName = this.projectPath;
+      this.tabPage5.Tag = new PageInfo(this.propertyGrid3, this.antPanelTabControl, this.projectPath, true);
+      //this.tabPage5.Tag = this.propertyGrid3;//this.propertyantPanelTabControl;
+
+      TabPageManager.tabPages.AddRange(new TabPage[] {
+        this.tabPage1,this.tabPage2,this.tabPage3,this.tabPage4,this.tabPage5
+      });
+      // https://dobon.net/vb/dotnet/control/tabpagehide.html
+      this.propertyGrid3.SelectedObject = this.settings;
+      TabPageManager.AddTabPageList(this.tabPage1, this.antPanelTabControl);
+      TabPageManager.AddTabPageList(this.tabPage2, this.antPanelTabControl);
+      TabPageManager.AddTabPageList(this.tabPage3, this.antPanelTabControl);
+      TabPageManager.AddTabPageList(this.tabPage4, this.antPanelTabControl);
+      TabPageManager.AddTabPageList(this.tabPage5, this.antPanelTabControl);
     }
 
     private void InitializeGraphics()
@@ -179,7 +240,9 @@ namespace AntPanelApplication
 			this.dirTreePanel = new DirTreePanel(this,this.projectPath);
 			this.dirTreePanel.Dock = DockStyle.Fill;
       this.tabPage2.Name = this.tabPage2.AccessibleDescription = "AntPanel;Dir";
-      this.tabPage2.Tag = this.dirTreePanel;// this.antPanelTabControl;
+      this.tabPage2.AccessibleName = this.projectPath;
+      this.tabPage2.Tag = new PageInfo(this.dirTreePanel, this.antPanelTabControl, this.projectPath, true);
+      //this.tabPage2.Tag = this.dirTreePanel;// this.antPanelTabControl;
       this.tabPage2.Controls.Add(dirTreePanel);
     }
 
@@ -191,7 +254,9 @@ namespace AntPanelApplication
 				this.ftpClientPanel = new FTPClientPanel(this);
 				this.ftpClientPanel.Dock = DockStyle.Fill;
         this.tabPage3.Name = this.tabPage3.AccessibleDescription = "AntPanel;FTP";
-        this.tabPage3.Tag = this.ftpClientPanel;// this.antPanelTabControl;
+        this.tabPage3.AccessibleName = this.projectPath;
+        this.tabPage3.Tag = new PageInfo(this.ftpClientPanel, this.antPanelTabControl, this.projectPath, true);
+        //this.tabPage3.Tag = this.ftpClientPanel;// this.antPanelTabControl;
         this.tabPage3.Controls.Add(this.ftpClientPanel);
       }
       catch (Exception ex)
@@ -215,6 +280,8 @@ namespace AntPanelApplication
 			}
 			*/
       this.tabPage4.Name = this.tabPage4.AccessibleDescription = "AntPanel;Link";
+      this.tabPage4.AccessibleName = this.projectPath;
+      this.tabPage4.Tag = new PageInfo(null, this.antPanelTabControl, this.projectPath, true);
       //this.tabPage4.Tag = this.antPanelTabControl;
       //TabPageManager.AddTabPageList(this.tabPage4);
     }
@@ -349,8 +416,9 @@ namespace AntPanelApplication
 						{
 							NodeInfo ni = new NodeInfo();
 							ni = treeNode.Tag as NodeInfo;
-							//MessageBox.Show(ni.Path, ni.Title);
-							ActionManager.NodeAction(ni);
+              //MessageBox.Show(ni.Path, ni.Title);
+              if (IsRunningWindows) ActionManager.NodeAction(ni);
+              else if (IsRunningUnix) UnixActionManager.NodeAction(ni);
 						}
 					}
 					catch (Exception ex2)
@@ -428,9 +496,10 @@ namespace AntPanelApplication
 						{
 							NodeInfo ni = new NodeInfo();
 							ni = treeNode.Tag as NodeInfo;
-							//MessageBox.Show(ni.Path, ni.Title);
-							ActionManager.NodeAction(ni);
-						}
+              //MessageBox.Show(ni.Path, ni.Title);
+              if (IsRunningWindows) ActionManager.NodeAction(ni);
+              else if (IsRunningUnix) UnixActionManager.NodeAction(ni);
+             }
 					}
 					catch (Exception ex2)
 					{
@@ -1282,6 +1351,7 @@ namespace AntPanelApplication
 
     private void AntPanel_Load(object sender, EventArgs e)
     {
+      /*
       if (Form1.Arguments.Length > 0 && !String.IsNullOrEmpty(Form1.Arguments[0])) this.projectPath = Form1.Arguments[0];
       if (Form1.Arguments.Length > 1 && !String.IsNullOrEmpty(Form1.Arguments[1])) this.itemPath = Form1.Arguments[1];
       if (Form1.Arguments.Length > 2 && !String.IsNullOrEmpty(Form1.Arguments[2])) this.curSelText = Form1.Arguments[2];
@@ -1293,6 +1363,7 @@ namespace AntPanelApplication
       TabPageManager.AddTabPageList(this.tabPage4, this.antPanelTabControl);
       TabPageManager.AddTabPageList(this.tabPage5, this.antPanelTabControl);
       //MessageBox.Show(TabPageManager.tabPageList.Count.ToString());
+      */
     }
   }
 

@@ -340,9 +340,9 @@ namespace CommonLibrary
       try
       {
         String path = String.Empty;
-        try { path = ((Control)((Control)tabPage.Tag).Tag).Tag as String; }catch { }
-        tabPage.Tag = new PageInfo((Control)tabPage.Tag, parent, path, true);
-        tabPages.Add(tabPage);
+        //try { path = ((Control)((Control)tabPage.Tag).Tag).Tag as String; }catch { }
+        //tabPage.Tag = new PageInfo((Control)tabPage.Tag, parent, path, true);
+        //tabPages.Add(tabPage);
         tabPageList.Add(new TabPageInfo(tabPage, parent, visible));
       }
       catch (Exception ex)

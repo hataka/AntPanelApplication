@@ -36,7 +36,8 @@ namespace AntPlugin.Controls
     public SaveFileDialog saveFileDialog1;
     public ServersModel serversModel;
     global::AntPanelApplication.Properties.Settings settings;
-    public String BaseDir = @"F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug";
+    //public String BaseDir = @"F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug";
+    public String BaseDir = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
     public string nextFTPPath = @"C:\Program Files\NextFTP\NEXTFTP.EXE";
     public string sakuraPath = @"C:\Program Files (x86)\sakura\sakura.exe";
     public string pspadPath = @"C:\Program Files (x86)\PSPad editor\PSPad.exe";
@@ -192,8 +193,16 @@ namespace AntPlugin.Controls
       this.connectDropDownButton.DropDownItems.Clear();
       this.connectDropDownButton.DropDownItems.Add(this.nexrFTPToolStripMenuItem);
       this.connectDropDownButton.DropDownItems.Add(this.toolStripSeparator1);
-      this.loadServerXML(System.IO.Path.Combine(BaseDir, @"SettingData\server.xml"));
-
+      //this.loadServerXML(System.IO.Path.Combine(BaseDir, @"SettingData\server.xml"));
+      if (AntPanel.IsRunningWindows)
+      {
+        this.loadServerXML(System.IO.Path.Combine(BaseDir, @"SettingData\server.xml"));
+        //this.loadServerXML(System.IO.Path.Combine(PathHelper.SettingDataDir, "server.xml"));
+      }
+      else if (AntPanel.IsRunningUnix)
+      {
+        this.loadServerXML(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Application.ExecutablePath), "SettingData/server.xml"));
+      }
       this.splitContainer1.Panel2Collapsed = true;
       this.splitContainer1.Panel1Collapsed = false;
       this.propertyGrid1.HelpVisible = false;

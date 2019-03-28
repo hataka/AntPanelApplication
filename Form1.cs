@@ -1077,7 +1077,8 @@ namespace AntPanelApplication
       this.documentTabControl.TabPages.Clear();
 
       this.LoadRichTextEditor("無題");
-      this.LoadPicturePanel(@"F:\VirtualBox\ShareFolder\Picture\DSCN0166.JPG");
+      if(IsRunningWindows) this.LoadPicturePanel(@"F:\VirtualBox\ShareFolder\Picture\DSCN0166.JPG");
+      else if(IsRunningUnix) this.LoadPicturePanel("/media/sf_ShareFolder/Picture/DSCN0166.JPG");
       if (IsRunningUnix) return;
       this.LoadBrowserEx("http://192.168.0.13/pukiwiki2016/index.php");
       this.LoadPlayerPanel(@"F:\VirtualBox\ShareFolder\Music\03-Monteverdi.mp3");
@@ -1572,6 +1573,7 @@ namespace AntPanelApplication
       {
         //this.ProcessParameters(Arguments);
         //Arguments = null;
+        this.OpenDocument(Arguments[0]);
       }
       /*
       else if (this.appSettings.RestoreFileSession)
@@ -2633,7 +2635,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
           //String message = TextHelper.GetString("Info.RunningProcess");
           //TraceManager.Add(message + " " + args.Substring(0, position) + " " + args.Substring(position + 1), (Int32)TraceType.ProcessStart);
           ProcessStartInfo psi = new ProcessStartInfo();
-          psi.WorkingDirectory = AntPanel.projectDir;
+          psi.WorkingDirectory = Globals.AntPanel.projectDir;
           psi.Arguments = args.Substring(position + 1);
           psi.FileName = args.Substring(0, position);
           //ProcessHelper.StartAsync(psi);

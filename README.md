@@ -1,12 +1,11 @@
 # AntPanel Application
 ## 履歴
 * 2018-05-05 リポジトリ作成 Master Feature-A アップロード
-
+* 2019-03-28 branch Feature-FullPane 作成アップロード
 # Memo
 <p align="center">
 中央揃え  
-
-<img src="http://kahata.travel.coocan.jp/picture/Sea/sea002.jpg" />
+<!-- img src="http://kahata.travel.coocan.jp/picture/Sea/sea002.jpg" /-->
 </p>
 
 <img src="https://drive.google.com/uc?export=view&id=0Bye2xdoobG-JcXhFU29GSG94eGpHSHZUWmZHRUljTUpyeVpv" width=320 height=240 />
