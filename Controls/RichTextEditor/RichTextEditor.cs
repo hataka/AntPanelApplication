@@ -12,6 +12,7 @@ using System.Collections;
 using System.Diagnostics;
 using AntPanelApplication;
 using CommonLibrary;
+using System.Text.RegularExpressions;
 //using CSScriptLibrary;
 #if Interface
 using AntPlugin.CommonLibrary;
@@ -151,7 +152,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 */ 
 #endif    
 		}
-   
+    public RichTextBox textbox2;
     public void IntializeRichTextPanel()
     {
       //String resource = Path.Combine(baseDir, @"CsMacro\CustomDocument\Resources\"); //"
@@ -176,6 +177,9 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.toolStripDropDownButton2.Image = imageList1.Images[61];
       this.toolStripDropDownButton3.Image = imageList1.Images[15];
       this.toolStripDropDownButton4.Image = imageList1.Images[117];
+      this.textbox2 = new RichTextBox();
+      this.textbox2.Visible = false;
+      this.Controls.Add(textbox2);
 
       this.printingText = this.richTextBox1.Text;
       this.printingPosition = 0;
@@ -2279,7 +2283,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator2,
             this.終了XToolStripMenuItem});
       this.ファイルFToolStripMenuItem.Name = "ファイルFToolStripMenuItem";
-      this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(86, 24);
+      this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(86, 23);
       this.ファイルFToolStripMenuItem.Text = "ファイル(&F)";
       // 
       // 新規作成NToolStripMenuItem
@@ -2467,7 +2471,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator4,
             this.すべて選択AToolStripMenuItem});
       this.編集EToolStripMenuItem.Name = "編集EToolStripMenuItem";
-      this.編集EToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
+      this.編集EToolStripMenuItem.Size = new System.Drawing.Size(74, 23);
       this.編集EToolStripMenuItem.Text = "編集(&E)";
       // 
       // 元に戻すUToolStripMenuItem
@@ -2544,7 +2548,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator11,
             this.dockingTreeViewToolStripMenuItem});
       this.表示VToolStripMenuItem1.Name = "表示VToolStripMenuItem1";
-      this.表示VToolStripMenuItem1.Size = new System.Drawing.Size(75, 24);
+      this.表示VToolStripMenuItem1.Size = new System.Drawing.Size(75, 23);
       this.表示VToolStripMenuItem1.Text = "表示(&V)";
       // 
       // ツールバーTToolStripMenuItem
@@ -2619,7 +2623,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.置換RToolStripMenuItem,
             this.行へ移動GToolStripMenuItem});
       this.検索SToolStripMenuItem1.Name = "検索SToolStripMenuItem1";
-      this.検索SToolStripMenuItem1.Size = new System.Drawing.Size(75, 24);
+      this.検索SToolStripMenuItem1.Size = new System.Drawing.Size(75, 23);
       this.検索SToolStripMenuItem1.Text = "検索(&S)";
       // 
       // 検索FToolStripMenuItem
@@ -2649,7 +2653,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.タイムスタンプToolStripMenuItem,
             this.c見出しToolStripMenuItem});
       this.挿入IToolStripMenuItem.Name = "挿入IToolStripMenuItem";
-      this.挿入IToolStripMenuItem.Size = new System.Drawing.Size(71, 24);
+      this.挿入IToolStripMenuItem.Size = new System.Drawing.Size(71, 23);
       this.挿入IToolStripMenuItem.Text = "挿入(&I)";
       // 
       // タイムスタンプToolStripMenuItem
@@ -2672,7 +2676,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.右端で折り返すToolStripMenuItem,
             this.フォントと色ToolStripMenuItem});
       this.書式OToolStripMenuItem.Name = "書式OToolStripMenuItem";
-      this.書式OToolStripMenuItem.Size = new System.Drawing.Size(76, 24);
+      this.書式OToolStripMenuItem.Size = new System.Drawing.Size(76, 23);
       this.書式OToolStripMenuItem.Text = "書式(&O)";
       // 
       // 右端で折り返すToolStripMenuItem
@@ -2698,7 +2702,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator28});
       this.スクリプトCToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Replace;
       this.スクリプトCToolStripMenuItem.Name = "スクリプトCToolStripMenuItem";
-      this.スクリプトCToolStripMenuItem.Size = new System.Drawing.Size(97, 24);
+      this.スクリプトCToolStripMenuItem.Size = new System.Drawing.Size(97, 23);
       this.スクリプトCToolStripMenuItem.Text = "スクリプト(&C)";
       // 
       // スクリプトを実行XToolStripMenuItem
@@ -2733,7 +2737,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.カスタマイズCToolStripMenuItem,
             this.オプションOToolStripMenuItem});
       this.ツールTToolStripMenuItem.Name = "ツールTToolStripMenuItem";
-      this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(80, 24);
+      this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(80, 23);
       this.ツールTToolStripMenuItem.Text = "ツール(&T)";
       // 
       // カスタマイズCToolStripMenuItem
@@ -2792,7 +2796,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator5,
             this.バージョン情報AToolStripMenuItem});
       this.ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
-      this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
+      this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(81, 23);
       this.ヘルプHToolStripMenuItem.Text = "ヘルプ(&H)";
       // 
       // 内容CToolStripMenuItem
@@ -3345,6 +3349,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.richTextBox1.TabIndex = 7;
       this.richTextBox1.Tag = "";
       this.richTextBox1.Text = "";
+      this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
       // 
       // RichTextEditor
       // 
@@ -3373,9 +3378,79 @@ namespace AntPlugin.XMLTreeMenu.Controls
     }
 
 
+
+
     #endregion
 
+    //http://www.codingvision.net/interface/c-simple-syntax-highlighting
+    private void richTextBox1_TextChanged(object sender, EventArgs e)
+    {
+      // getting keywords/functions
+      string keywords = @"\b(public|private|partial|static|namespace|class|using|void|foreach|in)\b";
+      MatchCollection keywordMatches = Regex.Matches(richTextBox1.Text, keywords);
 
- 
+      // getting types/classes from the text 
+      string types = @"\b(Console)\b";
+      MatchCollection typeMatches = Regex.Matches(richTextBox1.Text, types);
+
+      // getting comments (inline or multiline)
+      string comments = @"(\/\/.+?$|\/\*.+?\*\/)";
+      MatchCollection commentMatches = Regex.Matches(richTextBox1.Text, comments, RegexOptions.Multiline);
+
+      // getting strings
+      string strings = "\".+?\"";
+      MatchCollection stringMatches = Regex.Matches(richTextBox1.Text, strings);
+
+      // saving the original caret position + forecolor
+      int originalIndex = richTextBox1.SelectionStart;
+      int originalLength = richTextBox1.SelectionLength;
+      Color originalColor = Color.Black;
+
+      // MANDATORY - focuses a label before highlighting (avoids blinking)
+      //titleLabel.Focus();
+      this.textbox2.Focus();//仮
+      // removes any previous highlighting (so modified words won't remain highlighted)
+      richTextBox1.SelectionStart = 0;
+      richTextBox1.SelectionLength = richTextBox1.Text.Length;
+      richTextBox1.SelectionColor = originalColor;
+
+      // scanning...
+      foreach (Match m in keywordMatches)
+      {
+        richTextBox1.SelectionStart = m.Index;
+        richTextBox1.SelectionLength = m.Length;
+        richTextBox1.SelectionColor = Color.Blue;
+      }
+
+      foreach (Match m in typeMatches)
+      {
+        richTextBox1.SelectionStart = m.Index;
+        richTextBox1.SelectionLength = m.Length;
+        richTextBox1.SelectionColor = Color.DarkCyan;
+      }
+
+      foreach (Match m in commentMatches)
+      {
+        richTextBox1.SelectionStart = m.Index;
+        richTextBox1.SelectionLength = m.Length;
+        richTextBox1.SelectionColor = Color.Green;
+      }
+
+      foreach (Match m in stringMatches)
+      {
+        richTextBox1.SelectionStart = m.Index;
+        richTextBox1.SelectionLength = m.Length;
+        richTextBox1.SelectionColor = Color.Brown;
+      }
+
+      // restoring the original colors, for further writing
+      richTextBox1.SelectionStart = originalIndex;
+      richTextBox1.SelectionLength = originalLength;
+      richTextBox1.SelectionColor = originalColor;
+
+      // giving back the focus
+      richTextBox1.Focus();
+
+    }
   }
 }

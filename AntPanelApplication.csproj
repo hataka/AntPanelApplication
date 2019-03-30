@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0CA60893-568D-442D-B8F4-D52049F1B36B}</ProjectGuid>
+    <ProjectGuid>{3F380295-EAE6-4BE7-9825-28361F55B2D1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AntPanelApplication</RootNamespace>
@@ -267,7 +267,6 @@
     <EmbeddedResource Include="XmlTreeMenu\XmlTreeMenu.resx">
       <DependentUpon>XmlTreeMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="DirTreePanel\DirTreePanel.bak" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

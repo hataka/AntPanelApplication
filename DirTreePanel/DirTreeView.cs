@@ -8,6 +8,7 @@ using System.IO;
 
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using AntPanelApplication;
 
 public class DirTreeView : TreeView
 {
@@ -44,13 +45,20 @@ public class DirTreeView : TreeView
   private ToolStripMenuItem BrowserExtoolStripMenuItem2;
   private ToolStripMenuItem BrowsertoolStripMenuItem2;
   public  ToolStripMenuItem openAntPanel;
+  public ToolStripMenuItem AntPanelを開くMenuItem1;
+  private ToolStripSeparator toolStripSeparator3;
+  public ToolStripMenuItem emacstoolStripMenuItem2;
+  public ToolStripMenuItem geditoolStripMenuItem2;
+  private ToolStripSeparator toolStripSeparator4;
+  public ToolStripMenuItem eogtoolStripMenuItem2;
+  public ToolStripMenuItem totemtoolStripMenuItem2;
   public String filepath;
 
-	/// <summary>
-	/// 使用中のリソースをすべてクリーンアップします。
-	/// </summary>
-	/// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-	protected override void Dispose(bool disposing)
+  /// <summary>
+  /// 使用中のリソースをすべてクリーンアップします。
+  /// </summary>
+  /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
+  protected override void Dispose(bool disposing)
 	{
 		if (disposing && (components != null))
 		{
@@ -129,6 +137,12 @@ public class DirTreeView : TreeView
       this.AzukitoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
       this.RichTexttoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
       this.DocumenttoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+      this.emacstoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+      this.geditoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+      this.eogtoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+      this.totemtoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
       this.ブラウザで開くtoolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.chrometoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
       this.IEtoolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -149,6 +163,7 @@ public class DirTreeView : TreeView
       this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       this.ファイルエクスプローラと同期toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.Antツリーに追加toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.AntPanelを開くMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.openAntPanel = new System.Windows.Forms.ToolStripMenuItem();
       this.contextMenuStrip1.SuspendLayout();
       this.SuspendLayout();
@@ -183,7 +198,7 @@ public class DirTreeView : TreeView
             this.toolStripSeparator2,
             this.ファイルエクスプローラと同期toolStripMenuItem,
             this.Antツリーに追加toolStripMenuItem,
-            this.openAntPanel});
+            this.AntPanelを開くMenuItem1});
       this.contextMenuStrip1.Name = "contextMenuStrip1";
       this.contextMenuStrip1.Size = new System.Drawing.Size(240, 392);
       this.contextMenuStrip1.TabStop = true;
@@ -195,7 +210,13 @@ public class DirTreeView : TreeView
             this.PSPadtoolStripMenuItem2,
             this.AzukitoolStripMenuItem2,
             this.RichTexttoolStripMenuItem2,
-            this.DocumenttoolStripMenuItem2});
+            this.DocumenttoolStripMenuItem2,
+            this.toolStripSeparator3,
+            this.emacstoolStripMenuItem2,
+            this.geditoolStripMenuItem2,
+            this.toolStripSeparator4,
+            this.eogtoolStripMenuItem2,
+            this.totemtoolStripMenuItem2});
       this.開くtoolStripMenuItem1.Name = "開くtoolStripMenuItem1";
       this.開くtoolStripMenuItem1.Size = new System.Drawing.Size(239, 26);
       this.開くtoolStripMenuItem1.Text = "開く";
@@ -239,6 +260,40 @@ public class DirTreeView : TreeView
       this.DocumenttoolStripMenuItem2.Size = new System.Drawing.Size(189, 26);
       this.DocumenttoolStripMenuItem2.Text = "Document";
       this.DocumenttoolStripMenuItem2.Click += new System.EventHandler(this.開くtoolStripMenuItem1_Click);
+      // 
+      // toolStripSeparator3
+      // 
+      this.toolStripSeparator3.Name = "toolStripSeparator3";
+      this.toolStripSeparator3.Size = new System.Drawing.Size(186, 6);
+      // 
+      // emacstoolStripMenuItem2
+      // 
+      this.emacstoolStripMenuItem2.Name = "emacstoolStripMenuItem2";
+      this.emacstoolStripMenuItem2.Size = new System.Drawing.Size(189, 26);
+      this.emacstoolStripMenuItem2.Text = "emacs";
+      // 
+      // geditoolStripMenuItem2
+      // 
+      this.geditoolStripMenuItem2.Name = "geditoolStripMenuItem2";
+      this.geditoolStripMenuItem2.Size = new System.Drawing.Size(189, 26);
+      this.geditoolStripMenuItem2.Text = "gedit";
+      // 
+      // toolStripSeparator4
+      // 
+      this.toolStripSeparator4.Name = "toolStripSeparator4";
+      this.toolStripSeparator4.Size = new System.Drawing.Size(186, 6);
+      // 
+      // eogtoolStripMenuItem2
+      // 
+      this.eogtoolStripMenuItem2.Name = "eogtoolStripMenuItem2";
+      this.eogtoolStripMenuItem2.Size = new System.Drawing.Size(189, 26);
+      this.eogtoolStripMenuItem2.Text = "eog";
+      // 
+      // totemtoolStripMenuItem2
+      // 
+      this.totemtoolStripMenuItem2.Name = "totemtoolStripMenuItem2";
+      this.totemtoolStripMenuItem2.Size = new System.Drawing.Size(189, 26);
+      this.totemtoolStripMenuItem2.Text = "totem";
       // 
       // ブラウザで開くtoolStripMenuItem1
       // 
@@ -379,6 +434,12 @@ public class DirTreeView : TreeView
       this.Antツリーに追加toolStripMenuItem.Text = "Antツリーに追加";
       this.Antツリーに追加toolStripMenuItem.Click += new System.EventHandler(this.Antツリーに追加toolStripMenuItem_Click);
       // 
+      // AntPanelを開くMenuItem1
+      // 
+      this.AntPanelを開くMenuItem1.Name = "AntPanelを開くMenuItem1";
+      this.AntPanelを開くMenuItem1.Size = new System.Drawing.Size(239, 26);
+      this.AntPanelを開くMenuItem1.Text = "AntPanelを開く";
+      // 
       // openAntPanel
       // 
       this.openAntPanel.Name = "openAntPanel";
@@ -390,6 +451,7 @@ public class DirTreeView : TreeView
       this.LineColor = System.Drawing.Color.Black;
       this.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.DirTreeView_BeforeExpand);
       this.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.DirTreeView_AfterSelect);
+      this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.DirTreeView_MouseClick);
       this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseDown);
       this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseUp);
       this.contextMenuStrip1.ResumeLayout(false);
@@ -401,32 +463,35 @@ public class DirTreeView : TreeView
 	{
 		this.ImageList = imageList1;//使用するImageListを指定
 		this.ContextMenuStrip = contextMenuStrip1;
-
     TreeNode favorate = new TreeNode(@"C:\Users\和彦\Links");
+    if (AntPanel.IsRunningUnix)
+    {
+      favorate = new TreeNode("/home/kazuhiko/");
+    }
+
     this.Nodes.Add(favorate);
     
     //MessageBox.Show("イメージ数は" + imageList1.Images.Count + "です");
 		string[] drives = Environment.GetLogicalDrives();//ドライブ取得
-		foreach (string drive in drives)
-		{
-			TreeNode tn = new TreeNode(drive);
 
-			if (drive == "A:\\") //ドライブに対しImageListの画像を指定
-			{
-				tn.ImageIndex = 0;
-				tn.SelectedImageIndex = 0;
-			}
-			else
-			{
-				tn.ImageIndex = 1;
-				tn.SelectedImageIndex = 1;
-			}
-			this.Nodes.Add(tn);
-			tn.Nodes.Add("dummy");
-			//Cドライブを初期展開する場合このコードを追加
-			//if(tn.Text == "C:\\")
-			//	tn.Expand();
-		}
+    foreach (string drive in drives)
+    {
+      TreeNode tn = new TreeNode(drive);
+      tn.ImageIndex = 1;
+      tn.SelectedImageIndex = 1;
+
+      if (AntPanel.IsRunningWindows && drive == "A:\\") //ドライブに対しImageListの画像を指定
+      {
+        tn.ImageIndex = 0;
+        tn.SelectedImageIndex = 0;
+      }
+
+      this.Nodes.Add(tn);
+      tn.Nodes.Add("dummy");
+      //Cドライブを初期展開する場合このコードを追加
+      //if(tn.Text == "C:\\")
+      //	tn.Expand();
+    }
 	}
 
 	public void InitializeDirTreeView(String folder)
@@ -515,51 +580,60 @@ public class DirTreeView : TreeView
 		}
 	}
 
-	private void DirTreeView_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
-	{
-		DirectoryInfo di = new DirectoryInfo(e.Node.FullPath);
+  private void DirTreeView_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
+  {
+    DirectoryInfo di = new DirectoryInfo(e.Node.FullPath);
 
-		//string viewer_url;
-		if (e.Node.Text != "A:\\")//＋マークによるノード展開でデフォルトのA:\アクセス回避
-		{
-			if (di.Exists)
-			{
-				try
-				{
-					foreach (FileInfo file in di.GetFiles())
-					{
-						// 追加
-						TreeNode nd = e.Node.Nodes.Add(file.Name);//サブディレクトリをノードに追加
-						nd.ImageIndex = GetIconImageIndex(file.FullName); //-1;
-						nd.SelectedImageIndex = GetIconImageIndex(file.FullName);//-1;
-					}
-				}
-				catch (Exception exc)
-				{
-					String s = exc.Message.ToString();
-					//MessageBox.Show(Lib.OutputError(s));
-					//this.ShowExceptionUI(s);
-					//MessageBox.Show(exc.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				}
-			}
-		}
+    //string viewer_url;
+    if (e.Node.Text != "A:\\")//＋マークによるノード展開でデフォルトのA:\アクセス回避
+    {
+      if (di.Exists)
+      {
+        try
+        {
+          foreach (FileInfo file in di.GetFiles())
+          {
+            // 追加
+            TreeNode nd = e.Node.Nodes.Add(file.Name);//サブディレクトリをノードに追加
+            nd.ImageIndex = GetIconImageIndex(file.FullName); //-1;
+            nd.SelectedImageIndex = GetIconImageIndex(file.FullName);//-1;
+          }
+        }
+        catch (Exception exc)
+        {
+          String s = exc.Message.ToString();
+          //MessageBox.Show(Lib.OutputError(s));
+          //this.ShowExceptionUI(s);
+          //MessageBox.Show(exc.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+      }
+    }
+    //MessageBox.Show(e.Node.FullPath);
     this.filepath = e.Node.FullPath.Replace("\\\\", "\\");
-	}
+    if (AntPanel.IsRunningUnix)
+    {
+      this.filepath = e.Node.FullPath.Replace("\\", "/");
+    }
+  }
 
-	public int GetIconImageIndex(string path)
-	{
-		string extension = Path.GetExtension(path);
+  public int GetIconImageIndex(string path)
+  {
+    if (AntPanel.IsRunningWindows)
+    {
+      string extension = Path.GetExtension(path);
+      if (_systemIcons.ContainsKey(extension) == false)
+      {
+        Icon icon = ShellIcon.GetSmallIcon(path);
+        imageList1.Images.Add(icon);
+        _systemIcons.Add(extension, imageList1.Images.Count - 1);
+      }
+      return (int)_systemIcons[Path.GetExtension(path)];
+    }
+    else return 4;
+  }
 
-		if (_systemIcons.ContainsKey(extension) == false)
-		{
-			Icon icon = ShellIcon.GetSmallIcon(path);
-			imageList1.Images.Add(icon);
-			_systemIcons.Add(extension, imageList1.Images.Count - 1);
-		}
-		return (int)_systemIcons[Path.GetExtension(path)];
-	}
 
-	private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+  private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
 	{
 		//ContextMenuStripを表示しているコントロールを表示する
 		//ContextMenuStrip menu = (ContextMenuStrip)sender;
@@ -642,7 +716,16 @@ public class DirTreeView : TreeView
 		String errMsg = "Error: " + Message + " - File: " + SourceFile + " Line: " + SourceLine.ToString();
 		return errMsg;
 	}
- 
+
+  private void DirTreeView_MouseClick(object sender, MouseEventArgs e)
+  {
+    if (e.Button == MouseButtons.Right)
+    {
+      TreeNode currentNode = this.GetNodeAt(e.Location) as TreeNode;
+      this.SelectedNode = currentNode;
+      this.contextMenuStrip1.Show(this, e.Location);
+    }
+  }
 }
 
 /// <summary>
