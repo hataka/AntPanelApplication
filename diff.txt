@@ -1,0 +1,1794 @@
+diff --git a/AntPanel.Designer.cs b/AntPanel.Designer.cs
+index 89f99cc..337c567 100644
+--- a/AntPanel.Designer.cs
++++ b/AntPanel.Designer.cs
+@@ -1,5 +1,6 @@
+ ﻿using AntPlugin.CommonLibrary;
+ using AntPlugin.XmlTreeMenu;
++//using AntPlugin.XmlTreeMenu;
+ using System;
+ using System.Collections.Generic;
+ using System.IO;
+@@ -91,7 +92,7 @@ namespace AntPanelApplication
+       this.csOutlineButton1 = new System.Windows.Forms.ToolStripButton();
+       this.syncronizeDodument = new System.Windows.Forms.ToolStripButton();
+       this.syncronizeButton = new System.Windows.Forms.ToolStripButton();
+-      this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
++      this.表示ToolStripButton = new System.Windows.Forms.ToolStripButton();
+       this.homeStripButton = new System.Windows.Forms.ToolStripButton();
+       this.removeButton = new System.Windows.Forms.ToolStripButton();
+       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+@@ -153,7 +154,7 @@ namespace AntPanelApplication
+             this.csOutlineButton1,
+             this.syncronizeDodument,
+             this.syncronizeButton,
+-            this.toolStripButton8,
++            this.表示ToolStripButton,
+             this.homeStripButton,
+             this.removeButton});
+       this.toolStrip.Location = new System.Drawing.Point(4, 5);
+@@ -542,16 +543,16 @@ namespace AntPanelApplication
+       this.syncronizeButton.Text = "syncronizeButton";
+       this.syncronizeButton.ToolTipText = "現在のドキュメントをノードに追加";
+       // 
+-      // toolStripButton8
++      // 表示ToolStripButton
+       // 
+-      this.toolStripButton8.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+-      this.toolStripButton8.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+-      this.toolStripButton8.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton8.Image")));
+-      this.toolStripButton8.ImageTransparentColor = System.Drawing.Color.Transparent;
+-      this.toolStripButton8.Name = "toolStripButton8";
+-      this.toolStripButton8.Size = new System.Drawing.Size(24, 29);
+-      this.toolStripButton8.Text = "Property表示切替";
+-      this.toolStripButton8.Click += new System.EventHandler(this.toolStripButton8_Click);
++      this.表示ToolStripButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
++      this.表示ToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
++      this.表示ToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("表示ToolStripButton.Image")));
++      this.表示ToolStripButton.ImageTransparentColor = System.Drawing.Color.Transparent;
++      this.表示ToolStripButton.Name = "表示ToolStripButton";
++      this.表示ToolStripButton.Size = new System.Drawing.Size(24, 29);
++      this.表示ToolStripButton.Text = "Property表示切替";
++      this.表示ToolStripButton.Click += new System.EventHandler(this.toolStripButton8_Click);
+       // 
+       // homeStripButton
+       // 
+@@ -784,7 +785,7 @@ namespace AntPanelApplication
+     private System.Windows.Forms.ToolStripButton csOutlineButton1;
+     private System.Windows.Forms.ToolStripButton syncronizeDodument;
+     private System.Windows.Forms.ToolStripButton syncronizeButton;
+-    private System.Windows.Forms.ToolStripButton toolStripButton8;
++    private System.Windows.Forms.ToolStripButton 表示ToolStripButton;
+     private System.Windows.Forms.ToolStripButton homeStripButton;
+     private System.Windows.Forms.SplitContainer splitContainer1;
+     public System.Windows.Forms.TreeView treeView;
+@@ -796,7 +797,6 @@ namespace AntPanelApplication
+     public System.Windows.Forms.ImageList imageList;
+     private System.Windows.Forms.ToolStripButton removeButton;
+ 
+-
+     private void treeView_MouseDown(object sender, MouseEventArgs e)
+     {
+       int delta = (int)DateTime.Now.Subtract(lastMouseDown).TotalMilliseconds;
+@@ -859,152 +859,68 @@ namespace AntPanelApplication
+       }
+     }
+ 
+-
+     public void treeView_AfterSelect(object sender, TreeViewEventArgs e)
+     {
+       TreeView tv = (TreeView)sender;
+       TreeNode selectedNode = tv.SelectedNode;
+-      //this.ShowNodeInfo(selectedNode);
+       this.ShowNodeInfo(selectedNode, tv);
+     }
+-    /*
+-    private void ShowNodeInfo(TreeNode treeNode)
+-    {
+-      if (treeNode != null && treeNode.Tag.GetType().Name == "NodeInfo" && treeNode.Tag != null)
+-      {
+-        //MessageBox.Show(treeNode.GetType().FullName);
+-        NodeInfo selectedObject = new NodeInfo();
+-        selectedObject = (NodeInfo)treeNode.Tag;
+-        this.pluginUI.propertyGrid1.SelectedObject = selectedObject;
+-      }
+-    }
+-    */
++
+     private void ShowNodeInfo(TreeNode treeNode, TreeView treeView)
+     {
+-      //MDIForm.ParentFormClass mainForm;
+       if (treeNode != null && treeNode.Tag != null)
+       {
+         if (treeNode.Tag is NodeInfo)
+         {
+           NodeInfo selectedObject = new NodeInfo();
+           selectedObject = (NodeInfo)treeNode.Tag;
+-          //mainForm = treeView.Tag as MDIForm.ParentFormClass;
+           this.propertyGrid1.SelectedObject = selectedObject;
+         }
+         else if (treeNode.Tag is TaskInfo)
+         {
+           TaskInfo selectedObject = new TaskInfo();
+           selectedObject = (TaskInfo)treeNode.Tag;
+-          //mainForm = treeView.Tag as MDIForm.ParentFormClass;
+           this.propertyGrid1.SelectedObject = selectedObject;
+         }
+-
+         else if (treeNode.Tag is XmlElement)
+         {
+-          //treeView.Tag as MDIForm.ParentFormClass;
+           this.propertyGrid1.SelectedObject = (XmlElement)treeNode.Tag;
+         }
+-        //else if (treeNode.Tag is CSParser.Model.MemberModel)
+-        //{
+-        //  mainForm = treeView.Tag as MDIForm.ParentFormClass;
+-        //  mainForm.propertyGrid1.SelectedObject = (CSParser.Model.MemberModel)treeNode.Tag;
+-        //}
++        else if (treeNode.Tag is CSParser.Model.MemberModel)
++        {
++           this.propertyGrid1.SelectedObject = (CSParser.Model.MemberModel)treeNode.Tag;
++        }
+         else if (treeNode.Tag is String)
+         {
+           String path = treeNode.Tag as String;
+           if (File.Exists(path))
+           {
+-            //treeView.Tag as MDIForm.ParentFormClass;
+-            this.propertyGrid1.SelectedObject = new FileInfo(path);
++             this.propertyGrid1.SelectedObject = new FileInfo(path);
+           }
+           else if (Directory.Exists(path))
+           {
+-            //mainForm = treeView.Tag as MDIForm.ParentFormClass;
+             this.propertyGrid1.SelectedObject = new DirectoryInfo(path);
+           }
+-          /*
++          
+           else if (Lib.IsWebSite(path))
+           {
+             NodeInfo ni = new NodeInfo();
+             ni.Path = path;
+-            mainForm = treeView.Tag as MDIForm.ParentFormClass;
+-            mainForm.propertyGrid1.SelectedObject = ni;
++            this.propertyGrid1.SelectedObject = ni;
+           }
+           else
+           {
+             NodeInfo ni2 = new NodeInfo();
+             ni2.Command = path;
+-            mainForm = treeView.Tag as MDIForm.ParentFormClass;
+-            mainForm.propertyGrid1.SelectedObject = ni2;
++            this.propertyGrid1.SelectedObject = ni2;
+           }
+-          */
+         }
+         else
+         {
+-          //treeView.Tag as MDIForm.ParentFormClass;
+-          this.propertyGrid1.SelectedObject = null;
+-        }
+-      }
+-    }
+-    /*
+-    private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+-    {
+-      if (e.Button == MouseButtons.Right)
+-      {
+-        TreeNode currentNode = treeView.GetNodeAt(e.Location) as TreeNode;
+-        treeView.SelectedNode = currentNode;
+-        if (currentNode.Tag == null) return;
+-        if (currentNode.Tag.GetType().Name == "NodeInfo")
+-        {
+-          try
+-          {
+-            this.contextMenuStrip1.Show(treeView, e.Location);
+-          }
+-          catch (Exception Exception)
+-          {
+-            MessageBox.Show(Exception.Message.ToString(), "TreeMenu:treeView_NodeMouseClick:125");
+-          }
+-        }
+-      }
+-    }
+-    */
+-
+-      /*
+-    public void treeView_DoubleClick(object sender, EventArgs e)
+-    {
+-      // fixed 2018-2-23
+-      //TreeNode treeNode = treeView.SelectedNode;
+-      TreeView tree = sender as TreeView;
+-      TreeNode treeNode = tree.SelectedNode;
+-
+-      /// XmlTreeView カプセル化のため追加 2018-02-23
+-      ToolStripMenuItem button = new ToolStripMenuItem();
+-      try
+-      {
+-        if (treeNode.Tag.GetType().Name != "NodeInfo") return;
+-         //if (this.treeView.SelectedNode.Parent == null)
+-        if (treeNode.Parent == null)
+-        {
+-          //PluginBase.MainForm.OpenEditableDocument(((NodeInfo)this.treeView.SelectedNode.Tag).Path);
+-          PluginBase.MainForm.OpenEditableDocument(((NodeInfo)treeNode.Tag).Path);
+-          return;
++           this.propertyGrid1.SelectedObject = null;
+         }
+       }
+-      catch (Exception ex2)
+-      {
+-        String errorMsg = ex2.Message.ToString();
+-        MessageBox.Show(errorMsg, "treeNode.Tag.GetType().Name != NodeInfo");
+-        return;
+-      }
+-      NodeInfo ni = new NodeInfo();
+-
+-      // fixed 2018-02-23
+-      //ni = this.treeView.SelectedNode.Tag as NodeInfo;
+-      ni = treeNode.Tag as NodeInfo;
+-      ActionManager.NodeAction(ni);
+-
+     }
+-      */
+ 
+   }
+ }
+diff --git a/AntPanel.cs b/AntPanel.cs
+index 6018d09..973b1bd 100644
+--- a/AntPanel.cs
++++ b/AntPanel.cs
+@@ -11,31 +11,48 @@ using System.IO;
+ using System.Xml;
+ using AntPlugin.XmlTreeMenu;
+ using AntPlugin.CommonLibrary;
++using CSParser.BuildTree;
+ 
+ namespace AntPanelApplication
+ {
+   public partial class AntPanel : UserControl
+   {
++    //public String projectPath = @"F:\codingground\java\Nashorn\Nashorn.fdp";
++    public String projectPath = @"F:\codingground\codingground.fdp";
++
++
++
++
+     public const int ICON_FILE = 0;
+     public const int ICON_DEFAULT_TARGET = 1;
+     public const int ICON_INTERNAL_TARGET = 2;
+     public const int ICON_PUBLIC_TARGET = 3;
++    public const int ICON_WSF_FILE = 36;
++    public const int ICON_FDP_FILE = 37;
++    public const int ICON_MENU_ROOT = 38;
+ 
+     private ContextMenuStrip buildFileMenu;
+     private ContextMenuStrip targetMenu;
+     private List<String> buildFilesList = new List<string>();
+-
+-    private const String STORAGE_FILE_NAME = "antPluginData.txt";
+-    public String projectPath = @"F:\codingground\java\Nashorn\Nashorn.fdp";
+-    //public String antPath = @"F:\ant\apache-ant-1.10.1\bin\ant.bat"; //String.Empty;
+-    public String antPath = @"F:\ant\apache-ant-1.10.1";
+     
+-    // DisplayName: Additional Arguments
+-    // Description: More parameters to add to the Ant call (e.g. -inputhandler <classname>)
+     public String addArgs;
+     private int toggleIndex = 1;
+     public ImageList imageList2;
+ 
++    public BuildTree buildTree = new BuildTree();
++    public GradleTree gradleTree = new GradleTree();
++    public XmlMenuTree menuTree = null;
++
++    private String defaultTarget;
++    private ContextMenuStrip csOutlineMenu = null;
++    public static List<string> csOutlineTreePath = new List<string>();
++    public List<string> MemberId = new List<string>();
++
++    public static List<string> csOutlinePanelTreePath = new List<string>();
++    public List<string> OutLinePanelMemberId = new List<string>();
++
++    private const String STORAGE_FILE_NAME = "antPluginData.txt";
++    public String antPath = @"F:\ant\apache-ant-1.10.1";
+     public String sakuraPath = @"C:\Program Files (x86)\sakura\sakura.exe";
+ 
+     public List<string> BuildFilesList
+@@ -98,6 +115,72 @@ namespace AntPanelApplication
+       this.tabPage3.ImageIndex = 99;  //FTP
+       this.tabPage4.ImageIndex = 100; //お気に入り
+      }
++ 
++    private void InitializeInterface()
++    {
++      // TODO 実装 必要性検討 
++     /* 
++      this.mainForm = new MDIForm.ParentFormClass();
++      this.mainForm.imageList1 = this.imageList;
++      this.mainForm.imageList2 = imageList2;
++      this.mainForm.propertyGrid1 = this.propertyGrid1;
++      this.mainForm.contextMenuStrip1 = this.targetMenu;
++      this.treeView.Tag = mainForm;
++      this.treeView.AccessibleName = "AntPlugin.PluginUI.treeView";
++    */
++    }
++ 
++    private void InitializeGradleTree()
++    {
++      this.gradleTree = new GradleTree(this);
++    }
++
++    private void IntializeXmlMenuTree()
++    {
++      this.menuTree = new XmlMenuTree(this);
++    }
++
++    private void IntializeDirTreePanel()
++    {
++      /*
++      this.dirTreePanel = new DirTreePanel(this);
++      dirTreePanel.Dock = DockStyle.Fill;
++      this.tabPage2.Controls.Add(dirTreePanel);
++      */
++    }
++
++    private void IntializeFTPClientPanel()
++    {
++      /*
++      try
++      {
++        //this.ftpClientPanel = new FTPClientPanel(this.pluginMain);
++        this.ftpClientPanel = new FTPClientPanel(this);
++        this.ftpClientPanel.Dock = DockStyle.Fill;
++        this.tabPage3.Controls.Add(this.ftpClientPanel);
++      }
++      catch (Exception ex)
++      {
++        MessageBox.Show(ex.Message.ToString(), "IntializeFTPClientPanel");
++      }
++      */
++    }
++
++    private void InitializeXmlTreePanel()
++    {
++      /*
++      try
++      {
++        this.xmlTreePanel = new XmlTreePanel(this);
++        this.xmlTreePanel.Dock = DockStyle.Fill;
++        this.tabPage4.Controls.Add(this.xmlTreePanel);
++      }
++      catch (Exception ex)
++      {
++        MessageBox.Show(ex.Message.ToString(), "IntializeFTPClientPanel");
++      }
++      */
++    }
+ 
+     private void CreateMenus()
+     {
+@@ -335,13 +418,44 @@ namespace AntPanelApplication
+       {
+         if (File.Exists(file))
+         {
+-          treeView.Nodes.Add(GetBuildFileNode(file));
++          if (Path.GetExtension(file) == ".cs" || Path.GetExtension(file) == ".java")
++          {
++            this.LoadIn(file);
++          }
++          else if (Path.GetExtension(file) == ".xml")
++          {
++            bool isMenu = (Path.GetFileNameWithoutExtension(file).ToLower() == "fdtreemenu"
++              || Path.GetFileNameWithoutExtension(file).ToLower() == "xmltreemenu") ? true : false;
++            // TODO 実装
++            //treeView.Nodes.Add(this.menuTree.getXmlTreeNode(file, isMenu));
++            treeView.Nodes.Add(GetBuildFileNode(file));
++         }
++          else if (Path.GetExtension(file) == ".fdp" || Path.GetExtension(file) == ".wsf")
++          {
++            treeView.Nodes.Add(GetBuildFileNode(file));
++            // 追加 2017-01-12
++            XmlDocument doc = new XmlDocument();
++             doc.Load(file);
++            this.propertyGrid1.SelectedObject = new XmlNodeWrapper(doc.DocumentElement);
++          }
++          else if (Path.GetExtension(file) == ".gradle")
++          {
++            AntTreeNode gradleNode = this.gradleTree.GetGradleOutlineTreeNode(file);
++            treeView.Nodes.Add(gradleNode);
++          }
++          else
++          {
++            TreeNode linkNode = new TreeNode(Path.GetFileName(file), 1, 1);
++            linkNode.Tag = file;
++            linkNode.ToolTipText = file;
++            treeView.Nodes.Add(linkNode);
++          }
+         }
+       }
+       treeView.EndUpdate();
+     }
+ 
+-    private TreeNode GetBuildFileNode(string file)
++    public TreeNode GetBuildFileNode(string file)
+     {
+       XmlDocument xml = new XmlDocument();
+       xml.Load(file);
+@@ -391,7 +505,7 @@ namespace AntPanelApplication
+       rootNode.Expand();
+       return rootNode;
+     }
+-    
++
+     private AntTreeNode GetBuildTargetNode(XmlNode node, string defaultTarget)
+     {
+       XmlAttribute nameAttr = node.Attributes["name"];
+@@ -424,6 +538,39 @@ namespace AntPanelApplication
+       return targetNode;
+     }
+ 
++    public void LoadIn(string path)
++    {
++      try
++      {
++        //path = PluginBase.MainForm.ProcessArgString(path);
++        if (Path.GetExtension(path) == ".xml")
++        {
++          //string[] s1 = new string[1] { PluginBase.MainForm.CurrentDocument.FileName };
++          //String[] filenames = new String[];
++          //AddBuildFiles(s1);
++        }
++        else if (Path.GetExtension(path) == ".cs" || Path.GetExtension(path) == ".java")
++        {
++          if (!csOutlineTreePath.Contains(path))
++          {
++            csOutlineTreePath.Add(path);
++            //CsOutlineTree.BuildCSOutlineTree(path);
++            treeView.BeginUpdate();
++            this.imageList.Tag = "Ant";
++            //treeView.Nodes.Clear();
++            TreeNode rootNode = this.buildTree.CsOutlineTreeNode(path, this.imageList, this.MemberId);
++            treeView.Nodes.Add(rootNode);
++            //this.AddPreviousCustomDocuments(path);
++            treeView.EndUpdate();
++          }
++        }
++      }
++      catch (Exception ex1)
++      {
++        MessageBox.Show(ex1.Message.ToString(), "PluginUI:LoadIn:1375");
++      }
++    }
++
+     private void toolStripButton8_Click(object sender, EventArgs e)
+     {
+       int num = this.toggleIndex % 3;
+@@ -501,6 +648,134 @@ namespace AntPanelApplication
+     
+   }
+ 
++
++  /// <summary>
++  /// How to load xml document in Property Grid
++  /// </summary>
++  /// http://stackoverflow.com/questions/4591115/how-to-load-xml-document-in-property-grid
++  /// 追加 2017-01-12
++  [TypeConverter(typeof(XmlNodeWrapperConverter))]
++  class XmlNodeWrapper
++  {
++    private readonly XmlNode node;
++    public XmlNodeWrapper(XmlNode node) { this.node = node; }
++
++    class XmlNodeWrapperConverter : ExpandableObjectConverter
++    {
++      public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
++      {
++        List<PropertyDescriptor> props = new List<PropertyDescriptor>();
++        XmlElement el = ((XmlNodeWrapper)value).node as XmlElement;
++        if (el != null)
++        {
++          foreach (XmlAttribute attr in el.Attributes)
++          {
++            props.Add(new XmlNodeWrapperPropertyDescriptor(attr));
++          }
++        }
++        foreach (XmlNode child in ((XmlNodeWrapper)value).node.ChildNodes)
++        {
++          props.Add(new XmlNodeWrapperPropertyDescriptor(child));
++        }
++        return new PropertyDescriptorCollection(props.ToArray(), true);
++      }
++
++      public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
++      {
++        return destinationType == typeof(string)
++          ? ((XmlNodeWrapper)value).node.InnerXml
++          : base.ConvertTo(context, culture, value, destinationType);
++      }
++    }
++
++    class XmlNodeWrapperPropertyDescriptor : PropertyDescriptor
++    {
++      private static readonly Attribute[] nix = new Attribute[0];
++      private readonly XmlNode node;
++      public XmlNodeWrapperPropertyDescriptor(XmlNode node)
++        : base(GetName(node), nix)
++      {
++        this.node = node;
++      }
++      static string GetName(XmlNode node)
++      {
++        switch (node.NodeType)
++        {
++          case XmlNodeType.Attribute: return "@" + node.Name;
++          case XmlNodeType.Element: return node.Name;
++          case XmlNodeType.Comment: return "<!-- -->";
++          case XmlNodeType.Text: return "(text)";
++          default: return node.NodeType + ":" + node.Name;
++        }
++      }
++
++      public override bool ShouldSerializeValue(object component)
++      {
++        return false;
++      }
++
++      public override void SetValue(object component, object value)
++      {
++        node.Value = (string)value;
++      }
++
++      public override bool CanResetValue(object component)
++      {
++        return !IsReadOnly;
++      }
++
++      public override void ResetValue(object component)
++      {
++        SetValue(component, "");
++      }
++
++      public override Type PropertyType
++      {
++        get
++        {
++          switch (node.NodeType)
++          {
++            case XmlNodeType.Element:
++              return typeof(XmlNodeWrapper);
++            default:
++              return typeof(string);
++          }
++        }
++      }
++
++      public override bool IsReadOnly
++      {
++        get
++        {
++          switch (node.NodeType)
++          {
++            case XmlNodeType.Attribute:
++            case XmlNodeType.Text:
++              return false;
++            default:
++              return true;
++          }
++        }
++      }
++
++      public override object GetValue(object component)
++      {
++        switch (node.NodeType)
++        {
++          case XmlNodeType.Element:
++            return new XmlNodeWrapper(node);
++          default:
++            return node.Value;
++        }
++      }
++
++      public override Type ComponentType
++      {
++        get { return typeof(XmlNodeWrapper); }
++      }
++    }
++  }
++
+   public class AntTreeNode : TreeNode
+   {
+     public String File;
+diff --git a/AntPanel.resx b/AntPanel.resx
+index 4407e37..c0703b2 100644
+--- a/AntPanel.resx
++++ b/AntPanel.resx
+@@ -293,18 +293,18 @@
+   <data name="toolStripDropDownButton2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+     <value>
+         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAJuSURBVDhPlZJdTJJRHMbfm7pt67Lbtta4zLW55tZIW1pM
+-        qaRosjWbsqZFfoApGK8ooYIm3wgqCBWFhAIKvlAulVWW0rop1BSstXXXTZvWsp7e94XW3PrQ3905O7/n
+-        PP+zQ2wHkiLXxSPiPbnlzmBkR9IC9RQJsX2HIYxsT5oQfR+Gbd4IRbQJArtgeyGM3L/AyCH4VjyIrI3B
+-        8ESHhuBVCLr+E0JSynXbghHRd0Hcf+uBe9GBpvEGjGdGoZvV4LKvCkVdRX8OISnFunXegAgtd8+qoZ4m
+-        4Ur1w5my4c6SE6GMH23xVpQZyjZyym+kY/Ublhd6um4Qq5+X8GVzA95Xt9Hx+EZWTvtBxuUQGko2c0oW
+-        zUPNAWmg7pv5eR87a/eMmpWtM2ZkPq1CM6NCMD0CZUyOCtd5iIaFIPKIXazc+7RTqaIrmeZusfK9ZTdd
+-        W8nezMjtk2RWplpwwSnA3McEFJPXUWo6eZMNYCoZ53oxQT+Qd3mYnXXojRXtdG3NtApjqyNopZohDlxi
+-        5cSHaUytUThjL0U+mb+XaIsp3B2PlBh4aUU48wCNYQkGX1vgWRykZR97myxWT8uzmFgOoSZS/VU4JAC3
+-        hyst6CzII2TB2n1MC+aTWOf1bF13aiAr03tV/osILQagT2hxylwcP9F33MjtOLKfrf8LWbhu0JUcQENI
+-        AsOzHoyu+CCPyFDu4ENOh/CtJelifVHhMV0BJ6ds5cpd8cFG6tr3eDqKWr8YLREpysw8lNtKY3wTT5E7
+-        9nc4As7uam9lsNIu+iEJ1KBQe3TztIV3uFjL3Vr1X1Q4zx0SuYTJsw4+L7e1DQjiJw9MmV5YjDa5AAAA
+-        AElFTkSuQmCC
++        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAJvSURBVDhPlZJdTJJRHMbfm7pt67Lbtta4zLW5xtowWlRM
++        qaRosjWbsqZFhmIJxitK+IEm8imoIFYWovKh4AvlUlllKa2bEk3AWlt33bRpLevpfV9oza0P/N2ds/N7
++        zvM/O0Q+kBS5LhuR7cottwcjOxNW6KZJyBzbDGFkR8KMyPsQ7AsmqCP1EDvE+YUwcu8iIwfhXR1CeM2P
++        nicGKAJXIG77TwhJadbtiyZE3gXw4O0QPEkn6icUmMiMwzCnxyVvBfht/D+HkJR63bbQgzAtt8/poJsh
++        4V7qhWvJjrvLLgQzPjTFGlFiLNnIKb+p9ddsWF8Y6boBpD4v48vmBoZf3UHL45tZOe0DGVNBYhRs5pQs
++        +of6fbWjV79Znnezs7bP6ljZNmtB5lMK+lktAukRaKIqlLnPQTooAVFA7GDlrqetGi1dyTx/m5Xvr3jo
++        2hr2ZkZuniKzMtWA8y4x5j/GoZ66jmLziVtsAFPJNN+FSfqBhlcG2VkH3tjQTNfWz2jhT42gkboB2dhF
++        Vo5/mMH0GoXTjmIUkoW7iaao2tPySIO+lzaEMqOoDcnR/9qKoWQ/LXvZ25TRa7Q8h8mVIKrClV8lA2Lw
++        Onl13FZuAaEMVO9hWjCfxLZgZOt6lvqyMr1X4buAYHIMxngHTloEsWPdR028lkN72fq/UIZq+t2JPiiC
++        cvQ868T4qheqsBKlThFUdIjIdjwtMPKPFBm4nJyylcv3ZPsVlPx7LB1BtU+GhnAdSixClNqLoyKzUJ07
++        9nc4Ys7OyuHyQHmv9Id8rApF7Yc3T1mFBwUdvK1V/0WZ6+wBqVuSOOMUCXNbeUAQPwH5JplQF9nSZgAA
++        AABJRU5ErkJggg==
+ </value>
+   </data>
+   <data name="imageListStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+@@ -694,18 +694,18 @@
+     <value>
+         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+         YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAALBSURBVDhPrZHfT5JRHMaZd83r/oauu/PCedVmm/kDwQh5
+-        41cQoPJKoJISaasME3+EojiFRKUUjVBKFGY6pxNWNl3qnHNNxSYqF6xwrqun9z3iarnuerbvdnbO9/l8
++        41cQoPJKoJISaasME3+EqDiFRKUUjVBKFGY6pxNWNl3qnHNNxSYqF6xwrqun9z3iarnuerbvdnbO9/l8
+         n3MO579rgKIyw0Y6e5LWUDG5FHs3i0jFZGJM6tSSsJ7OZnvS7RcVMdDRBK3FsUqJQ8aUNBqRNBjI+rhM
+         jYSOBtuTbr+ozVvF+G4y4dTWhUPVHcQEXFLsmt1jzzb4efCr5VeIgTJQmbSVzq54rqFqXmuxw81Dyu1G
+-        olyDI+YKrOkcdqRU4EAqYq5UAL9WfZUAjD366JOACWZfNYxeGru8fPz0B3Bi78SxRkkiJ+5p8U0kJGb2
+-        KnuCot8ATZ8crdNP4V50wDRmIHQWkLJ3IWWzIWltRlwiIua4lDoD/JlA4aIwszHFQBphHNVhm3kDdnLK
+-        3o0f7e1INllwIC4lRhawz0xfL86F7n7rNYpqzuSoXkoQ/bqAqbUARqKD6PE2YL5Cih1BIfkJNgX7Fvul
+-        Amxzr2NGLsFDiwe6njmoH7mjHHW/DAtbs5hYGYP/sxeeiBPVIxUw13UiIhUyP1CInZICRMQCPDa2QdkW
+-        QuvEKurci8iv8YCj6ZXBtzyM0U8eDEfdcC04YBguQ4HpDd5GttHg+gCFNUhMbLEAVXsYkqZJcM1+cMqe
+-        3c3RdCjj5QNKOGZtGFxykrcoMvsQXonBO78FZ/ALHgwsge6eg8jynphlLdPg1TOAtDLKrWqFyCo80bjl
+-        UPdLCT24vIuh2U28Yqpveg2S5iAxS5lELIAk+FuyWv7lLH7WJb55BK7QOpyhDfQyCTqY+JTlbDILKGkY
+-        R55h6CLgXGJjWw6vyhkXMI0W70d0BlYhbwlB2PgON2q84OkdiduV1tx0+z+Voai1Kfl650lJ/TgT2YfC
+-        SvspVfWi6uyYw/kFltUDPbzdwPgAAAAASUVORK5CYII=
++        olyDI+YKrOkcdqRU4EAqYq5UAL9WfZUAjD366JOACWZfNYxeGru8fPz0B3DSacexRkkiJ+5p8U0kJGb2
++        KnuCot8ATZ8crdNP4V50wDRmIHQWkOrsQspmQ9LajLhERMxxKXUG+DOBwkVhZmOKgTTCOKrDNvMG7ORU
++        Zzd+tLcj2WTBgbiUGFnAPjN9vTgXuvut1yiqOZOjeilB9OsCptYCGIkOosfbgPkKKXYEheQn2BTsW+yX
++        CrDNvY4ZuQQPLR7oeuagfuSOctT9MixszWJiZQz+z154Ik5Uj1TAXGdHRCpkfqAQOyUFiIgFeGxsg7It
++        hNaJVdS5F5Ff4wFH0yuDb3kYo588GI664VpwwDBchgLTG7yNbKPB9QEKa5CY2GIBqvYwJE2T4Jr94JQ9
++        u5uj6VDGyweUcMzaMLjkJG9RZPYhvBKDd34LzuAXPBhYAt09B5HlPTHLWqbBq2cAaWWUW9WKUqvwROOW
++        Q90vJfTg8i6GZjfxiqm+6TVImoPELGUSsQCS4G/JavmXs/hZl/jmEbhC63CGNtDLJOhg4lOWs8ksoKRh
++        HHmGoYuAc4mNbTm8KmdcwDRavB9hD6xC3hKCsPEdbtR4wdM7Ercrrbnp9n8qQ1FrU/L1zpOS+nEmsg+F
++        lfZTqupF1dkxh/MLldADO/VA4eAAAAAASUVORK5CYII=
+ </value>
+   </data>
+   <data name="syncronizeDodument.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+@@ -724,7 +724,7 @@
+         krYAYPxK8DFEK7DZ1x3MwnnNAAAAAElFTkSuQmCC
+ </value>
+   </data>
+-  <data name="toolStripButton8.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
++  <data name="表示ToolStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+     <value>
+         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+         YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAJ5SURBVDhPrZJdSJNhFMdfyfvISUYXgaAU0QeYSyGpmG6a
+@@ -744,34 +744,33 @@
+   <data name="homeStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+     <value>
+         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAKiSURBVDhPnZHtS1NhGIf3rT/CKNCySFdahtZMrSTdGqy9
+-        KEG5EBuRL205d6zNsU3HmJtvqMnClMlaLdeWNUTNipmNRAvNpWCKlTI/OXVjiX3IXzuHtd6QpB/c8HCf
+-        +7qec/PQtkpZLm2HWbgzxizcG0OeI+3thQR6Sg4s2SSJG91S+sYTGX1p2xJy0CFOCAwZcjBhvYp3tjJ4
+-        ms+hn6AH/imh4HJ64GUdC5MPxOGSYNIuhdd5E8NteXAQqVtLyA+9xMHgcCMb3u5yeFq4GKg+jn4tA0Ot
+-        eRi3V2GwSYB7RHLwLwnZ6COSgp4mDrwPZfC08jGoz8LU+0mqXNVZeFonwOu7BB7XcNAiSgqW7YlIKFie
+-        HPQ0c+F13Aj/qgADupN4MzYKv9+P1dVVzM3OwCpLh0PFxrPbxeiqOAMVNyGYS0r65EkjnlZeZM/8MHwK
+-        E+NvsbKyQsE/avbDDNqKUtEpPo0e4wW0FDFAZMSO0HqVKUynKnVz6FY+HinT8Wl+Lnrzn7X4+SPUrEQ0
+-        Co9Blh63KWXsZlJrOOUpTIf86Kt6Yy3W19epYalUCplMBoIgUFlZSfVCoRDqDLWoyNg3FYV/jUqlCgUC
+-        AWqYBE0mE9rb26FQKKICUsrj8fZHkN9DCtbW1qhhuVyOjo4OmM1mqNXqqEAikYDNZv8UXHHlHxLa+Rd5
+-        d1jPz9Zmf7O4u0BKlEolLBYLrFYrtFot1bs/bUah8zz4ppzpnIZMTZr8MJdWYOf7xC4Rql5cR6mrEIVN
+-        BfD5fNBoNLDZbLDb7dDr9VhYWIByUIaG0Rqo3FIUWASIL43/QuN1stzZ9YzFtPBznihJDjIv5y6LRKJ5
+-        nU5HgQaDAUajERwOZ555jbmcSWR+TVMcGUssjvPHXtrljizyv6HRvgOKBs41W3r75gAAAABJRU5ErkJg
+-        gg==
++        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAKhSURBVDhPnZHtS1NhGIf3rT/CKNCySFfaC1oztYx0Y7D2
++        ogTlQmxEvrTlPMfaHNt0jLlpiposTJms5WzNrCFqVsxsJFpoLgVTrJT5yakbS+xD/to5rPWGJP3ghof7
++        3Nf1nJuHsVVKcxg7LOKdMRbx3hjqHGlvLxTQU3xgqVOWuNElZ248IZhL25ZQg05pQmDImI0J21W8s5fC
++        03gO/SQz8E8JDZcxAy9rOZjskoZLhkmHHN7umxhuyYWTTNlaQn3oJQ8Gh+u58D4og6eJj4GqE+jXsTDU
++        nItxRyUGG0S4TyYH/5JQjT4yKehp4MH7kICnWYhBQyam3k/S5arKxNNaEV7fI/G4mocmSVKwdE9EQsOK
++        5KCnkQ+v80b4V0UY0J/Cm7FR+P1+rK6uYm52BjYiDU41F8/uFKGj/CzU/IRgDiXpUySNeJoFkT3zwvBp
++        TIy/xcrKCg3/qNkPM2gpTEG7NAs9pgtoKmSBTI8dYfSqjrKd6pTNodt5eKRKw6f5uejNf9bi54/QcBJR
++        Lz4OIi1uU87azabX6FaEJYpjr+pMNVhfX6eH5XI5CIIASZKoqKige6FQCLXGGpSn75uKwr9GrVaHAoEA
++        PUyBZrMZra2tUCqVUQElFQgE+yPI76EEa2tr9LBCoUBbWxssFgs0Gk1UIJPJwOVyfwquuPIOiR3Ci4K7
++        nOecmqxvVncHKIlKpYLVaoXNZoNOp6N7ndMWFHSfh9CcPZ19K0ObqjjMZ+Q7hD6pS4LKF9dR4ipAQUM+
++        fD4ftFot7HY7HA4HDAYDFhYWoBokcGu0Gmq3HPlWEeJL4r8wBO0c95k61mJq+DlPFicH2ZdzliUSybxe
++        r6dBo9EIk8kEHo83z77GXs4gMr6mKo+MJRbF+WMv7XJHFvnfMBjfAX5nzi+HbMCbAAAAAElFTkSuQmCC
+ </value>
+   </data>
+   <data name="removeButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+     <value>
+         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAISSURBVDhPnZFdb9JQGMdPYmLS+AF2IRcLV2iaaXQmzDCY
+-        dWwujCGxlJfB5MUNlgHrRiBsSNQLTfwo+EG4MkYTZV4QE18y4hZQxwaz2P497YqEwGb0l5zktKe/f8/z
+-        PORfeW23X9C3g3yLx0eb6TSrPw5QF4Js0+cTG3d5m/6qhyojtwUlm0czkRgIqQsCexyO4Wd8FQ3HQmmX
+-        u3NZP+rJKD6GQpcsZlCPRv+EaPJSBJ1kGigUoe73pmdEDyHntA/KPM/spkRF2XoIPHsOOV9AJ7EG9cqa
+-        HApDWksB9Ly9FMZ7m01+Qch5Te5SNvPMF94ry5kc8OQpfm1mcRyJoR28D2k1CeS3tf0OlUsGA6Nr/ZTN
+-        ZubjvEvuJNdpOY+A7SIVC0Auj/Zi6Gy5ixryQfAryNNyAiHAGwAyWexM3Vb+KqvU3ALbDgQBOg14fMA9
+-        AVjfwHf7LD6Nj586Yo2a2822/IuQYivARoaKm0CKlkMb2OYFNCxWVE2m4SGa7AtAii4DdIwtrx8Vq01+
+-        e9OiHM67gJU4jpwu7F+/garR2B+iybRWKfKA/lVEi169MnnSMHW9uXJNPpieASJRHM7O4Ss7hsqIoRey
+-        73RyRx4vpHAULd6LdxZrX7dLxMC8Ml2Sf1in0JpzYG/sKqojFzn9+ITaLTt34Fig8uTQbpcIYV6OGuWh
+-        cpfPExPcWaNSQ06V/w9CfgNQdDphA6YZewAAAABJRU5ErkJggg==
++        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAIRSURBVDhPnZFdb9JQGMdPYmLS+AF2IRcLV2iaaXQmzDCY
++        dWwuCJOslJfB5MUNlgFjIxA2JOqFJn4U/CDcGJMlOrzBxLgocQuoY6Oz2P497YqEwGb0l5zktKe/f8/z
++        PORf2bHbL+nbQb7F46OtdJrVHwdoCEG25fNlmg94m/6qhyojvwUlV0ArkRgIaQgCexKO4Wd8FU2Hq/yF
++        u3dVP+rJKD2FQpecyaIRjf4J0eSlCDrJNFAsQd3vT89kPIRc0D6o8DzzOZVRlK3HwIuXkAtFdBJrUK+s
++        yaEwpLUUQM/FpTDe22zyK0IuanKXipln9hYEWc7mgWfP8Wszh5NIDGLwIaTVJFDY1vZVKpcNBkbX+qmY
++        zcxHh0vuJNdpOU+A7RIVi0C+AHExdL7cRQ35IPgVFGg5gRDgDQDZHKpTd5W/yip1t8CKgSBApwGPD1gQ
++        gPUNfLfP4tP4+Jkj1qi73WzbvwgptgJsZKm4CaRoObSBIi+gabGiZjIND9FkXwBSdBmgY2x7/di12uS3
++        ty3K0f15YCWOY+c8Dm7eQs1o7A/RZFqrFHlE/5pBm159d/K0YerauXZDPpyeASJRHM3O4Ss7huqIoRdy
++        4HRyxx4vpHAUbd6LdxZrX7fLxMC8MV2Rf1in0J5zYH/sOmojlzn9+JT6HTt36HBReXJot8uEMK9HjfJQ
++        ucvexAR33qjUkDPl/4OQ3ymEOk3euyvbAAAAAElFTkSuQmCC
+ </value>
+   </data>
+   <metadata name="imageList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+@@ -782,7 +781,7 @@
+         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
+         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
+         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAAU
+-        LgAAAk1TRnQBSQFMAgEBJwEAAWABAgFgAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
++        LgAAAk1TRnQBSQFMAgEBJwEAAWgBAgFoAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+         AwABQAMAAaADAAEBAQABCAYAASgYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
+         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
+         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
+diff --git a/AntPanelApplication.csproj b/AntPanelApplication.csproj
+index 2387118..6d92373 100644
+--- a/AntPanelApplication.csproj
++++ b/AntPanelApplication.csproj
+@@ -56,6 +56,7 @@
+     </Compile>
+     <Compile Include="CommonLibrary\DeComment.cs" />
+     <Compile Include="CommonLibrary\FileHandler.cs" />
++    <Compile Include="CommonLibrary\IconExtractor.cs" />
+     <Compile Include="CommonLibrary\ImageHander.cs" />
+     <Compile Include="CommonLibrary\IniFileHandler.cs" />
+     <Compile Include="CommonLibrary\Lib.cs" />
+@@ -68,6 +69,12 @@
+     <Compile Include="CommonLibrary\TwoKeysHashTable.cs" />
+     <Compile Include="CommonLibrary\WebHandler.cs" />
+     <Compile Include="CommonLibrary\Win32.cs" />
++    <Compile Include="CsOutlineParser\BuildTree.cs">
++      <SubType>UserControl</SubType>
++    </Compile>
++    <Compile Include="CsOutlineParser\CSParserRegexes.cs" />
++    <Compile Include="CsOutlineParser\CSParserUtils.cs" />
++    <Compile Include="CsOutlineParser\MemberModel.cs" />
+     <Compile Include="Form1.cs">
+       <SubType>Form</SubType>
+     </Compile>
+@@ -84,9 +91,18 @@
+     <Compile Include="GradleOutlineParser\TaskInfo.cs" />
+     <Compile Include="Program.cs" />
+     <Compile Include="Properties\AssemblyInfo.cs" />
++    <Compile Include="XmlTreeMenu\XmlTreeMenu.cs">
++      <SubType>UserControl</SubType>
++    </Compile>
++    <Compile Include="XmlTreeMenu\XmlTreeMenu.Designer.cs">
++      <DependentUpon>XmlTreeMenu.cs</DependentUpon>
++    </Compile>
+     <EmbeddedResource Include="AntPanel.resx">
+       <DependentUpon>AntPanel.cs</DependentUpon>
+     </EmbeddedResource>
++    <EmbeddedResource Include="CsOutlineParser\BuildTree.resx">
++      <DependentUpon>BuildTree.cs</DependentUpon>
++    </EmbeddedResource>
+     <EmbeddedResource Include="Properties\Resources.resx">
+       <Generator>ResXFileCodeGenerator</Generator>
+       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+@@ -110,6 +126,7 @@
+   <ItemGroup>
+     <None Include="App.config" />
+   </ItemGroup>
++  <ItemGroup />
+   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+        Other similar extension points exist, see Microsoft.Common.targets.
+diff --git a/CommonLibrary/Win32.cs b/CommonLibrary/Win32.cs
+index 96a5c1f..4714e68 100644
+--- a/CommonLibrary/Win32.cs
++++ b/CommonLibrary/Win32.cs
+@@ -1,402 +1,702 @@
+-using System;
+-using System.Collections.Generic;
+-using System.Diagnostics;
++﻿using System;
+ using System.Drawing;
+-using System.IO;
+ using System.Runtime.InteropServices;
+ using System.Text;
+-using System.Threading;
+ using System.Windows.Forms;
++using Microsoft.Win32;
++using System.Diagnostics;
++using System.Collections.Generic;
++using System.Threading;
++using System.IO;
+ 
+-namespace AntPlugin.CommonLibrary
++namespace CommonLibrary
+ {
+ 	public class Win32
+ 	{
+-		public enum GWL
+-		{
+-			WINDPROC = -4,
+-			HINSTANCE = -6,
+-			HWNDPARENT = -8,
+-			STYLE = -16,
+-			EXSTYLE = -20,
+-			USERDATA = -21,
+-			ID = -12
+-		}
+ 
+-		public enum SWP
+-		{
+-			NOSIZE = 1,
+-			NOMOVE,
+-			NOZORDER = 4,
+-			NOREDRAW = 8,
+-			NOACTIVATE = 16,
+-			FRAMECHANGED = 32,
+-			SHOWWINDOW = 64,
+-			HIDEWINDOW = 128,
+-			NOCOPYBITS = 256,
+-			NOOWNERZORDER = 512,
+-			NOSENDCHANGING = 1024
+-		}
++	  public enum GWL
++	  {
++		WINDPROC = -4,
++		HINSTANCE = -6,
++		HWNDPARENT = -8,
++		STYLE = -16,
++		EXSTYLE = -20,
++		USERDATA = -21,
++		ID = -12
++	  }
++
++    public enum SWP
++    {
++      NOSIZE = 1,
++      NOMOVE,
++      NOZORDER = 4,
++      NOREDRAW = 8,
++      NOACTIVATE = 16,
++      FRAMECHANGED = 32,
++      SHOWWINDOW = 64,
++      HIDEWINDOW = 128,
++      NOCOPYBITS = 256,
++      NOOWNERZORDER = 512,
++      NOSENDCHANGING = 1024
++    }
++
++
++    public delegate bool EnumWindowProc(IntPtr hWnd, IntPtr parameter);
++    public delegate bool Win32Callback(IntPtr hwnd, IntPtr lParam);
++    public static class MdiUtil
++    {
++      public const int SW_RESTORE = 9;
++      public const uint SWP_SHOWWINDOW = 64u;
++      private const int SW_HIDE = 0;
++      private const int SW_SHOWNORMAL = 1;
++      private const int SW_SHOWMINIMIZED = 2;
++      private const int SW_SHOWMAXIMIZED = 3;
++      private const int SW_SHOWNOACTIVATE = 4;
++      private const int SW_SHOW = 5;
++      private const int SW_MINIMIZE = 6;
++      private const int SW_SHOWMINNOACTIVE = 7;
++      private const int SW_SHOWNA = 8;
++      private const int SW_SHOWDEFAULT = 10;
++
++      [DllImport("user32.dll", SetLastError = true)]
++      private static extern uint SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
++
++      public static Process LoadProcessInControl(Process p, Control ctrl)
++      {
++        p.WaitForInputIdle();
++        int num = 0;
++        while (p.MainWindowHandle == IntPtr.Zero && num < 1000)
++        {
++          Thread.Sleep(100);
++          num++;
++          p.Refresh();
++        }
++        if (p.MainWindowHandle != IntPtr.Zero)
++        {
++          Win32.MdiUtil.SetParent(p.MainWindowHandle, ctrl.Handle);
++        }
++        return p;
++      }
++
++      public static Process LoadProcessInControl(string filename, Control ctrl)
++      {
++        Process process = new Process();
++        process.StartInfo.FileName = filename;
++        process.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename);
++        process.Start();
++        process.WaitForInputIdle();
++        int num = 0;
++        while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
++        {
++          Thread.Sleep(100);
++          num++;
++          process.Refresh();
++        }
++        if (process.MainWindowHandle != IntPtr.Zero)
++        {
++          Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
++        }
++        return process;
++      }
++
++      public static Process LoadProcessInControl(string filename, string args, Control ctrl)
++      {
++        Process process = new Process();
++        process.StartInfo.FileName = filename;
++        process.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename);
++        process.StartInfo.Arguments = args;
++        process.Start();
++        process.WaitForInputIdle();
++        int num = 0;
++        while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
++        {
++          Thread.Sleep(100);
++          num++;
++          process.Refresh();
++        }
++        if (process.MainWindowHandle != IntPtr.Zero)
++        {
++          Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
++        }
++        return process;
++      }
++
++      public static Process LoadProcessInControl(ProcessStartInfo hPsInfo, Control ctrl)
++      {
++        Process process = Process.Start(hPsInfo);
++        process.WaitForInputIdle();
++        int num = 0;
++        while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
++        {
++          Thread.Sleep(100);
++          num++;
++          process.Refresh();
++        }
++        if (process.MainWindowHandle != IntPtr.Zero)
++        {
++          Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
++        }
++        return process;
++      }
++
++      public static MdiClient GetMdiClient(Form form)
++      {
++        foreach (Control control in form.Controls)
++        {
++          if (control is MdiClient)
++          {
++            return (MdiClient)control;
++          }
++        }
++        return null;
++      }
++
++      [DllImport("user32.dll")]
++      public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
++
++      public static void ShowMaximized(IntPtr hWnd)
++      {
++        Win32.MdiUtil.ShowWindow(hWnd, 3);
++      }
++    }
++
++
++
++
++
++
++    public const int SW_RESTORE = 9;
++    public const uint SWP_SHOWWINDOW = 64u;
++    private const int SW_HIDE = 0;
++    private const int SW_SHOWNORMAL = 1;
++    private const int SW_SHOWMINIMIZED = 2;
++    private const int SW_SHOWMAXIMIZED = 3;
++    private const int SW_SHOWNOACTIVATE = 4;
++    private const int SW_SHOW = 5;
++    private const int SW_MINIMIZE = 6;
++    private const int SW_SHOWMINNOACTIVE = 7;
++    private const int SW_SHOWNA = 8;
++    private const int SW_SHOWDEFAULT = 10;
++    private const int GW_HWNDFIRST = 0;
++    private const int GW_HWNDLAST = 1;
++    private const int GW_HWNDNEXT = 2;
++    private const int GW_HWNDPREV = 3;
++    private const int GW_OWNER = 4;
++    private const int GW_CHILD = 5;
++    private const uint WS_EX_NOACTIVATE = 134217728u;
++
++    [DllImport("user32.dll")]
++    public static extern bool IsIconic(IntPtr hWnd);
++
++    [DllImport("user32.dll")]
++    public static extern uint SetForegroundWindow(IntPtr hwnd);
++
++    [DllImport("user32.dll")]
++    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
++
++    [DllImport("user32.dll")]
++    public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, uint pvParam, uint fWinIni);
++
++    [DllImport("user32.dll")]
++    public static extern void SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int x, int y, int width, int height, uint flags);
++
++    [DllImport("user32.dll")]
++    public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
++
++    [DllImport("user32.dll")]
++    public static extern IntPtr WindowFromPoint(Point pt);
++
++    [DllImport("user32.dll")]
++    public static extern int GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
++
++    [DllImport("user32.dll")]
++    public static extern IntPtr GetForegroundWindow();
++
++    [DllImport("user32.dll")]
++    public static extern bool AttachThreadInput(int idAttach, int idAttachTo, bool fAttach);
++
++    [DllImport("user32.dll")]
++    public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
++
++    [DllImport("user32.dll")]
++    public static extern bool IsWindowVisible(IntPtr hWnd);
++
++    [DllImport("user32.dll")]
++    public static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
++
++    [DllImport("user32.dll")]
++    public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpStr, int nMaxCount);
++
++    [DllImport("user32.dll")]
++    public static extern int GetClassName(IntPtr hWnd, StringBuilder lpStr, int nMaxCount);
++
++    [DllImport("user32.dll")]
++    public static extern IntPtr GetDesktopWindow();
++
++    [DllImport("gdi32.dll")]
++    public static extern bool DeleteObject(IntPtr hObject);
++
++    [DllImport("user32.dll")]
++    private static extern IntPtr FindWindowEx(IntPtr hWnd, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
++
++    [DllImport("user32.dll")]
++    public static extern uint GetWindowLong(IntPtr hWnd, Win32.GWL index);
++
++    [DllImport("user32.dll")]
++    public static extern uint SetWindowLong(IntPtr hWnd, Win32.GWL index, uint unValue);
++
++    [DllImport("user32.dll", SetLastError = true)]
++    public static extern uint SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
++
++    [DllImport("user32.dll")]
++    public static extern IntPtr GetParent(IntPtr hWnd);
++
++    [DllImport("user32.dll")]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    private static extern bool EnumChildWindows(IntPtr hwndParent, Win32.EnumWindowProc lpEnumFunc, IntPtr lParam);
++
++    [DllImport("user32.Dll")]
++    [return: MarshalAs(UnmanagedType.Bool)]
++    public static extern bool EnumChildWindows(IntPtr parentHandle, Win32.Win32Callback callback, IntPtr lParam);
++
++    public static void SetWinFullScreen(IntPtr hwnd)
++    {
++      Screen screen = Screen.FromHandle(hwnd);
++      int top = screen.WorkingArea.Top;
++      int left = screen.WorkingArea.Left;
++      int width = screen.WorkingArea.Width;
++      int height = screen.WorkingArea.Height;
++      Win32.SetWindowPos(hwnd, IntPtr.Zero, left, top, width, height, 64u);
++    }
++
++    public static void ActivateWindow(IntPtr handle)
++    {
++      Win32.SystemParametersInfo(8193u, 0u, 0u, 3u);
++      if (Win32.IsIconic(handle))
++      {
++        Win32.ShowWindow(handle, 9);
++      }
++      else
++      {
++        Win32.SetForegroundWindow(handle);
++      }
++      Win32.SystemParametersInfo(8193u, 200000u, 200000u, 3u);
++    }
++
++    public static void ShowMaximized(IntPtr hWnd)
++    {
++      Win32.ShowWindow(hWnd, 3);
++    }
++
++    public static void SetWindowStyleNoCaption(IntPtr hWnd)
++    {
++      uint num = 12582912u;
++      uint num2 = Win32.GetWindowLong(hWnd, Win32.GWL.STYLE);
++      num2 &= ~num;
++      Win32.SetWindowLong(hWnd, Win32.GWL.STYLE, num2);
++    }
+ 
+-		public delegate bool EnumWindowProc(IntPtr hWnd, IntPtr parameter);
++    public static void ActivateWindowByName(string name)
++    {
++      StringBuilder stringBuilder = new StringBuilder(100);
++      IntPtr intPtr = Win32.GetForegroundWindow();
++      while (intPtr != IntPtr.Zero)
++      {
++        if (Win32.IsWindowVisible(intPtr))
++        {
++          Win32.GetWindowText(intPtr, stringBuilder, stringBuilder.Capacity);
++          if (stringBuilder.ToString().IndexOf(name) != -1)
++          {
++            Win32.SetForegroundWindow(intPtr);
++            return;
++          }
++        }
++        intPtr = Win32.GetWindow(intPtr, 2u);
++      }
++    }
+ 
+-		public delegate bool Win32Callback(IntPtr hwnd, IntPtr lParam);
++    public static List<IntPtr> GetWindowsInControl(IntPtr ptr)
++    {
++      List<IntPtr> list = new List<IntPtr>();
++      IntPtr window = Win32.GetWindow(ptr, 5u);
++      while (window != IntPtr.Zero)
++      {
++        list.Add(window);
++        window = Win32.GetWindow(window, 2u);
++      }
++      return list;
++    }
+ 
+-		public static class MdiUtil
+-		{
+-			public const int SW_RESTORE = 9;
++    private void this_activate(Form form)
++    {
++      int windowThreadProcessId = Win32.GetWindowThreadProcessId(Win32.GetForegroundWindow(), IntPtr.Zero);
++      int currentThreadId = AppDomain.GetCurrentThreadId();
++      Win32.AttachThreadInput(currentThreadId, windowThreadProcessId, true);
++      form.Activate();
++      Win32.AttachThreadInput(currentThreadId, windowThreadProcessId, false);
++    }
+ 
+-			public const uint SWP_SHOWWINDOW = 64u;
++    public static void ActivateWindowByClassName(string name)
++    {
++      IntPtr intPtr = Win32.FindWindow(name, null);
++      if (intPtr != IntPtr.Zero && Win32.IsWindowVisible(intPtr))
++      {
++        Win32.SetForegroundWindow(intPtr);
++      }
++    }
+ 
+-			private const int SW_HIDE = 0;
++    public static List<IntPtr> GetChildWindows(IntPtr parent)
++    {
++      List<IntPtr> list = new List<IntPtr>();
++      GCHandle value = GCHandle.Alloc(list);
++      try
++      {
++        Win32.EnumWindowProc lpEnumFunc = new Win32.EnumWindowProc(Win32.EnumWindow);
++        Win32.EnumChildWindows(parent, lpEnumFunc, GCHandle.ToIntPtr(value));
++      }
++      finally
++      {
++        if (value.IsAllocated)
++        {
++          value.Free();
++        }
++      }
++      return list;
++    }
+ 
+-			private const int SW_SHOWNORMAL = 1;
++    private static bool EnumWindow(IntPtr handle, IntPtr pointer)
++    {
++      List<IntPtr> list = GCHandle.FromIntPtr(pointer).Target as List<IntPtr>;
++      if (list == null)
++      {
++        throw new InvalidCastException("GCHandle Target could not be cast as List<IntPtr>");
++      }
++      list.Add(handle);
++      return true;
++    }
+ 
+-			private const int SW_SHOWMINIMIZED = 2;
+ 
+-			private const int SW_SHOWMAXIMIZED = 3;
+ 
+-			private const int SW_SHOWNOACTIVATE = 4;
+ 
+-			private const int SW_SHOW = 5;
+ 
+-			private const int SW_MINIMIZE = 6;
+ 
+-			private const int SW_SHOWMINNOACTIVE = 7;
+ 
+-			private const int SW_SHOWNA = 8;
+ 
+-			private const int SW_SHOWDEFAULT = 10;
+ 
+-			[DllImport("user32.dll", SetLastError = true)]
+-			private static extern uint SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+ 
+-			public static Process LoadProcessInControl(Process p, Control ctrl)
+-			{
+-				p.WaitForInputIdle();
+-				int num = 0;
+-				while (p.MainWindowHandle == IntPtr.Zero && num < 1000)
+-				{
+-					Thread.Sleep(100);
+-					num++;
+-					p.Refresh();
+-				}
+-				if (p.MainWindowHandle != IntPtr.Zero)
+-				{
+-					Win32.MdiUtil.SetParent(p.MainWindowHandle, ctrl.Handle);
+-				}
+-				return p;
+-			}
+ 
+-			public static Process LoadProcessInControl(string filename, Control ctrl)
+-			{
+-				Process process = new Process();
+-				process.StartInfo.FileName = filename;
+-				process.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename);
+-				process.Start();
+-				process.WaitForInputIdle();
+-				int num = 0;
+-				while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
+-				{
+-					Thread.Sleep(100);
+-					num++;
+-					process.Refresh();
+-				}
+-				if (process.MainWindowHandle != IntPtr.Zero)
+-				{
+-					Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
+-				}
+-				return process;
+-			}
+ 
+-			public static Process LoadProcessInControl(string filename, string args, Control ctrl)
+-			{
+-				Process process = new Process();
+-				process.StartInfo.FileName = filename;
+-				process.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename);
+-				process.StartInfo.Arguments = args;
+-				process.Start();
+-				process.WaitForInputIdle();
+-				int num = 0;
+-				while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
+-				{
+-					Thread.Sleep(100);
+-					num++;
+-					process.Refresh();
+-				}
+-				if (process.MainWindowHandle != IntPtr.Zero)
+-				{
+-					Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
+-				}
+-				return process;
+-			}
+ 
+-			public static Process LoadProcessInControl(ProcessStartInfo hPsInfo, Control ctrl)
+-			{
+-				Process process = Process.Start(hPsInfo);
+-				process.WaitForInputIdle();
+-				int num = 0;
+-				while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
+-				{
+-					Thread.Sleep(100);
+-					num++;
+-					process.Refresh();
+-				}
+-				if (process.MainWindowHandle != IntPtr.Zero)
+-				{
+-					Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
+-				}
+-				return process;
+-			}
+ 
+-			public static MdiClient GetMdiClient(Form form)
+-			{
+-				foreach (Control control in form.Controls)
+-				{
+-					if (control is MdiClient)
+-					{
+-						return (MdiClient)control;
+-					}
+-				}
+-				return null;
+-			}
+ 
+-			[DllImport("user32.dll")]
+-			public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+ 
+-			public static void ShowMaximized(IntPtr hWnd)
+-			{
+-				Win32.MdiUtil.ShowWindow(hWnd, 3);
+-			}
+-		}
+ 
+-		public const int SW_RESTORE = 9;
+ 
+-		public const uint SWP_SHOWWINDOW = 64u;
+ 
+-		private const int SW_HIDE = 0;
+ 
+-		private const int SW_SHOWNORMAL = 1;
+ 
+-		private const int SW_SHOWMINIMIZED = 2;
+ 
+-		private const int SW_SHOWMAXIMIZED = 3;
+ 
+-		private const int SW_SHOWNOACTIVATE = 4;
+ 
+-		private const int SW_SHOW = 5;
+ 
+-		private const int SW_MINIMIZE = 6;
+ 
+-		private const int SW_SHOWMINNOACTIVE = 7;
+ 
+-		private const int SW_SHOWNA = 8;
+ 
+-		private const int SW_SHOWDEFAULT = 10;
+ 
+-		private const int GW_HWNDFIRST = 0;
++    // INIT
++    private static Boolean shouldUseWin32 = Type.GetType("Mono.Runtime") == null;
+ 
+-		private const int GW_HWNDLAST = 1;
++		/// <summary>
++		/// Checks if Win32 functionality should be used
++		/// </summary>
++		public static Boolean ShouldUseWin32()
++		{
++			return shouldUseWin32;
++		}
+ 
+-		private const int GW_HWNDNEXT = 2;
++		/// <summary>
++		/// Checks if we are running on Windows
++		/// </summary>
++		public static Boolean IsRunningOnWindows()
++		{
++			return shouldUseWin32;
++		}
+ 
+-		private const int GW_HWNDPREV = 3;
++		/// <summary>
++		///  Checks if we are running on Wine
++		/// </summary>
++		public static Boolean isRunningOnWine()
++		{
++			return Registry.LocalMachine.OpenSubKey(@"Software\Wine\") != null;
++		}
+ 
+-		private const int GW_OWNER = 4;
++		/// <summary>
++		/// Checks if we are running on Mono
++		/// </summary>
++		public static Boolean IsRunningOnMono()
++		{
++			return !shouldUseWin32;
++		}
+ 
+-		private const int GW_CHILD = 5;
++		#region Enums
+ 
+-		private const uint WS_EX_NOACTIVATE = 134217728u;
++		public enum SHGFI
++		{
++			SmallIcon = 0x00000001,
++			LargeIcon = 0x00000000,
++			Icon = 0x00000100,
++			DisplayName = 0x00000200,
++			Typename = 0x00000400,
++			SysIconIndex = 0x00004000,
++			UseFileAttributes = 0x00000010,
++			ShellIconSize = 0x4,
++			AddOverlays = 0x000000020
++		}
+ 
+-		[DllImport("user32.dll")]
+-		public static extern bool IsIconic(IntPtr hWnd);
++		public enum HitTest
++		{
++			HTCLIENT = 1,
++			HTCAPTION = 2,
++			HTSYSMENU = 3,
++			HTGROWBOX = 4,
++			HTMENU = 5,
++			HTHSCROLL = 6,
++			HTVSCROLL = 7,
++			HTMINBUTTON = 8,
++			HTMAXBUTTON = 9,
++			HTLEFT = 10,
++			HTRIGHT = 11,
++			HTTOP = 12,
++			HTTOPLEFT = 13,
++			HTTOPRIGHT = 14,
++			HTBOTTOM = 15,
++			HTBOTTOMLEFT = 16,
++			HTBOTTOMRIGHT = 17,
++			HTBORDER = 18,
++			HTOBJECT = 19,
++			HTCLOSE = 20,
++			HTHELP = 21
++		}
+ 
+-		[DllImport("user32.dll")]
+-		public static extern uint SetForegroundWindow(IntPtr hwnd);
++		#endregion
+ 
+-		[DllImport("user32.dll")]
+-		public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
++		#region Structs
+ 
+-		[DllImport("user32.dll")]
+-		public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, uint pvParam, uint fWinIni);
++		public struct COPYDATASTRUCT
++		{
++			public Int32 dwData;
++			public Int32 cbData;
++			public IntPtr lpData;
++		}
+ 
+-		[DllImport("user32.dll")]
+-		public static extern void SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int x, int y, int width, int height, uint flags);
++		[StructLayout(LayoutKind.Sequential)]
++		public struct SHFILEINFO
++		{
++			public SHFILEINFO(Boolean b)
++			{
++				hIcon = IntPtr.Zero;
++				iIcon = 0;
++				dwAttributes = 0;
++				szDisplayName = "";
++				szTypeName = "";
++			}
++			public IntPtr hIcon;
++			public Int32 iIcon;
++			public UInt32 dwAttributes;
++			[MarshalAs(UnmanagedType.LPStr, SizeConst = 260)]
++			public String szDisplayName;
++			[MarshalAs(UnmanagedType.LPStr, SizeConst = 80)]
++			public String szTypeName;
++		}
+ 
+-		[DllImport("user32.dll")]
+-		public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
++		[StructLayout(LayoutKind.Sequential)]
++		public class SCROLLINFO
++		{
++			public int cbSize = Marshal.SizeOf(typeof(Win32.SCROLLINFO));
++			public int fMask;
++			public int nMin;
++			public int nMax;
++			public int nPage;
++			public int nPos;
++			public int nTrackPos;
++		}
+ 
+-		[DllImport("user32.dll")]
+-		public static extern IntPtr WindowFromPoint(Point pt);
++		#endregion
++
++		#region Constants
++
++		public const Int32 SB_HORZ = 0;
++		public const Int32 SB_VERT = 1;
++		public const Int32 SB_BOTH = 3;
++		public const Int32 SB_THUMBPOSITION = 4;
++		public const Int32 SB_THUMBTRACK = 5;
++		public const Int32 SB_LEFT = 6;
++		public const Int32 SB_RIGHT = 7;
++		public const Int32 WM_HSCROLL = 0x0114;
++		public const Int32 WM_VSCROLL = 0x0115;
++		public const UInt32 LVM_SCROLL = 0x1014;
++		//public const UInt32 SWP_SHOWWINDOW = 64;
++		//public const Int32 SW_RESTORE = 9;
++		public const Int32 WM_SETREDRAW = 0xB;
++		public const Int32 WM_PRINTCLIENT = 0x0318;
++		public const Int32 PRF_CLIENT = 0x00000004;
++		public const Int32 TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
++		public const Int32 TVS_EX_DOUBLEBUFFER = 0x0004;
++		public const Int32 TV_FIRST = 0x1100;
++		public const Int32 WM_NCLBUTTONDOWN = 0x00A1;
++		public const Int32 WM_LBUTTONDOWN = 0x0201;
++		public const Int32 VK_ESCAPE = 0x1B;
++		public const Int32 WM_COPYDATA = 74;
++		public const Int32 WM_MOUSEWHEEL = 0x20A;
++		public const Int32 WM_KEYDOWN = 0x100;
++		public const Int32 WM_KEYUP = 0x101;
++		public const Int32 SIF_RANGE = 0x0001;
++		public const Int32 SIF_PAGE = 0x0002;
++		public const Int32 SIF_POS = 0x0004;
++		public const Int32 SIF_DISABLENOSCROLL = 0x0008;
++		public const Int32 SIF_TRACKPOS = 0x0010;
++		public const Int32 SIF_ALL = (SIF_RANGE | SIF_PAGE | SIF_POS | SIF_TRACKPOS);
++
++		#endregion
++
++		#region DllImports
++
++		//[DllImport("user32.dll")]
++		//public static extern Boolean IsIconic(IntPtr hWnd);
++
++		//[DllImport("user32.dll")]
++		//public static extern Boolean ShowWindow(IntPtr hWnd, Int32 nCmdShow);
++
++		//[DllImport("user32.dll")]
++		//public static extern void SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, Int32 x, Int32 y, Int32 width, Int32 height, UInt32 flags);
++
++		//[DllImport("user32.dll")]
++		//public static extern IntPtr SendMessage(IntPtr hWnd, Int32 msg, IntPtr wp, IntPtr lp);
+ 
+ 		[DllImport("user32.dll")]
+-		public static extern int GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
++		public static extern Int32 SendMessage(IntPtr handle, Int32 messg, Int32 wparam, Int32 lparam);
+ 
+-		[DllImport("user32.dll")]
+-		public static extern IntPtr GetForegroundWindow();
++		//[DllImport("user32.dll")]
++		//public static extern IntPtr WindowFromPoint(Point pt);
+ 
+ 		[DllImport("user32.dll")]
+-		public static extern bool AttachThreadInput(int idAttach, int idAttachTo, bool fAttach);
++		public static extern Boolean ShowScrollBar(IntPtr hWnd, Int32 wBar, Boolean bShow);
+ 
+ 		[DllImport("user32.dll")]
+-		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
++		public static extern Int32 GetScrollPos(IntPtr hWnd, Int32 nBar);
+ 
+ 		[DllImport("user32.dll")]
+-		public static extern bool IsWindowVisible(IntPtr hWnd);
++		public static extern Int32 SetScrollPos(IntPtr hWnd, Int32 nBar, Int32 nPos, Boolean bRedraw);
+ 
+ 		[DllImport("user32.dll")]
+-		public static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
++		public static extern Boolean GetScrollInfo(IntPtr hWnd, Int32 fnBar, SCROLLINFO scrollInfo);
+ 
+ 		[DllImport("user32.dll")]
+-		public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpStr, int nMaxCount);
++		public static extern Boolean ReleaseCapture();
+ 
+-		[DllImport("user32.dll")]
+-		public static extern int GetClassName(IntPtr hWnd, StringBuilder lpStr, int nMaxCount);
++		//[DllImport("user32.dll")]
++		//public static extern IntPtr FindWindow(String lpClassName, String lpWindowName);
+ 
+-		[DllImport("user32.dll")]
+-		public static extern IntPtr GetDesktopWindow();
++		//[DllImport("user32.dll")]
++		//public static extern UInt32 SetForegroundWindow(IntPtr hwnd);
+ 
+-		[DllImport("gdi32.dll")]
+-		public static extern bool DeleteObject(IntPtr hObject);
++		[DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
++		public static extern Boolean PathCompactPathEx([MarshalAs(UnmanagedType.LPTStr)] StringBuilder pszOut, [MarshalAs(UnmanagedType.LPTStr)] String pszSource, [MarshalAs(UnmanagedType.U4)] Int32 cchMax, [MarshalAs(UnmanagedType.U4)] Int32 dwReserved);
+ 
+-		[DllImport("user32.dll")]
+-		private static extern IntPtr FindWindowEx(IntPtr hWnd, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
++		[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
++		public static extern Int32 GetLongPathName([MarshalAs(UnmanagedType.LPTStr)] String path, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder longPath, Int32 longPathLength);
++		
++		[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
++		public static extern Int32 GetShortPathName(String lpszLongPath, StringBuilder lpszShortPath, Int32 cchBuffer);
+ 
+-		[DllImport("user32.dll")]
+-		public static extern uint GetWindowLong(IntPtr hWnd, Win32.GWL index);
++		[DllImport("shell32.dll", EntryPoint = "#28")]
++		public static extern UInt32 SHILCreateFromPath([MarshalAs(UnmanagedType.LPWStr)] String pszPath, out IntPtr ppidl, ref Int32 rgflnOut);
++
++		[DllImport("shell32.dll", EntryPoint = "SHGetPathFromIDListW")]
++		public static extern Boolean SHGetPathFromIDList(IntPtr pidl, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder pszPath);
+ 
+ 		[DllImport("user32.dll")]
+-		public static extern uint SetWindowLong(IntPtr hWnd, Win32.GWL index, uint unValue);
++		public static extern Int32 DestroyIcon(IntPtr hIcon);
+ 
+-		[DllImport("user32.dll", SetLastError = true)]
+-		public static extern uint SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
++		[DllImport("kernel32.dll")]
++		public static extern Int32 GetModuleHandle(String lpModuleName);
+ 
+-		[DllImport("user32.dll")]
+-		public static extern IntPtr GetParent(IntPtr hWnd);
++		[DllImport("shell32.dll")]
++		public static extern IntPtr ExtractIcon(Int32 hInst, String FileName, Int32 nIconIndex);
+ 
+-		[DllImport("user32.dll")]
+-		[return: MarshalAs(UnmanagedType.Bool)]
+-		private static extern bool EnumChildWindows(IntPtr hwndParent, Win32.EnumWindowProc lpEnumFunc, IntPtr lParam);
++		[DllImport("shell32.dll")]
++		public static extern Int32 SHGetFileInfo(String pszPath, UInt32 dwFileAttributes, out SHFILEINFO psfi, UInt32 cbfileInfo, SHGFI uFlags);
++
++    #endregion
+ 
+-		[DllImport("user32.Dll")]
+-		[return: MarshalAs(UnmanagedType.Bool)]
+-		public static extern bool EnumChildWindows(IntPtr parentHandle, Win32.Win32Callback callback, IntPtr lParam);
++    #region Window
+ 
+-		public static void SetWinFullScreen(IntPtr hwnd)
++    /// <summary>
++    /// Sets the window specified by handle to fullscreen
++    /// </summary>
++    /*
++    public static void SetWinFullScreen(IntPtr hwnd)
+ 		{
+ 			Screen screen = Screen.FromHandle(hwnd);
+-			int top = screen.WorkingArea.Top;
+-			int left = screen.WorkingArea.Left;
+-			int width = screen.WorkingArea.Width;
+-			int height = screen.WorkingArea.Height;
+-			Win32.SetWindowPos(hwnd, IntPtr.Zero, left, top, width, height, 64u);
++			Int32 screenTop = screen.WorkingArea.Top;
++			Int32 screenLeft = screen.WorkingArea.Left;
++			Int32 screenWidth = screen.WorkingArea.Width;
++			Int32 screenHeight = screen.WorkingArea.Height;
++			SetWindowPos(hwnd, IntPtr.Zero, screenLeft, screenTop, screenWidth, screenHeight, SWP_SHOWWINDOW);
+ 		}
+-
+-		public static void ActivateWindow(IntPtr handle)
++    */
++		/// <summary>
++		/// Restores the window with Win32
++		/// </summary>
++		public static void RestoreWindow(IntPtr handle)
+ 		{
+-			Win32.SystemParametersInfo(8193u, 0u, 0u, 3u);
+-			if (Win32.IsIconic(handle))
+-			{
+-				Win32.ShowWindow(handle, 9);
+-			}
+-			else
+-			{
+-				Win32.SetForegroundWindow(handle);
+-			}
+-			Win32.SystemParametersInfo(8193u, 200000u, 200000u, 3u);
++			if (IsIconic(handle)) ShowWindow(handle, SW_RESTORE);
+ 		}
+ 
+-		public static void ShowMaximized(IntPtr hWnd)
+-		{
+-			Win32.ShowWindow(hWnd, 3);
+-		}
++		#endregion
+ 
+-		public static void SetWindowStyleNoCaption(IntPtr hWnd)
+-		{
+-			uint num = 12582912u;
+-			uint num2 = Win32.GetWindowLong(hWnd, Win32.GWL.STYLE);
+-			num2 &= ~num;
+-			Win32.SetWindowLong(hWnd, Win32.GWL.STYLE, num2);
+-		}
++		#region Scrolling
+ 
+-		public static void ActivateWindowByName(string name)
++		/// <summary>
++		/// 
++		/// </summary>
++		public static SCROLLINFO GetFullScrollInfo(Control lv, Boolean horizontalBar)
+ 		{
+-			StringBuilder stringBuilder = new StringBuilder(100);
+-			IntPtr intPtr = Win32.GetForegroundWindow();
+-			while (intPtr != IntPtr.Zero)
+-			{
+-				if (Win32.IsWindowVisible(intPtr))
+-				{
+-					Win32.GetWindowText(intPtr, stringBuilder, stringBuilder.Capacity);
+-					if (stringBuilder.ToString().IndexOf(name) != -1)
+-					{
+-						Win32.SetForegroundWindow(intPtr);
+-						return;
+-					}
+-				}
+-				intPtr = Win32.GetWindow(intPtr, 2u);
+-			}
++			Int32 fnBar = (horizontalBar ? SB_HORZ : SB_VERT);
++			SCROLLINFO scrollInfo = new SCROLLINFO();
++			scrollInfo.fMask = SIF_ALL;
++			if (GetScrollInfo(lv.Handle, fnBar, scrollInfo)) return scrollInfo;
++			else return null;
+ 		}
+ 
+-		public static List<IntPtr> GetWindowsInControl(IntPtr ptr)
++		/// <summary>
++		/// 
++		/// </summary>
++		public static Point GetScrollPos(Control ctrl)
+ 		{
+-			List<IntPtr> list = new List<IntPtr>();
+-			IntPtr window = Win32.GetWindow(ptr, 5u);
+-			while (window != IntPtr.Zero)
+-			{
+-				list.Add(window);
+-				window = Win32.GetWindow(window, 2u);
+-			}
+-			return list;
++			return new Point(GetScrollPos(ctrl.Handle, SB_HORZ), GetScrollPos(ctrl.Handle, SB_VERT));
+ 		}
+ 
+-		private void this_activate(Form form)
++		/// <summary>
++		/// 
++		/// </summary>
++		public static void SetScrollPos(Control ctrl, Point scrollPosition)
+ 		{
+-			int windowThreadProcessId = Win32.GetWindowThreadProcessId(Win32.GetForegroundWindow(), IntPtr.Zero);
+-      int currentThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+-      //int currentThreadId = AppDomain.GetCurrentThreadId();
+-			Win32.AttachThreadInput(currentThreadId, windowThreadProcessId, true);
+-			form.Activate();
+-			Win32.AttachThreadInput(currentThreadId, windowThreadProcessId, false);
++			SetScrollPos(ctrl.Handle, SB_HORZ, scrollPosition.X, true);
++			SetScrollPos(ctrl.Handle, SB_VERT, scrollPosition.Y, true);
+ 		}
+ 
+-		public static void ActivateWindowByClassName(string name)
++		/// <summary>
++		/// 
++		/// </summary>
++		public static void ScrollToLeft(Control ctrl)
+ 		{
+-			IntPtr intPtr = Win32.FindWindow(name, null);
+-			if (intPtr != IntPtr.Zero && Win32.IsWindowVisible(intPtr))
+-			{
+-				Win32.SetForegroundWindow(intPtr);
+-			}
++			SendMessage(ctrl.Handle, WM_HSCROLL, SB_LEFT, 0);
+ 		}
+ 
+-		public static List<IntPtr> GetChildWindows(IntPtr parent)
+-		{
+-			List<IntPtr> list = new List<IntPtr>();
+-			GCHandle value = GCHandle.Alloc(list);
+-			try
+-			{
+-				Win32.EnumWindowProc lpEnumFunc = new Win32.EnumWindowProc(Win32.EnumWindow);
+-				Win32.EnumChildWindows(parent, lpEnumFunc, GCHandle.ToIntPtr(value));
+-			}
+-			finally
+-			{
+-				if (value.IsAllocated)
+-				{
+-					value.Free();
+-				}
+-			}
+-			return list;
+-		}
++		#endregion
+ 
+-		private static bool EnumWindow(IntPtr handle, IntPtr pointer)
+-		{
+-			List<IntPtr> list = GCHandle.FromIntPtr(pointer).Target as List<IntPtr>;
+-			if (list == null)
+-			{
+-				throw new InvalidCastException("GCHandle Target could not be cast as List<IntPtr>");
+-			}
+-			list.Add(handle);
+-			return true;
+-		}
+ 	}
++
+ }
++
