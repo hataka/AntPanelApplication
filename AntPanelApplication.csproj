@@ -126,6 +126,14 @@
     <Compile Include="Controls\SimplePanel\SimplePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="SyntaxHighlighter\Csharp_SyntaxClass.cs" />
+    <Compile Include="SyntaxHighlighter\HighlightClass.cs" />
+    <Compile Include="SyntaxHighlighter\SyntaxHighlighter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SyntaxHighlighter\SyntaxHighlighter.Designer.cs">
+      <DependentUpon>SyntaxHighlighter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -210,6 +218,7 @@
     <Compile Include="MDIForm\Interfaces.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyntaxHighlighter\XML_SyntaxClass.cs" />
     <Compile Include="XmlTreeMenu\ActionManager.cs" />
     <Compile Include="XmlTreeMenu\UnixActionManager.cs" />
     <Compile Include="XmlTreeMenu\XmlTreeMenu.cs">
@@ -238,6 +247,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SimplePanel\SimplePanel.resx">
       <DependentUpon>SimplePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyntaxHighlighter\SyntaxHighlighter.resx">
+      <DependentUpon>SyntaxHighlighter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CsOutlineParser\BuildTree.resx">
       <DependentUpon>BuildTree.cs</DependentUpon>
@@ -306,6 +318,7 @@
   <ItemGroup>
     <None Include="Resources\PSPad.bmp" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

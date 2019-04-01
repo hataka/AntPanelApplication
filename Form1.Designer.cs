@@ -52,6 +52,7 @@
       this.bottomTabControl = new System.Windows.Forms.TabControl();
       this.tabPage7 = new System.Windows.Forms.TabPage();
       this.tabPage8 = new System.Windows.Forms.TabPage();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
       this.documentTabControl.SuspendLayout();
@@ -60,9 +61,11 @@
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.tabPage5.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bottomSplitContainer)).BeginInit();
       this.bottomSplitContainer.Panel1.SuspendLayout();
       this.bottomSplitContainer.Panel2.SuspendLayout();
       this.bottomSplitContainer.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.rightSplitContainer)).BeginInit();
       this.rightSplitContainer.Panel1.SuspendLayout();
       this.rightSplitContainer.Panel2.SuspendLayout();
       this.rightSplitContainer.SuspendLayout();
@@ -130,11 +133,11 @@
       // tabPage2
       // 
       this.tabPage2.Controls.Add(this.pictureBox1);
-      this.tabPage2.Location = new System.Drawing.Point(4, 33);
+      this.tabPage2.Location = new System.Drawing.Point(4, 25);
       this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-      this.tabPage2.Size = new System.Drawing.Size(704, 535);
+      this.tabPage2.Size = new System.Drawing.Size(703, 543);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "tabPage2";
       this.tabPage2.UseVisualStyleBackColor = true;
@@ -146,7 +149,7 @@
       this.pictureBox1.Location = new System.Drawing.Point(3, 4);
       this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(698, 527);
+      this.pictureBox1.Size = new System.Drawing.Size(697, 535);
       this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.pictureBox1.TabIndex = 7;
       this.pictureBox1.TabStop = false;
@@ -154,20 +157,20 @@
       // 
       // tabPage3
       // 
-      this.tabPage3.Location = new System.Drawing.Point(4, 33);
+      this.tabPage3.Location = new System.Drawing.Point(4, 25);
       this.tabPage3.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.tabPage3.Name = "tabPage3";
-      this.tabPage3.Size = new System.Drawing.Size(704, 535);
+      this.tabPage3.Size = new System.Drawing.Size(703, 543);
       this.tabPage3.TabIndex = 2;
       this.tabPage3.Text = "tabPage3";
       this.tabPage3.UseVisualStyleBackColor = true;
       // 
       // tabPage4
       // 
-      this.tabPage4.Location = new System.Drawing.Point(4, 33);
+      this.tabPage4.Location = new System.Drawing.Point(4, 25);
       this.tabPage4.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.tabPage4.Name = "tabPage4";
-      this.tabPage4.Size = new System.Drawing.Size(704, 535);
+      this.tabPage4.Size = new System.Drawing.Size(703, 543);
       this.tabPage4.TabIndex = 3;
       this.tabPage4.Text = "tabPage4";
       this.tabPage4.UseVisualStyleBackColor = true;
@@ -176,10 +179,10 @@
       // 
       this.tabPage5.Controls.Add(this.axWindowsMediaPlayer1);
       this.tabPage5.Controls.Add(this.propertyGrid1);
-      this.tabPage5.Location = new System.Drawing.Point(4, 33);
+      this.tabPage5.Location = new System.Drawing.Point(4, 25);
       this.tabPage5.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.tabPage5.Name = "tabPage5";
-      this.tabPage5.Size = new System.Drawing.Size(704, 535);
+      this.tabPage5.Size = new System.Drawing.Size(703, 543);
       this.tabPage5.TabIndex = 4;
       this.tabPage5.Text = "tabPage5";
       this.tabPage5.UseVisualStyleBackColor = true;
@@ -192,7 +195,7 @@
       this.axWindowsMediaPlayer1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
       this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
-      this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(704, 535);
+      this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(703, 543);
       this.axWindowsMediaPlayer1.TabIndex = 1;
       // 
       // propertyGrid1
@@ -205,10 +208,10 @@
       // 
       // tabPage6
       // 
-      this.tabPage6.Location = new System.Drawing.Point(4, 33);
+      this.tabPage6.Location = new System.Drawing.Point(4, 25);
       this.tabPage6.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.tabPage6.Name = "tabPage6";
-      this.tabPage6.Size = new System.Drawing.Size(704, 535);
+      this.tabPage6.Size = new System.Drawing.Size(703, 543);
       this.tabPage6.TabIndex = 5;
       this.tabPage6.Text = "tabPage6";
       this.tabPage6.UseVisualStyleBackColor = true;
@@ -280,6 +283,10 @@
       this.rightTabControl.SelectedIndex = 0;
       this.rightTabControl.Size = new System.Drawing.Size(32, 572);
       this.rightTabControl.TabIndex = 0;
+      this.rightTabControl.DoubleClick += new System.EventHandler(this.rightTabControl_DoubleClick);
+      this.rightTabControl.Enter += new System.EventHandler(this.rightTabControl_Enter);
+      this.rightTabControl.Leave += new System.EventHandler(this.rightTabControl_Leave);
+      this.rightTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.rightTabControl_MouseClick);
       // 
       // tabPage9
       // 
@@ -315,6 +322,10 @@
       this.bottomTabControl.SelectedIndex = 0;
       this.bottomTabControl.Size = new System.Drawing.Size(986, 28);
       this.bottomTabControl.TabIndex = 0;
+      this.bottomTabControl.DoubleClick += new System.EventHandler(this.bottomTabControl_DoubleClick);
+      this.bottomTabControl.Enter += new System.EventHandler(this.bottomTabControl_Enter);
+      this.bottomTabControl.Leave += new System.EventHandler(this.bottomTabControl_Leave);
+      this.bottomTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bottomTabControl_MouseClick);
       // 
       // tabPage7
       // 
@@ -349,6 +360,7 @@
       this.Name = "Form1";
       this.Text = "Form1";
       this.splitContainer1.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
       this.documentTabControl.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
@@ -358,9 +370,11 @@
       ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
       this.bottomSplitContainer.Panel1.ResumeLayout(false);
       this.bottomSplitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.bottomSplitContainer)).EndInit();
       this.bottomSplitContainer.ResumeLayout(false);
       this.rightSplitContainer.Panel1.ResumeLayout(false);
       this.rightSplitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.rightSplitContainer)).EndInit();
       this.rightSplitContainer.ResumeLayout(false);
       this.rightTabControl.ResumeLayout(false);
       this.bottomTabControl.ResumeLayout(false);

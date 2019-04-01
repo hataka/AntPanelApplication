@@ -150,5 +150,8 @@
     <Setting Name="DefaultRightPanelWidth" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">56</Value>
     </Setting>
+    <Setting Name="SyntaxHighlight" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -1121,5 +1121,49 @@ namespace CommonLibrary
 			MessageBox.Show(string.Format("行:{0} 列:{1}", point.Y + 1, point.X + 1));
 			MessageBox.Show(StringHandler.GetLine(text, point.Y));
 		}
-	}
+
+    /// <summary>
+    /// ARGB16進カラーcodeをColorに変換する
+    /// </summary>
+    /// <param name="colorCode">#00000000</param>
+    /// <returns></returns>
+    /// あまりきれいなコードとは言えませんが、上記コードで16進数カラーコードをColorで返すことができます。
+    /// http://dobon.net/vb/dotnet/graphics/getcolorfromhtml.html
+    public static Color GetArbgColor(string colorCode)
+    {
+      try
+      {
+        // #で始まっているか
+        var index = colorCode.IndexOf("#", StringComparison.Ordinal);
+        // 文字数の確認と#がおかしな位置にいないか
+        if (colorCode.Length != 9 || index != 0)
+        {
+          // 例外を投げる
+          throw new ArgumentOutOfRangeException();
+        }
+
+        // 分解する
+        var alpha = Convert.ToByte(Convert.ToInt32(colorCode.Substring(1, 2), 16));
+        var red = Convert.ToByte(Convert.ToInt32(colorCode.Substring(3, 2), 16));
+        var green = Convert.ToByte(Convert.ToInt32(colorCode.Substring(5, 2), 16));
+        var blue = Convert.ToByte(Convert.ToInt32(colorCode.Substring(7, 2), 16));
+
+        return Color.FromArgb(alpha, red, green, blue);
+      }
+      catch (ArgumentOutOfRangeException)
+      {
+        throw new ArgumentOutOfRangeException("GetArbgColor : colorCode OutOfRange");
+      }
+      catch (ArgumentNullException)
+      {
+        throw new ArgumentOutOfRangeException("GetArbgColor : \"#\" not found");
+      }
+      catch (AggregateException)
+      {
+        throw new ArgumentOutOfRangeException("GetArbgColor : \"#\" not found");
+      }
+    }
+
+
+  }
 }

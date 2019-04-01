@@ -18,12 +18,16 @@ using AntPlugin.XmlTreeMenu.Managers;
 using CommonLibrary;
 using MDIForm;
 using AntPanelApplication.Managers;
+using System.Text.RegularExpressions;
+using AntPlugin.XMLTreeMenu.Controls;
+using System.Reflection;
 
 namespace AntPanelApplication
 {
 	public partial class AntPanel : UserControl
 	{
-		public const int ICON_FILE = 0;
+    #region Variables
+    public const int ICON_FILE = 0;
 		public const int ICON_DEFAULT_TARGET = 1;
 		public const int ICON_INTERNAL_TARGET = 2;
 		public const int ICON_PUBLIC_TARGET = 3;
@@ -90,8 +94,9 @@ namespace AntPanelApplication
 		{
 			get { return buildFilesList; }
 		}
+    #endregion
 
-		public AntPanel()
+    public AntPanel()
 		{
 			InitializeComponent();
 			InitializeAntPanel();
@@ -387,7 +392,7 @@ namespace AntPanelApplication
 					{
 						//PluginBase.MainForm.OpenEditableDocument(path, false);
 						//Process.Start(this.devenv15Path, "/edit " + path);
-            this.OpenDocument(path);
+            Globals.MainForm.OpenDocument(path);
           }
 					return;
 				}
@@ -397,7 +402,7 @@ namespace AntPanelApplication
 					{
 						//Process.Start(this.devenv15Path, "/edit " + antNode.File);
             //PluginBase.MainForm.OpenEditableDocument(antNode.File, false);
-            this.OpenDocument(antNode.File);
+            Globals.MainForm.OpenDocument(antNode.File);
           }
 					else this.RunTargetex(antNode.File, antNode.Target);
 				}
@@ -409,7 +414,8 @@ namespace AntPanelApplication
 						{
 							//PluginBase.MainForm.OpenEditableDocument(((NodeInfo)treeNode.Tag).Path);
 							//Process.Start(this.devenv15Path, "/edit " + ((NodeInfo)treeNode.Tag).Path);
-              this.OpenDocument(((NodeInfo)treeNode.Tag).Path);
+              //this.OpenDocument(((NodeInfo)treeNode.Tag).Path);
+              Globals.MainForm.OpenDocument(((NodeInfo)treeNode.Tag).Path);
               return;
 						}
 						else
@@ -423,8 +429,9 @@ namespace AntPanelApplication
 					}
 					catch (Exception ex2)
 					{
-						String errorMsg = ex2.Message.ToString();
-						MessageBox.Show(errorMsg, "treeNode.Tag.GetType().Name != NodeInfo");
+						String errorMsg = Lib.OutputError(ex2.Message.ToString());
+            MessageBox.Show(Lib.OutputError(errorMsg), MethodBase.GetCurrentMethod().Name);
+            //MessageBox.Show(errorMsg, "treeNode.Tag.GetType().Name != NodeInfo");
 						return;
 					}
 					return;
@@ -463,15 +470,16 @@ namespace AntPanelApplication
 						case "package":
 						case "project":
 							AntTreeNode rootnode = treeView.SelectedNode as AntTreeNode;
-              this.OpenDocument(rootnode.File);
+              Globals.MainForm.OpenDocument(rootnode.File);
               //Process.Start(this.devenv15Path, "/edit " + rootnode.File);
 							return;
 						default:
 							if (treeNode.Parent == null)
 							{
 								AntTreeNode node = treeView.SelectedNode as AntTreeNode;
-								Process.Start(this.devenv15Path, "/edit " + node.File);
-							}
+                //Process.Start(this.devenv15Path, "/edit " + node.File);
+                Globals.MainForm.OpenDocument(node.File);
+              }
 							else
 							{
 								MessageBox.Show(xmlNode.OuterXml.Replace("\t", "  ").Replace("    ", "  "), "NodeName : " + xmlNode.Name);
@@ -488,7 +496,7 @@ namespace AntPanelApplication
 					{
 						if (treeNode.Parent == null)
 						{
-              this.OpenDocument(((NodeInfo)treeNode.Tag).Path);
+              Globals.MainForm.OpenDocument(((NodeInfo)treeNode.Tag).Path);
               //Process.Start(this.devenv15Path, "/edit " + ((NodeInfo)treeNode.Tag).Path);
 							return;
 						}
@@ -503,9 +511,10 @@ namespace AntPanelApplication
 					}
 					catch (Exception ex2)
 					{
-						String errorMsg = ex2.Message.ToString();
-						MessageBox.Show(errorMsg, "treeNode.Tag.GetType().Name != NodeInfo");
-						return;
+						String errorMsg =Lib.OutputError(ex2.Message.ToString());
+						//MessageBox.Show(errorMsg, "treeNode.Tag.GetType().Name != NodeInfo");
+					  MessageBox.Show(Lib.OutputError(errorMsg), MethodBase.GetCurrentMethod().Name);
+            return;
 					}
 					return;
 				}
@@ -637,21 +646,21 @@ namespace AntPanelApplication
 		{
 			AntTreeNode node = treeView.SelectedNode as AntTreeNode;
 			//Globals.MainForm.OpenEditableDocument(node.File, false);
-			Process.Start(sakuraPath, node.File);
-			/*
-			//ScintillaControl sci = Globals.SciControl;
-			String text = sci.Text;
-			Regex regexp = new Regex("<target[^>]+name\\s*=\\s*\"" + node.Target + "\".*>");
-			Match match = regexp.Match(text);
-			if (match != null)
-			{
-				sci.GotoPos(match.Index);
-				sci.SetSel(match.Index, match.Index + match.Length);
-			}
-			*/
-		}
-		
-		public void MenuRemoveClick(object sender, EventArgs e)
+			//Process.Start(sakuraPath, node.File);
+      Globals.MainForm.OpenDocument(node.File);
+      RichTextEditor editor = Globals.MainForm.CurrentDocument as RichTextEditor;
+      String text = editor.richTextBox1.Text;
+      Regex regexp = new Regex("<target[^>]+name\\s*=\\s*\"" + node.Target + "\".*>");
+      Match match = regexp.Match(text);
+      if (match != null)
+      {
+        editor.richTextBox1.SelectionStart = match.Index;
+        editor.richTextBox1.SelectionLength = match.Length;
+        //editor.richTextBox1.SelectionBackColor = Color.FromArgb(0x0A0A0A);
+      }
+    }
+
+    public void MenuRemoveClick(object sender, EventArgs e)
 		{
 			RemoveBuildFile((treeView.SelectedNode as AntTreeNode).File);
 		}
@@ -821,7 +830,6 @@ namespace AntPanelApplication
 			treeView.EndUpdate();
 		}
 
-		// kokokoko
 		public TreeNode GetBuildFileNode(string file)
 		{
 			XmlDocument xml = new XmlDocument();

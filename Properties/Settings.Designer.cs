@@ -495,5 +495,17 @@ namespace AntPanelApplication.Properties {
                 this["DefaultRightPanelWidth"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SyntaxHighlight {
+            get {
+                return ((bool)(this["SyntaxHighlight"]));
+            }
+            set {
+                this["SyntaxHighlight"] = value;
+            }
+        }
     }
 }

@@ -13,6 +13,9 @@ using System.Diagnostics;
 using AntPanelApplication;
 using CommonLibrary;
 using System.Text.RegularExpressions;
+using CommonLibrary.Controls;
+using AntPanelApplication.Helpers;
+using System.Reflection;
 //using CSScriptLibrary;
 #if Interface
 using AntPlugin.CommonLibrary;
@@ -25,9 +28,7 @@ using CommonLibrary;
 
 namespace AntPlugin.XMLTreeMenu.Controls
 {
-#if Interface
-  public partial class RichTextEditor : UserControl//, IMDIForm
-#endif
+  public partial class RichTextEditor : UserControl
 	{
     #region RichTextEditor Valiables
     public findDialog findDlg = null;
@@ -46,31 +47,37 @@ namespace AntPlugin.XMLTreeMenu.Controls
     public bool modifiedFlag = false;
     public List<string> previousDocuments = new List<string>();
     public static ImageList imageList1;
-    public String BaseDir = @"F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug";
+    public String BaseDir = Path.GetDirectoryName(Application.ExecutablePath);//@"F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug";
     
     #if Interface
     //private PluginMain pluginMain;
     private AntPanel antPanel;
+    private SplitContainer splitContainer1;
+    private RichTextBox richTextBox2;
     private ToolStripMenuItem toolStripMenuItem2;
+
+    global::AntPanelApplication.Properties.Settings settings
+          = new global::AntPanelApplication.Properties.Settings();
+
     //private XMLTreeMenu.Settings settings;
 #endif
     #endregion
 
     #region Properties
 #if Interface
-/*
-    public ParentFormClass MainForm
-    {
-      get;
-      set;
-    }
+    /*
+        public ParentFormClass MainForm
+        {
+          get;
+          set;
+        }
 
-    public ChildFormControlClass Instance
-    {
-      get;
-      set;
-    }
-*/
+        public ChildFormControlClass Instance
+        {
+          get;
+          set;
+        }
+    */
 #endif
     public RichTextBox RichTextBox
     {
@@ -123,10 +130,6 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.antPanel = ui;
       InitializeComponent();
       IntializeRichTextPanel();
-      //i/f (!String.IsNullOrEmpty(args[0]) && File.Exists(args[0]))
-      //{
-        //this.LoadFile(args[0]);
-     // }
     }
 
     #endregion
@@ -134,8 +137,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
     #region Initialization
     public void InitializeInterface()
     {
-#if Interface
-/*
+      /*
       string guid = "0538077E-8C37-4A2B-962B-8FB77DC9F325";
       this.xmlTreeMenu = (PluginMain)PluginBase.MainForm.FindPlugin(guid);
       this.settings = this.xmlTreeMenu.Settings as XMLTreeMenu.Settings;
@@ -149,10 +151,9 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.toolStrip1.Renderer = new DockPanelStripRenderer(true);
       this.Instance.PreviousDocuments = this.PreviousDocuments;
       //this.MainForm.xmlTreeMenu_pluginUI.
-*/ 
-#endif    
+      */ 
 		}
-    public RichTextBox textbox2;
+    public SyntaxHighlighter editor;
     public void IntializeRichTextPanel()
     {
       //String resource = Path.Combine(baseDir, @"CsMacro\CustomDocument\Resources\"); //"
@@ -177,9 +178,9 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.toolStripDropDownButton2.Image = imageList1.Images[61];
       this.toolStripDropDownButton3.Image = imageList1.Images[15];
       this.toolStripDropDownButton4.Image = imageList1.Images[117];
-      this.textbox2 = new RichTextBox();
-      this.textbox2.Visible = false;
-      this.Controls.Add(textbox2);
+      //this.textbox2 = new RichTextBox();
+      //this.textbox2.Visible = false;
+      //this.Controls.Add(textbox2);
 
       this.printingText = this.richTextBox1.Text;
       this.printingPosition = 0;
@@ -195,14 +196,26 @@ namespace AntPlugin.XMLTreeMenu.Controls
       }
       catch { }
       this.richTextBox1.Modified = (this.modifiedFlag = false);
+
+      //this.Controls.Remove(this.richTextBox1);
+      //this.editor = new SyntaxHighlighter(this.richTextBox1);
+      //this.Controls.Add(this.editor);
+
+      // イベントの割当
+      //richTextBox1.VScroll += richTextBox1_Scroll;
+      //richTextBox2.VScroll += richTextBox2_Scroll;
+      //richTextBox1.MouseWheel += richTextBox1_MouseWheel;
+      //richTextBox2.MouseWheel += richTextBox2_MouseWheel;
+
+
+      this.splitContainer1.Panel2Collapsed = false;
+      this.splitContainer1.Panel1Collapsed = true;
     }
 
     public void InitializeImageList()
     {
-#if Interface
-      String path = Path.Combine(BaseDir, @"SettingData\PSPad.bmp");
+      //String path = Path.Combine(PathHelper.SettingDataDir, "PSPad.bmp");
       //String path = String.Empty; 
-#endif
       //Bitmap bmp3 = new Bitmap(path);
       Bitmap bmp3 = (Bitmap)this.imageListButton.Image;
       // 
@@ -235,10 +248,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
      */
     public void AddIcon(String name)
     {
-#if Interface
       //String iconPath = Path.Combine(PathHelper.BaseDir, @"SettingData\icons\" + name); //"
       String iconPath = String.Empty;
-      #endif      
       System.Drawing.Icon ico = new System.Drawing.Icon(iconPath, 16, 16);
       //Bitmapに変換する
       System.Drawing.Bitmap bmp = ico.ToBitmap();
@@ -246,6 +257,38 @@ namespace AntPlugin.XMLTreeMenu.Controls
       ico.Dispose();
       //イメージを表示する
       imageList1.Images.Add(bmp);
+    }
+
+    /*
+    // Scroll, MouseWheelイベントの設定
+    private void richTextBox1_Scroll(object sender, ScrollEventArgs e)
+    {
+      MoveLinkageScrollableControl(sender as RichTextBox, richTextBox2);
+    }
+    private void richTextBox1_MouseWheel(object sender, MouseEventArgs e)
+    {
+      MoveLinkageScrollableControl(sender as richTextBox, richTextBox2);
+    }
+
+    private void richTextBox2_Scroll(object sender, ScrollEventArgs e)
+    {
+      MoveLinkageScrollableControl(sender as richTextBox, richTextBox1);
+    }
+    private void richTextBox2_MouseWheel(object sender, MouseEventArgs e)
+    {
+      MoveLinkageScrollableControl(sender as RichTextBox, richTextBox1);
+    }
+    */
+    /// <summary>
+    /// 連動するパネルのスクロール位置を設定します。
+    /// </summary>
+    /// <param name="self">イベントが発生したパネル</param>
+    /// <param name="linkage">もう片方のパネル</param>
+    private void MoveLinkageScrollableControl(RichTextBox self, RichTextBox linkage)
+    {
+      //int x = ((Panel)self).HorizontalScroll.Value;
+      //int y = self.VerticalScroll.Value;
+      //linkage.AutoScrollPosition = new System.Drawing.Point(x, y);
     }
     #endregion
 
@@ -318,6 +361,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
       //else if (File.Exists(this.currentPath) && Lib.IsTextFile(this.currentPath))
       else if (File.Exists(this.currentPath))
       {
+        this.LoadFile(this.currentPath);
+        /*
         if (Path.GetExtension(this.currentPath) == ".rtf")
         {
           this.richTextBox1.LoadFile(this.currentPath);
@@ -326,6 +371,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
         {
           this.richTextBox1.Text = Lib.File_ReadToEndDecode(this.currentPath);
         }
+        */
         switch (this.Parent.GetType().Name)
         {
           case "DockContent":
@@ -340,6 +386,9 @@ namespace AntPlugin.XMLTreeMenu.Controls
         }
         this.AddPreviousDocuments(this.currentPath);
       }
+      //this.richTextBox2.Text = String.Empty;
+      //for (int i = 1; i < richTextBox1.Lines.Length; i++) this.richTextBox2.Text += i.ToString() + "\n";
+
       this.UpdateStatusText(this.currentPath);
     }
 
@@ -394,6 +443,67 @@ namespace AntPlugin.XMLTreeMenu.Controls
       }
     }
 
+    //http://www.codingvision.net/interface/c-simple-syntax-highlighting
+    private void richTextBox1_TextChanged(object sender, EventArgs e)
+    {
+      if (this.settings.SyntaxHighlight == true)
+      {
+        SyntaxHighlighter.Highlight(this.richTextBox1);
+      }
+    }
+
+    private void richTextBox1_VScroll(object sender, EventArgs e)
+    {
+
+    }
+
+    private void richTextBox1_SelectionChanged(object sender, EventArgs e)
+    {
+      this.currentPoint = this.GetCurrentPosition();
+      this.UpdateStatusText(this.currentPath);
+      if (this.splitContainer1.Panel1Collapsed == false)
+      {
+        try
+        {
+          richTextBox2.SelectAll();
+          richTextBox2.SelectionColor = Color.Black;
+          //選択（この場合先頭）
+          string strLine = richTextBox2.Lines[this.currentPoint.X];
+          this.richTextBox2.Select(this.currentPoint.X, strLine.Length);
+          richTextBox2.SelectionColor = Color.Red;
+          //選択したところまで移動
+          richTextBox2.ScrollToCaret();
+          //string strLine = richTextBox1.Lines[p.X-1];
+          //MessageBox.Show([p.X);
+        }
+        catch { }
+      }
+    }
+
+    Point GetCurrentPosition()
+    {
+      //文字列
+      string str = richTextBox1.Text;
+      //カレットの位置を取得
+      int selectPos = richTextBox1.SelectionStart;
+
+      //カレットの位置までの行を数える
+      int row = 1, startPos = 0;
+      for (int endPos = 0;
+          (endPos = str.IndexOf('\n', startPos)) < selectPos && endPos > -1;
+          row++)
+      {
+        startPos = endPos + 1;
+      }
+
+      //列の計算
+      int col = selectPos - startPos + 1;
+
+      //結果を表示
+      //Console.WriteLine("行:{0} 列:{1}", row, col);
+      return new Point(row, col);
+    }
+
     #endregion
 
     #region Click Handler
@@ -404,37 +514,32 @@ namespace AntPlugin.XMLTreeMenu.Controls
       }
       this.richTextBox1.Clear();
       this.richTextBox1.Modified = (this.modifiedFlag = false);
-#if Interface      
-      ((Form)base.Parent).Text = "無題";
-#endif    
+      ((Control)base.Parent).Text = "無題";
     }
 
     private void 開くOToolStripMenuItem_Click(object sender, EventArgs e)
     {
       string fileName = "default.txt";
       string filter = "All files(*.*)|*.*|Supported files|*.txt;*.log;*.ini;*.inf;*.tex;*.htm;*.html;*.css;*.js;*.xml;*.c;*.cpp;*.cxx;*.h;*.hpp;*.hxx;*.cs;*.java;*.py;*.rb;*.pl;*.vbs;*.bat|Text file(*.txt, *.log, *.tex, ...)|*.txt;*.log;*.ini;*.inf;*.tex|HTML file(*.htm, *.html)|*.htm;*.html|CSS file(*.css)|*.css|Javascript file(*.js)|*.js|XML file(*.xml)|*.xml|C/C++ source(*.c, *.h, ...)|*.c;*.cpp;*.cxx;*.h;*.hpp;*.hxx|C# source(*.cs)|*.cs|Java source(*.java)|*.java|Python script(*.py)|*.py|Ruby script(*.rb)|*.rb|Perl script(*.pl)|*.pl|VB script(*.vbs)|*.vbs|Batch file(*.bat)|*.bat";
-#if Interface
       //string workingDirectory = PluginBase.MainForm.WorkingDirectory;
-      string workingDirectory = "";
+      string workingDirectory = Globals.AntPanel.projectDir;
       string text = Lib.File_OpenDialog(fileName, workingDirectory, filter);//"
-#endif
       this.currentPath = text;
       try
       {
+        this.LoadFile(text);
+        /*
         if (Path.GetExtension(this.currentPath) == ".rtf")
         {
           this.richTextBox1.LoadFile(text);
         }
         else
         {
-#if Interface         
           this.richTextBox1.Text = Lib.File_ReadToEndDecode(this.currentPath);
-#endif        
         }
+        */
         this.richTextBox1.Tag = this.currentPath;
-#if Interface        
-        //((DockContent)base.Parent).TabText = Path.GetFileName(text);
-#endif        
+        ((TabPage)base.Parent).Text = Path.GetFileName(text);
         this.AddPreviousDocuments(text);
         this.PopulatePreviousDocumentsMenu();
         this.UpdateStatusText(this.currentPath);
@@ -442,36 +547,35 @@ namespace AntPlugin.XMLTreeMenu.Controls
       catch (Exception ex)
       {
         string message = ex.Message.ToString();
-        //MessageBox.Show(Lib.OutputError(message));
-        MessageBox.Show(ex.Message.ToString());
+        MessageBox.Show(Lib.OutputError(message));
       }
     }
 
     public void LoadFile(string path)
     {
-      string text = path;
-      this.currentPath = text;
+      this.currentPath = path;
       try
       {
         if (Path.GetExtension(this.currentPath) == ".rtf")
         {
-          this.richTextBox1.LoadFile(text);
+          this.richTextBox1.LoadFile(path);
         }
         else
         {
           this.richTextBox1.Text = File_ReadToEndDecode(this.currentPath);
         }
         this.richTextBox1.Tag = this.currentPath;
-#if Interface        
-        //((DockContent)base.Parent).TabText = Path.GetFileName(text);
-#endif        
-        this.AddPreviousDocuments(text);
+        ((Control)base.Parent).Text = Path.GetFileName(path);
+        this.AddPreviousDocuments(path);
         this.PopulatePreviousDocumentsMenu();
         this.UpdateStatusText(this.currentPath);
+
+        this.richTextBox2.Text = String.Empty;
+        for (int i = 1; i < richTextBox1.Lines.Length; i++) this.richTextBox2.Text += i.ToString() + "\n";
       }
       catch (Exception ex)
       {
-        MessageBox.Show(ex.Message.ToString());
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()),"LoadFile(string path)");
       }
     }
 
@@ -533,10 +637,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       string fileName;
       if (this.richTextBox1.Tag == null)
       {
-#if Interface        
-        //initialDirectory = PluginBase.MainForm.WorkingDirectory;
-        initialDirectory = @"F:\";
-#endif        
+        initialDirectory = Path.GetDirectoryName(this.currentPath);// @"F:\";
         fileName = "新しいファイル.txt";
       }
       else if (array.Length > 1)
@@ -547,10 +648,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
         }
         else
         {
-#if Interface
-          //initialDirectory = PluginBase.MainForm.WorkingDirectory; //"
           initialDirectory = @"F:\";
-#endif        
         }
         fileName = "新しいファイル.txt";
       }
@@ -560,9 +658,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
         {
           initialDirectory = Path.GetDirectoryName(array[0]);
           fileName = Path.GetFileName(array[0]);
-#if Interface
           text = Lib.File_GetCode(array[0]);
-#endif
           if (text == string.Empty)
           {
             text = "UTF-8";
@@ -580,14 +676,10 @@ namespace AntPlugin.XMLTreeMenu.Controls
       }
       try
       {
-#if Interface
         string text2 = Lib.File_SaveDialog(fileName, initialDirectory, filter);
-#endif
         if (File.Exists(text2))
         {
-#if Interface
           Lib.File_BackUpCopy(text2);
-#endif
         }
         if (text2 != null)
         {
@@ -597,17 +689,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
           }
           else
           {
-#if Interface
             Lib.File_SaveEncode(text2, this.richTextBox1.Text, text);
-#endif
           }
         }
         this.currentPath = text2;
         this.richTextBox1.Modified = (this.modifiedFlag = false);
         this.richTextBox1.Tag = this.currentPath;
-#if Interface
-        //((DockContent)base.Parent).TabText = Path.GetFileName(this.currentPath);
-#endif
+        ((Control)base.Parent).Text = Path.GetFileName(this.currentPath);
         this.AddPreviousDocuments(this.currentPath);
         this.PopulatePreviousDocumentsMenu();
         this.UpdateStatusText(this.currentPath);
@@ -615,16 +703,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
       catch (Exception ex)
       {
         string message2 = ex.Message.ToString();
-        //MessageBox.Show(Lib.OutputError(message2));
-        MessageBox.Show(message2);
+        MessageBox.Show(Lib.OutputError(message2), MethodBase.GetCurrentMethod().Name);
       }
     }
 
     private void 閉じるCToolStripMenuItem_Click(object sender, EventArgs e)
     {
-#if Interface      
-      //PluginBase.MainForm.CurrentDocument.Close();
-#endif    
+      Globals.MainForm.Close(sender, e);
     }
 
     private void 印刷PToolStripMenuItem_Click(object sender, EventArgs e)
@@ -707,9 +792,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
     private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
     {
-#if Interface
-     // PluginBase.MainForm.CallCommand("Exit", "");
-#endif    
+      Globals.MainForm.Exit(sender, e);
     }
 
     private void 元に戻すUToolStripMenuItem_Click(object sender, EventArgs e)
@@ -907,7 +990,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
     {
       if (File.Exists(this.currentPath))
       {
-        Process.Start(@"C:\Program Files (x86)\sakura\sakura.exe", this.currentPath);
+        if(Form1.IsRunningWindows) Process.Start(@"C:\Program Files (x86)\sakura\sakura.exe", this.currentPath);
+        else if (Form1.IsRunningUnix) Process.Start("/home/kazuhiko/bin/sakura.sh", this.currentPath);
       }
     }
 
@@ -915,7 +999,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
     {
       if (File.Exists(this.currentPath))
       {
-        Process.Start(@"C:\Program Files (x86)\PSPad editor\PSPad.exe", this.currentPath);
+        if (Form1.IsRunningWindows) Process.Start(@"C:\Program Files (x86)\PSPad editor\PSPad.exe", this.currentPath);
+        else if (Form1.IsRunningUnix) Process.Start("/home/kazuhiko/bin/pspad.sh", this.currentPath);
       }
     }
 
@@ -923,17 +1008,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
     {
       if (File.Exists(this.currentPath))
       {
-#if Interface        
-        //PluginBase.MainForm.OpenEditableDocument(this.currentPath);
-#endif      
+        Globals.MainForm.OpenDocument(this.currentPath);
       }
     }
 
     private void azukiEditorZToolStripMenuItem_Click(object sender, EventArgs e)
     {
-#if Interface      
       //PluginBase.MainForm.CallCommand("PluginCommand", "XMLTreeMenu.CreateCustomDocument;AzukiEditor|" + this.currentPath);
-#endif    
     }
 
     private void エクスプローラEToolStripMenuItem_Click(object sender, EventArgs e)
@@ -949,7 +1030,6 @@ namespace AntPlugin.XMLTreeMenu.Controls
         {
           Process.Start(Path.GetDirectoryName(path));
         }
-        //ProcessHandler.Run_Explorer(this.currentPath);
       }
     }
 
@@ -961,14 +1041,15 @@ namespace AntPlugin.XMLTreeMenu.Controls
         if (System.IO.Directory.Exists(path))
         {
           System.IO.Directory.SetCurrentDirectory(path);
-          Process.Start(@"C:\windows\xyxtem32\cmd.exe");
+          if (Form1.IsRunningWindows) Process.Start(@"C:\windows\system32\cmd.exe");
+          else if (Form1.IsRunningUnix) Process.Start("/usr/bin/gnome-terminal");
         }
         else if (System.IO.Directory.Exists(Path.GetDirectoryName(path)))
         {
           System.IO.Directory.SetCurrentDirectory(Path.GetDirectoryName(path));
-          Process.Start(@"C:\windows\xyxtem32\cmd.exe");
+          if (Form1.IsRunningWindows) Process.Start(@"C:\windows\system32\cmd.exe");
+          else if (Form1.IsRunningUnix) Process.Start("/usr/bin/gnome-terminal");
         }
-        //ProcessHandler.Run_Cmd(this.currentPath);
       }
     }
 
@@ -976,9 +1057,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
     {
       if (File.Exists(this.currentPath))
       {
-#if Interface      
         //PluginBase.MainForm.CallCommand("PluginCommand", "XMLTreeMenu.BrowseEx;" + this.currentPath);
-#endif      
       }
     }
 
@@ -992,9 +1071,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
     private void ファイル名を指定して実行OToolStripMenuItem_Click(object sender, EventArgs e)
     {
-#if Interface      
       //PluginBase.MainForm.CallCommand("PluginCommand", "XMLTreeMenu.RunProcessDialog");
-#endif    
     }
 
     private void toolStripButton2_Click(object sender, EventArgs e)
@@ -1394,18 +1471,16 @@ namespace AntPlugin.XMLTreeMenu.Controls
       string[] array = data.Split(new char[]{'!'});
       if (array.Length > 1)
       {
-        this.上書き保存SToolStripMenuItem.Enabled = (this.上書き保存SToolStripButton.Enabled = false);
+        this.上書き保存SToolStripMenuItem.Enabled = this.上書き保存SToolStripButton.Enabled = false;
       }
       else
       {
-        this.上書き保存SToolStripMenuItem.Enabled = (this.上書き保存SToolStripButton.Enabled = true);
+        this.上書き保存SToolStripMenuItem.Enabled = this.上書き保存SToolStripButton.Enabled = true;
       }
-#if Interface      
       string text = array[0];
       string text2 = Lib.File_GetEofCode(text);
       string text3 = Lib.File_GetCode(text);
-      this.toolStripStatusLabel1.Text = string.Format(format, new object[]{y,x,text2,text3,text});
-#endif    
+      this.toolStripStatusLabel1.Text = string.Format(format, new object[]{x,y,text2,text3,text});
     }
     #endregion
 
@@ -2238,9 +2313,15 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
       this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
       this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+      this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+      this.richTextBox2 = new System.Windows.Forms.RichTextBox();
       this.menuStrip1.SuspendLayout();
       this.toolStrip1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+      this.splitContainer1.Panel1.SuspendLayout();
+      this.splitContainer1.Panel2.SuspendLayout();
+      this.splitContainer1.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip1
@@ -3342,20 +3423,52 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 
       this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.richTextBox1.Font = new System.Drawing.Font("ＭＳ ゴシック", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-      this.richTextBox1.Location = new System.Drawing.Point(0, 54);
+      this.richTextBox1.Location = new System.Drawing.Point(0, 0);
       this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
       this.richTextBox1.Name = "richTextBox1";
-      this.richTextBox1.Size = new System.Drawing.Size(993, 380);
+      this.richTextBox1.Size = new System.Drawing.Size(905, 380);
       this.richTextBox1.TabIndex = 7;
       this.richTextBox1.Tag = "";
       this.richTextBox1.Text = "";
+      this.richTextBox1.SelectionChanged += new System.EventHandler(this.richTextBox1_SelectionChanged);
+      this.richTextBox1.VScroll += new System.EventHandler(this.richTextBox1_VScroll);
       this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+      // 
+      // splitContainer1
+      // 
+      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer1.Location = new System.Drawing.Point(0, 54);
+      this.splitContainer1.Name = "splitContainer1";
+      // 
+      // splitContainer1.Panel1
+      // 
+      this.splitContainer1.Panel1.Controls.Add(this.richTextBox2);
+      // 
+      // splitContainer1.Panel2
+      // 
+      this.splitContainer1.Panel2.Controls.Add(this.richTextBox1);
+      this.splitContainer1.Size = new System.Drawing.Size(993, 380);
+      this.splitContainer1.SplitterDistance = 84;
+      this.splitContainer1.TabIndex = 8;
+      // 
+      // richTextBox2
+      // 
+      this.richTextBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.richTextBox2.Font = new System.Drawing.Font("ＭＳ ゴシック", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+      this.richTextBox2.Location = new System.Drawing.Point(0, 0);
+      this.richTextBox2.Name = "richTextBox2";
+      this.richTextBox2.ReadOnly = true;
+      this.richTextBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+      this.richTextBox2.Size = new System.Drawing.Size(84, 380);
+      this.richTextBox2.TabIndex = 0;
+      this.richTextBox2.Text = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
+      this.richTextBox2.WordWrap = false;
       // 
       // RichTextEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.richTextBox1);
+      this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.statusStrip1);
       this.Controls.Add(this.toolStrip1);
       this.Controls.Add(this.menuStrip1);
@@ -3372,6 +3485,10 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.toolStrip1.PerformLayout();
       this.statusStrip1.ResumeLayout(false);
       this.statusStrip1.PerformLayout();
+      this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+      this.splitContainer1.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -3382,75 +3499,6 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
     #endregion
 
-    //http://www.codingvision.net/interface/c-simple-syntax-highlighting
-    private void richTextBox1_TextChanged(object sender, EventArgs e)
-    {
-      // getting keywords/functions
-      string keywords = @"\b(public|private|partial|static|namespace|class|using|void|foreach|in)\b";
-      MatchCollection keywordMatches = Regex.Matches(richTextBox1.Text, keywords);
-
-      // getting types/classes from the text 
-      string types = @"\b(Console)\b";
-      MatchCollection typeMatches = Regex.Matches(richTextBox1.Text, types);
-
-      // getting comments (inline or multiline)
-      string comments = @"(\/\/.+?$|\/\*.+?\*\/)";
-      MatchCollection commentMatches = Regex.Matches(richTextBox1.Text, comments, RegexOptions.Multiline);
-
-      // getting strings
-      string strings = "\".+?\"";
-      MatchCollection stringMatches = Regex.Matches(richTextBox1.Text, strings);
-
-      // saving the original caret position + forecolor
-      int originalIndex = richTextBox1.SelectionStart;
-      int originalLength = richTextBox1.SelectionLength;
-      Color originalColor = Color.Black;
-
-      // MANDATORY - focuses a label before highlighting (avoids blinking)
-      //titleLabel.Focus();
-      this.textbox2.Focus();//仮
-      // removes any previous highlighting (so modified words won't remain highlighted)
-      richTextBox1.SelectionStart = 0;
-      richTextBox1.SelectionLength = richTextBox1.Text.Length;
-      richTextBox1.SelectionColor = originalColor;
-
-      // scanning...
-      foreach (Match m in keywordMatches)
-      {
-        richTextBox1.SelectionStart = m.Index;
-        richTextBox1.SelectionLength = m.Length;
-        richTextBox1.SelectionColor = Color.Blue;
-      }
-
-      foreach (Match m in typeMatches)
-      {
-        richTextBox1.SelectionStart = m.Index;
-        richTextBox1.SelectionLength = m.Length;
-        richTextBox1.SelectionColor = Color.DarkCyan;
-      }
-
-      foreach (Match m in commentMatches)
-      {
-        richTextBox1.SelectionStart = m.Index;
-        richTextBox1.SelectionLength = m.Length;
-        richTextBox1.SelectionColor = Color.Green;
-      }
-
-      foreach (Match m in stringMatches)
-      {
-        richTextBox1.SelectionStart = m.Index;
-        richTextBox1.SelectionLength = m.Length;
-        richTextBox1.SelectionColor = Color.Brown;
-      }
-
-      // restoring the original colors, for further writing
-      richTextBox1.SelectionStart = originalIndex;
-      richTextBox1.SelectionLength = originalLength;
-      richTextBox1.SelectionColor = originalColor;
-
-      // giving back the focus
-      richTextBox1.Focus();
-
-    }
+  
   }
 }

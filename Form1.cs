@@ -2247,7 +2247,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
 
     #endregion
 
-    #region Click Handler
+    #region MainForm Click Handler
     private int toggleIndex = 1;
     private void 表示ToolStripButton_Click(object sender, EventArgs e)
     {
@@ -2317,6 +2317,53 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
 
     #endregion
 
+    #region BottomTabControl Click Handler
+    private void bottomTabControl_MouseClick(object sender, MouseEventArgs e)
+    {
+      //this.bottomSplitContainer.Panel1Collapsed = true;//OK
+    }
+
+    private void bottomTabControl_Enter(object sender, EventArgs e)
+    {
+      this.bottomSplitContainer.SplitterDistance =
+       this.Height - this.settings.DefaultBottomPanelHeight - 320;
+
+    }
+    private void bottomTabControl_Leave(object sender, EventArgs e)
+    {
+      this.bottomSplitContainer.SplitterDistance =
+       this.Height - this.settings.DefaultBottomPanelHeight;
+    }
+    private void bottomTabControl_DoubleClick(object sender, EventArgs e)
+    {
+      this.bottomSplitContainer.Panel1Collapsed = true;
+      this.bottomSplitContainer.Panel2Collapsed = false;
+    }
+    #endregion
+
+    #region RightTabControl Click Handler
+    private void rightTabControl_MouseClick(object sender, MouseEventArgs e)
+    {
+
+    }
+    private void rightTabControl_Enter(object sender, EventArgs e)
+    {
+      this.rightSplitContainer.SplitterDistance =
+       this.Width - this.settings.DefaultRightPanelWidth - 480;
+    }
+
+    private void rightTabControl_Leave(object sender, EventArgs e)
+    {
+      this.rightSplitContainer.SplitterDistance =
+       this.Width - this.settings.DefaultRightPanelWidth;
+    }
+    private void rightTabControl_DoubleClick(object sender, EventArgs e)
+    {
+      this.rightSplitContainer.Panel1Collapsed = true;
+      this.rightSplitContainer.Panel2Collapsed = false;
+    }
+    #endregion
+
     #region FlashDevelop Click Handlers
     public void SmartNew(object sender, EventArgs e)
     {
@@ -2329,6 +2376,18 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         ToolStripItem button = (ToolStripItem)sender;
         string language = ((ItemData)button.Tag).Tag;
         MessageBox.Show("こんにちわ " + language);
+        if (IsEditable)
+        {
+          RichTextEditor editor = this.CurrentDocument as RichTextEditor;
+          RichTextBox rtb = editor.richTextBox1;
+
+          // 未完成 FIXMI Focusが移動しない
+          // MANDATORY - focuses a label before highlighting (avoids blinking)
+          //this.editor.Focus();
+          //SyntaxHighlighter.Highlight(rtb);
+
+
+        }
         //if (sci.ConfigurationLanguage.Equals(language)) return; // already using this syntax
         //ScintillaManager.ChangeSyntax(language, sci);
         //string extension = sci.GetFileExtension();
@@ -2935,9 +2994,10 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       //else this.ImageList = null;
     }
 
+
+
     #endregion
 
- 
-
+    
   }
 }
