@@ -48,11 +48,8 @@ namespace CommonLibrary.Controls
           //originalColor = XML_SyntaxClass.defaultColor;
           Coloring = XML_SyntaxClass.Coloring;
       }
-      // おかしい
       else
       {
-        //MessageBox.Show(language);
-        /*
         rtb.SelectionStart = 0;
         rtb.SelectionLength = rtb.Text.Length;
         rtb.SelectionColor = Color.Black;
@@ -60,7 +57,6 @@ namespace CommonLibrary.Controls
         rtb.SelectionLength = originalLength;
         rtb.Visible = true;
         return;
-        */
       }
       
       // MANDATORY - focuses a label before highlighting (avoids blinking)

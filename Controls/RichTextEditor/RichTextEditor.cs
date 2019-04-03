@@ -187,14 +187,14 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.printFont = new Font("ＭＳ Ｐゴシック", 10f);
       this.IntializeSettings();
       //MessageBox.Show(base.Parent.GetType().Name);
-      try
-      {
+      //try
+      //{
         //if (base.Parent.GetType().Name == "TabbedDocument")
         //{
         //((Form)base.Parent).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
         //}
-      }
-      catch { }
+      //}
+      //catch { }
       this.richTextBox1.Modified = (this.modifiedFlag = false);
 
       //this.Controls.Remove(this.richTextBox1);
@@ -403,7 +403,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.PopulatePreviousDocumentsMenu();
     }
 
-    private void parentForm_Closing(object sender, CancelEventArgs e)
+    public bool parentForm_Closing(object sender, EventArgs e)
     {
       if (this.richTextBox1.Modified)
       {
@@ -413,20 +413,23 @@ namespace AntPlugin.XMLTreeMenu.Controls
         if (dialogResult == DialogResult.Yes)
         {
           this.上書き保存SToolStripMenuItem_Click(sender, e);
+          return true;
         }
         else if (dialogResult != DialogResult.No)
         {
           if (dialogResult == DialogResult.Cancel)
           {
-            e.Cancel = true;
+            return false ;//e.Cancel = true;
           }
         }
+        return true;
       }
       //this.settings.PreviousRichTextEditorDocuments = this.previousDocuments;
       //this.settings.RichTextEditorMenuBarVisible = this.menuStrip1.Visible;
       //this.settings.RichTextEditorToolBarVisible = this.toolStrip1.Visible;
       //this.settings.RichTextEditorStatusBarVisible = this.statusStrip1.Visible;
       //this.settings.RichTextEditorDefaultFont = this.richTextBox1.Font
+      return true;
     }
 
     private void RichTextEditor_Leave(object sender, EventArgs e)
@@ -446,6 +449,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
     //http://www.codingvision.net/interface/c-simple-syntax-highlighting
     private void richTextBox1_TextChanged(object sender, EventArgs e)
     {
+      this.richTextBox1.Modified = true;
+      if(!((Control)this.Parent).Text.EndsWith("*"))((Control)this.Parent).Text += " *";
       //if (this.settings.SyntaxHighlight == true)
       //{
         //SyntaxHighlighter.Highlight(this.richTextBox1);

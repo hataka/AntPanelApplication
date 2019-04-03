@@ -2529,6 +2529,11 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     public void OnEncodeSave(object sender, EventArgs e) { }
     public void Close(object sender, EventArgs e)
     {
+      if (IsEditable)
+      {
+        bool result = ((RichTextEditor)this.CurrentDocument).parentForm_Closing(sender,e);
+        if (result == false) return;
+      }
       //string msgboxString = this.tabControl1.SelectedTab.Text + " タブを削除します\nよろしいですか?";
       //if (Lib.confirmDestructionText("削除確認", msgboxString) == true)
       //{
