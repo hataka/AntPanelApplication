@@ -53,7 +53,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
     //private PluginMain pluginMain;
     private AntPanel antPanel;
     private SplitContainer splitContainer1;
-    private RichTextBox richTextBox2;
+    public RichTextBox richTextBox2;
     private ToolStripMenuItem toolStripMenuItem2;
 
     global::AntPanelApplication.Properties.Settings settings
@@ -446,10 +446,10 @@ namespace AntPlugin.XMLTreeMenu.Controls
     //http://www.codingvision.net/interface/c-simple-syntax-highlighting
     private void richTextBox1_TextChanged(object sender, EventArgs e)
     {
-      if (this.settings.SyntaxHighlight == true)
-      {
-        SyntaxHighlighter.Highlight(this.richTextBox1);
-      }
+      //if (this.settings.SyntaxHighlight == true)
+      //{
+        //SyntaxHighlighter.Highlight(this.richTextBox1);
+      //}
     }
 
     private void richTextBox1_VScroll(object sender, EventArgs e)
@@ -569,6 +569,12 @@ namespace AntPlugin.XMLTreeMenu.Controls
         this.AddPreviousDocuments(path);
         this.PopulatePreviousDocumentsMenu();
         this.UpdateStatusText(this.currentPath);
+
+        if (this.settings.SyntaxHighlight == true)
+        {
+          SyntaxHighlighter.Highlight(this.richTextBox1);
+        }
+
 
         this.richTextBox2.Text = String.Empty;
         for (int i = 1; i < richTextBox1.Lines.Length; i++) this.richTextBox2.Text += i.ToString() + "\n";

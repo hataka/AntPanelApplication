@@ -51,7 +51,7 @@ namespace CommpmLibrary
 
     //var reg = @"<a\s+[^>]*href\s*=\s*[""'](?<href>[^""']*)[""'][^>]*>(?<text>[^<]*)</a>";
     public static Color defaultColor = Color.FromArgb(0x000099);// Color.FromArgb(0x000000);
-    public static Color defaultBakColor = Color.White;
+    public static Color defaultBackColor = Color.White;
 
 
     public static Dictionary<String, HighlightClass> Coloring = new Dictionary<String, HighlightClass>()
@@ -60,6 +60,8 @@ namespace CommpmLibrary
       //{ "php_keywords", new HighlightClass("php_keywords",php_keywords_regex, Color.FromArgb(0x0000ff))  },
       //{ "javascript_keywords", new HighlightClass("javascript_keywords",javascript_keywords_regex, Color.FromArgb(0x000099))},
       //{ "tag", new HighlightClass("block_tag", block_tag_regex, Color.FromArgb(0x000099))},
+      { "defaultColor", new HighlightClass("primary_keywordss",String.Empty, defaultColor)  },
+      { "defaultBackColor", new HighlightClass("primary_keywordss",String.Empty, defaultBackColor)  },
       { "strings", new HighlightClass("strings",strings_regex,Color.FromArgb(0x009900)) },
       { "block_cdata", new HighlightClass("block_cdata",block_cdata_regex,Color.FromArgb(0x800000)) },
       { "block_comment", new HighlightClass("block_comment", block_comment_regex, Color.FromArgb(0x808080))}

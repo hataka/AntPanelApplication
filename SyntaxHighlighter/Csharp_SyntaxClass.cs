@@ -26,10 +26,12 @@ namespace CommonLibrary
     public static string additional_keywords = @"\b(" + csharp_additional_keywords.Replace(" ", "|") + @")\b";
 
     public static Color defaultColor = Color.Black;
-    public static Color defaultBakColor = Color.White;
+    public static Color defaultBackColor = Color.White;
 
     public static Dictionary<String, HighlightClass> Coloring = new Dictionary<String, HighlightClass>()
     {
+      { "defaultColor", new HighlightClass("primary_keywordss",String.Empty, defaultColor)  },
+      { "defaultBackColor", new HighlightClass("primary_keywordss",String.Empty, defaultBackColor)  },
       { "primary_keywords", new HighlightClass("primary_keywordss",primary_keywords, Color.Blue)  },
       { "additional_keywords", new HighlightClass("additional_keywords",additional_keywords, Color.Blue)},
       { "block_comment", new HighlightClass("block_comment", csharp_block_comment, Color.Green)},

@@ -15,45 +15,58 @@ namespace CommonLibrary.Controls
   public partial class SyntaxHighlighter : UserControl
   {
     public static RichTextBox textBox2 = new RichTextBox();
-    public static List<String> csharp_syntaxfile = new List<String> { ".cs", ".java", ".gradle",".js" };
-    public static List<String> xml_syntaxfile 
+    public static List<String> csharp_syntaxfile = new List<String> { ".cs", ".java",
+      ".gradle",".js", ".csharp" };
+    public static List<String> xml_syntaxfile
       = new List<String> { ".xml", ".xsl", ".mxml", ".fdp", ".html", ".htm", ".wsf", ".asx"
-        , ".wax", ".resx", ".csproj" };
+        , ".wax", ".resx", ".csproj",".fdp" };
 
     public SyntaxHighlighter()
     {
       InitializeComponent();
     }
 
-    public static void Highlight(RichTextBox rtb,String language ="")
+    public static void Highlight(RichTextBox rtb,String lang ="")
     {
-      //MessageBox.Show(rtb.AccessibleName);
       String path = rtb.AccessibleName;
       // saving the original caret position + forecolor
       int originalIndex = rtb.SelectionStart;
       int originalLength = rtb.SelectionLength;
       Color originalColor = Color.Black;
       Dictionary<String, HighlightClass> Coloring = new Dictionary<String, HighlightClass>();
+      String language = (lang != String.Empty) ? "." + lang.ToLower() : System.IO.Path.GetExtension(path).ToLower();
 
-      if (language != "") { }
+      rtb.Visible = false;
+
+      if (csharp_syntaxfile.Contains(language))
+      {
+          //originalColor = Csharp_SyntaxClass.defaultColor;
+          Coloring = Csharp_SyntaxClass.Coloring;
+      }
+      else if (xml_syntaxfile.Contains(language))
+      {
+          //originalColor = XML_SyntaxClass.defaultColor;
+          Coloring = XML_SyntaxClass.Coloring;
+      }
+      // おかしい
       else
       {
-        if (csharp_syntaxfile.Contains(System.IO.Path.GetExtension(path).ToLower()))
-        {
-          originalColor = Csharp_SyntaxClass.defaultColor;
-          Coloring = Csharp_SyntaxClass.Coloring;
-        }
-        if (xml_syntaxfile.Contains(System.IO.Path.GetExtension(path).ToLower()))
-        {
-          originalColor = XML_SyntaxClass.defaultColor;
-          Coloring = XML_SyntaxClass.Coloring;
-        }
+        //MessageBox.Show(language);
+        /*
+        rtb.SelectionStart = 0;
+        rtb.SelectionLength = rtb.Text.Length;
+        rtb.SelectionColor = Color.Black;
+        rtb.SelectionStart = originalIndex;
+        rtb.SelectionLength = originalLength;
+        rtb.Visible = true;
+        return;
+        */
       }
+      
       // MANDATORY - focuses a label before highlighting (avoids blinking)
-
-      textBox2.Focus();
-      
-      
+      //textBox2.Focus();
+      rtb.Visible = false;
+      originalColor = Coloring["defaultColor"].Color;
       // 背景色 http://d.hatena.ne.jp/S_Amemiya/20100107/1262872794
       // richTextBox.SelectionBackColor = Color.Yellow; // 色を設定
       // 文字を斜体にする https://dobon.net/vb/dotnet/control/rtbchangecolorandfont.html
@@ -70,22 +83,25 @@ namespace CommonLibrary.Controls
 
       foreach (KeyValuePair<string, HighlightClass> kvp in Coloring)
       {
-        if (kvp.Key.IndexOf("block") > -1)
+        if (kvp.Value.Regexp != String.Empty)
         {
-          kvp.Value.RegOption = RegexOptions.Multiline;
-          kvp.Value.Matches = Regex.Matches(rtb.Text, kvp.Value.Regexp, RegexOptions.Multiline);
+          if (kvp.Key.IndexOf("block") > -1)
+          {
+            kvp.Value.RegOption = RegexOptions.Multiline;
+            kvp.Value.Matches = Regex.Matches(rtb.Text, kvp.Value.Regexp, RegexOptions.Multiline);
+          }
+          else
+          {
+            kvp.Value.Matches = Regex.Matches(rtb.Text, kvp.Value.Regexp);
+          }
+          foreach (Match m in kvp.Value.Matches)
+          {
+            rtb.SelectionStart = m.Index;
+            rtb.SelectionLength = m.Length;
+            rtb.SelectionColor = kvp.Value.Color;
+          }
         }
-        else
-        {
-          kvp.Value.Matches = Regex.Matches(rtb.Text, kvp.Value.Regexp);
-        }
-        foreach (Match m in kvp.Value.Matches)
-        {
-          rtb.SelectionStart = m.Index;
-          rtb.SelectionLength = m.Length;
-          rtb.SelectionColor = kvp.Value.Color;
-        }
-      }
+      }      
       // restoring the original colors, for further writing
       rtb.SelectionStart = originalIndex;
       rtb.SelectionLength = originalLength;
@@ -93,6 +109,7 @@ namespace CommonLibrary.Controls
 
       // giving back the focus
       rtb.Focus();
+      rtb.Visible = true;
     }
 
 

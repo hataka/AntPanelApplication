@@ -2216,7 +2216,24 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       */
       return PathHelper.AppDir;
     }
- 
+
+    /// <summary>
+    /// Finds the specified menu item by name
+    /// </summary>
+    public ToolStripItem FindMenuItem(String name)
+    {
+      return StripBarManager.FindMenuItem(name);
+    }
+
+    /// <summary>
+    /// Finds the menu items that have the specified name
+    /// </summary>
+    public List<ToolStripItem> FindMenuItems(String name)
+    {
+      return StripBarManager.FindMenuItems(name);
+    }
+
+
     /// <summary>
     /// Processes the argument string variables
     /// </summary>
@@ -2375,7 +2392,12 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         //ScintillaControl sci = Globals.SciControl;
         ToolStripItem button = (ToolStripItem)sender;
         string language = ((ItemData)button.Tag).Tag;
-        MessageBox.Show("こんにちわ " + language);
+        ToolStripMenuItem syntaxMenu = Globals.MainForm.FindMenuItem("SyntaxMenu") as ToolStripMenuItem;
+        for(int i=0; i<syntaxMenu.DropDownItems.Count; i++)
+        {
+          syntaxMenu.DropDownItems[i].BackColor = Color.White;
+        }
+        button.BackColor = Color.Beige;
         if (IsEditable)
         {
           RichTextEditor editor = this.CurrentDocument as RichTextEditor;
@@ -2383,13 +2405,10 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
 
           // 未完成 FIXMI Focusが移動しない
           // MANDATORY - focuses a label before highlighting (avoids blinking)
-          //this.editor.Focus();
-          //SyntaxHighlighter.Highlight(rtb);
-
-
+          //this.editor.richTextBox2.Focus();
+          SyntaxHighlighter.Highlight(rtb,language);
         }
         //if (sci.ConfigurationLanguage.Equals(language)) return; // already using this syntax
-        //ScintillaManager.ChangeSyntax(language, sci);
         //string extension = sci.GetFileExtension();
         //if (!string.IsNullOrEmpty(extension))
         //{
@@ -2826,6 +2845,37 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     {
       //AboutDialog.Show();
     }
+    
+    public void OpenProject(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        string name = ((ItemData)button.Tag).Tag;
+        MessageBox.Show("OpenProjectメニューです " + name);
+        switch (name)
+        {
+          case "NewProject": //<button label = "新規プロジェクト(&amp;N)..." click="OpemProject" image="315" />
+            break;
+          case "OpenProject": break;//<button label = "プロジェクトを開く(&amp;O)..." click="OpenProject" tag="OpenProject" image="315" />
+          case "ImportProject": break;//<button label = "プロジェクトをインポート(&amp;I)..." tag="ImportProject" image="315" />
+          case "CloseProject": break;//< button label = "プロジェクトを閉じる(&amp;C)" click = "OpenProject" tag = "CloseProject" image = "315" />
+          case "OpemResource": break; //<button label = "リソースを開く(&amp;R)..." click="OpenProject" shortcut="Control|R" tag="OpemResource" image="315" />
+          case "TestProject": break; //<button  = "プロジェクトをテスト" click="OpenProject" shortcut="F5" tag="TestProject" image="315" />
+          case "RunProject": break; //<button label = "プロジェクトを実行(&amp;R)" click="OpenProject" tag="RunProject" image="315" />
+          case "BuildProject": break; //<button label = "プロジェクトをビルド(&amp;N)" click="OpenProject" shortcut=F8" tag="BuildProject" image="315" />
+          case "CleanProject": break; //<button label = "プロジェクトのクリーニング(&amp;C)" click="OpenProject" shortcut="Shift|F8" tag="CleanProject" image="315" />
+          case "AirApplicationSetting": break; //<button label = "エアアプリケーションの設定" click="OpenProject" tag="AirApplicationSetting" image="315" />
+          case "ProjectSetting": break; //<button label = "プロジェクトの設定(&amp;P)..." click="OpenProject" tag="ProjectSetting" image="315" />
+        }
+      }
+      catch (Exception ex)
+      {
+        String errMsg = Lib.OutputError(ex.Message.ToString());
+        MessageBox.Show(errMsg, "CommandPromptHere(object sender, EventArgs e)");
+      }
+    }
+    
     public void Test(object sender, EventArgs e)
     {
       if (sender != null)
