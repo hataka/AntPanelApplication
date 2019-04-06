@@ -1,5 +1,5 @@
 ﻿using AntPanelApplication.Helpers;
-using AntPanelApplication.Helpers;
+//using AntPanelApplication.Helpers;
 using AntPanelApplication.Managers;
 using AntPanelApplication.Properties;
 using AntPlugin.XMLTreeMenu.Controls;
@@ -522,9 +522,10 @@ namespace AntPanelApplication
     /// </summary>
     public void CreateCustomDocument(String tagStr)
     {
+      //MessageBox.Show(tagStr);return;
       String name = String.Empty;
       String args = String.Empty;
-      if (!String.IsNullOrEmpty(tagStr))
+      if (!String.IsNullOrEmpty(tagStr) )
       {
         name = tagStr.Split('|')[0].ToLower();
         args = tagStr.Split('|')[1];
@@ -593,7 +594,7 @@ namespace AntPanelApplication
         }
         for (int i = 0; i < args.Length; i++)
         {
-          control = this.CreateCustomControl(name, args[i]);
+           control = this.CreateCustomControl(name, args[i]);
           if (control != null)
           {
             control.Dock = DockStyle.Fill;
@@ -605,20 +606,7 @@ namespace AntPanelApplication
               Process.Start("/usr/bin/google-chrome", args[i]);
               return control;
             }
-
-
-
-
-
-
-
-
             TabPageManager.AddTabPage(control, this.documentTabControl,singleton);
-            //TabPageManager.AddTabPage(control, this.documentTabControl);
-
-
-
-
           }
         }
         return control;
@@ -633,6 +621,10 @@ namespace AntPanelApplication
     public Control CreateCustomControl(string path, string file, string option = "")
     {
       Control result;
+      Assembly assembly = null;
+      String dlldir = Path.Combine(PathHelper.BaseDir, "DockableControls");
+      String dllpath = Application.ExecutablePath;//String.Empty;
+      String classname = String.Empty;
       try
       {
         Control control = null;
@@ -641,36 +633,35 @@ namespace AntPanelApplication
           case "picturepanel":
             PicturePanel picturePanel = new PicturePanel();
             control = picturePanel as Control;
-            break;
-          //case "OpenGLPanel":
-          //control = new OpenGLPanel() as Control;
-          //control = openGLPanel as Control;
-          //break;
-          case "azukieditor":
-            //control = new AzukiEditor() as Control;
+            classname = control.GetType().FullName;
             break;
           case "richtexteditor":
             control = new RichTextEditor() as Control;
+            classname = control.GetType().FullName;
             break;
           case "playerpanel":
             control = new PlayerPanel() as Control;
+            classname = control.GetType().FullName;
             break;
           case "browserex":
-            //MessageBox.Show("browserex");
             control = new BrowserEx();
-
+            classname = control.GetType().FullName;
             break;
+          case "simplepanel":
+            if (IsRunningUnix) return null;
+            control = new SimplePanel();
+            classname = control.GetType().FullName;
+            break;
+
+            //case "openglpanel":
+          //  control = new XMLTreeMenu.Controls.OpenGLPanel() as Control;
+          //control = openGLPanel as Control;
+          //  break;
           //case "ReoGridPanel":
           //control = new ReoGridPanel() as Control;
           //ReoGridPanel reoGridPanel = new ReoGridPanel();
           //reoGridPanel.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
           //reoGridPanel.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
-          //control = reoGridPanel as Control;
-          //control = new ReoGridPanel() as Control;
-          //SpreadSheet spreadSheet = new SpreadSheet();
-          //spreadSheet.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
-          //spreadSheet.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
-          //control = spreadSheet as Control;
           //break;
           //case "HTMLEditor":
           //HTMLEditor htmlEditor = new HTMLEditor();
@@ -692,22 +683,33 @@ namespace AntPanelApplication
           //control = jsonViewer as Control;
           //break;
           default:
-            Assembly assembly = null;
-            String dlldir = Path.Combine(PathHelper.BaseDir, "DockableControls");
-            String dllpath = Path.Combine(dlldir, Path.GetFileNameWithoutExtension(path) + ".dll");
-            if (Path.GetExtension(path) == ".dll" && File.Exists(path))
+            try { 
+            //Assembly assembly = null;
+            //String dlldir = Path.Combine(PathHelper.BaseDir, "DockableControls");
+            //String dllpath = String.Empty;
+            //String classname = String.Empty;
+            if(path.IndexOf("@")>-1)
             {
-              assembly = Assembly.LoadFrom(path);
+              classname = path.Split('@')[0];
+              dllpath = path.Split('@')[1];
             }
             else
             {
-              //// 未完成
-              assembly = Assembly.LoadFrom(Path.Combine(PathHelper.BaseDir + @"\\DockableControls",
-                Path.GetFileNameWithoutExtension(path) + ".dll"));
+              dllpath = Path.Combine(dlldir, Path.GetFileNameWithoutExtension(path) + ".dll");
+              classname = "CommonControl." + Path.GetFileNameWithoutExtension(path);
             }
-            Type type = assembly.GetType("XMLTreeMenu.Controls." + Path.GetFileNameWithoutExtension(path));
-            control = (UserControl)Activator.CreateInstance(type);
+              //MessageBox.Show(dllpath);
+              assembly = Assembly.LoadFrom(dllpath);
+            Type type = assembly.GetType(classname);
+            control = (Control)Activator.CreateInstance(type);
+            }
+            catch (Exception exc)
+            {
+              MessageBox.Show(Lib.OutputError(exc.Message.ToString()),
+                MethodBase.GetCurrentMethod().Name);
+            }
             break;
+
         }
         //control.Name = Path.GetFileNameWithoutExtension(path);
         control.Name = Path.GetFileName(file);
@@ -725,15 +727,15 @@ namespace AntPanelApplication
         catch (Exception ex)
         {
           string errmsg = Lib.OutputError(ex.Message.ToString());
-          MessageBox.Show(errmsg, "InitializeCustomControlsInterface((IMDIForm)control)エラー");
+          MessageBox.Show(errmsg, MethodBase.GetCurrentMethod().Name);
         }
-
-        control.AccessibleDescription = option;
+        control.Name = classname + "@" + dllpath;
+        //control.AccessibleDescription = option;
+        control.AccessibleDescription = classname + "@" + dllpath;
         control.AccessibleName = file;
-        control.AccessibleDefaultActionDescription = this.GetType().FullName + ";" + Application.ExecutablePath;
+        control.AccessibleDefaultActionDescription = this.GetType().FullName + "@" + Application.ExecutablePath;
+        //control.
         //((Control)control.Tag).Tag = file;
-
-
 
         StatusStrip statusStrip = (StatusStrip)Lib.FindChildControlByType(control, "StatusStrip");
         if (statusStrip != null)
@@ -755,11 +757,12 @@ namespace AntPanelApplication
       catch (Exception ex2)
       {
         String errMsg = Lib.OutputError(ex2.Message.ToString());
-        MessageBox.Show(errMsg, "MainForm.(string path, string file, string option)");
+        MessageBox.Show(errMsg, MethodBase.GetCurrentMethod().Name);
         result = null;
       }
       return result;
     }
+
     public void OpenDocument(String tagStr,Boolean singleton=true)
     {
       String name = String.Empty;
@@ -778,6 +781,13 @@ namespace AntPanelApplication
         fileStream.Read(array, 0, array.Length);
         fileStream.Close();
         Encoding encoding = StringHandler.GetCode(array);
+
+        if(Path.GetExtension(args[i]) == ".fdp")
+        {
+          Globals.AntPanel.InitializeTreeView(args[i]);
+          Globals.AntPanel.dirTreePanel.projectButton.PerformClick();
+        }
+
         if (IsRunningUnix)
         {
           args[i] = args[i].Replace("\\", "/").Replace("F:/VortualBox/ShareFolder/", "/media/sf_ShareFolder/");
@@ -810,7 +820,7 @@ namespace AntPanelApplication
           }
           else
           {
-            this.OpenCustomDocument(this.settings.DefaultEditor, args[i],singleton);
+            this.OpenCustomDocument(this.settings.DefaultEditor, args[i], singleton);
           }
         }
       }
@@ -1077,12 +1087,14 @@ namespace AntPanelApplication
       this.documentTabControl.TabPages.Clear();
 
       this.LoadRichTextEditor("無題");
-      if(IsRunningWindows) this.LoadPicturePanel(@"F:\VirtualBox\ShareFolder\Picture\DSCN0166.JPG");
-      else if(IsRunningUnix) this.LoadPicturePanel("/media/sf_ShareFolder/Picture/DSCN0166.JPG");
+      //if(IsRunningWindows) this.LoadPicturePanel(@"F:\VirtualBox\ShareFolder\Picture\DSCN0166.JPG");
+      //else if(IsRunningUnix) this.LoadPicturePanel("/media/sf_ShareFolder/Picture/DSCN0166.JPG");
       if (IsRunningUnix) return;
-      this.LoadBrowserEx("http://192.168.0.13/pukiwiki2016/index.php");
-      this.LoadPlayerPanel(@"F:\VirtualBox\ShareFolder\Music\03-Monteverdi.mp3");
-      this.LoadSimplePanel(@"F:\c_program\OpenGL\NeHe_1200x900\Lesson05\lesson5.exe");
+      //this.LoadBrowserEx("http://192.168.0.13/pukiwiki2016/index.php");
+      //this.LoadPlayerPanel(@"F:\VirtualBox\ShareFolder\Music\03-Monteverdi.mp3");
+      //this.LoadSimplePanel(@"F:\c_program\OpenGL\NeHe_1200x900\Lesson05\lesson5.exe");
+      // だめ
+      //////this.LoadSimplePanel(@"C:\Windows\System32\cmd.exe");
 
       this.tabPage6.Controls.Clear();
       this.documentTabControl.Controls.Remove(this.tabPage6);
@@ -1403,9 +1415,8 @@ namespace AntPanelApplication
               evnt.Handled = true;
               return;
             case "XMLTreeMenu.CreateCustomDocument":
-
               //MessageBox.Show(evnt.Data.ToString(), "XMLTreeMenu.CreateCustomDocument");
-              //this.CreateCustomDocument(evnt.Data.ToString());
+              this.CreateCustomDocument(evnt.Data.ToString());
               evnt.Handled = true;
 
               return;
@@ -1481,9 +1492,11 @@ namespace AntPanelApplication
             case "XMLTreeMenu.OpenDocument":
             case "XMLTreeMenu.OpenProject":
               //this.pluginUI.OpenDocument(evnt.Data.ToString());
+
               evnt.Handled = true;
               return;
             case "XMLTreeMenu.Open":
+              MessageBox.Show(evnt.Data.ToString(), evnt.Action);
               //this.pluginUI.Open();
               evnt.Handled = true;
               return;
@@ -1500,9 +1513,7 @@ namespace AntPanelApplication
               string[] tmp = (evnt.Data.ToString()).Split('!');
               string name = tmp[0];
               string arg = tmp.Length > 1 ? tmp[1] : string.Empty;
-
               //MessageBox.Show(arg,name);
-
               //this.pluginUI.CallCommand(name, arg.Replace("semicolon", ";"));
               evnt.Handled = true;
               break;
@@ -1513,15 +1524,70 @@ namespace AntPanelApplication
           }
           break;
       }
-    }
+      /*
+      if (e.Type == EventType.Command)
+      {
+        string cmd = (e as DataEvent).Action;
+        DataEvent evnt = (DataEvent)e;
+        string path = String.Empty;
+        if (cmd == "ProjectManager.Project")
+        {
+          if (PluginBase.CurrentProject != null)
+            ReadBuildFiles();
+          pluginUI.RefreshData();
+        }
+        // 2017-07-17
+        else if (cmd == "Ant.CsOutlineParse")
+        {
+          pluginUI.CsOutlineParse();
+        }
+        else if (cmd == "Ant.LoadIn")
+        {
+          path = PluginBase.MainForm.ProcessArgString(evnt.Data.ToString());
+          pluginUI.LoadIn(path);
+        }
+        else if (cmd == "Ant.LoadOut")
+        {
+          path = PluginBase.MainForm.ProcessArgString(evnt.Data.ToString());
+          pluginUI.LoadOut(path);
+        }
+        else if (cmd == "Ant.CallCommand")
+        {
+          string[] tmp = (evnt.Data.ToString()).Split('!');
+          string name = tmp[0];
+          string arg = tmp.Length > 1 ? tmp[1] : string.Empty;
+          this.pluginUI.CallCommand(name, arg);
+          evnt.Handled = true;
+        }
+        else if (cmd == "Ant.MenuCommand")
+        {
+          string[] tmp2 = (evnt.Data.ToString()).Split('!');
+          string name = tmp2[0];
+          string arg = tmp2.Length > 1 ? tmp2[1] : string.Empty;
+          this.pluginUI.menuTree.CallMenuCommand(name, arg);
+          evnt.Handled = true;
+        }
+        else if (cmd == "Ant.NodeAction")
+        {
+          ActionManager.NodeAction(evnt.Data.ToString());
+          evnt.Handled = true;
+        }
+        else if (cmd == "Ant.TreeCommand")
+        {
+          string[] tmp2 = (evnt.Data.ToString()).Split('!');
+          string name = tmp2[0];
+          string arg = tmp2.Length > 1 ? tmp2[1] : string.Empty;
+          this.pluginUI.menuTree.CallPluginCommand(name, arg);
+          evnt.Handled = true;
+        }
+        */
 
-
+      }
     private void OnMainFormActivate(Object sender, System.EventArgs e) { }
     private void OnMainFormGotFocus(Object sender, System.EventArgs e) { }
     private void OnMainFormShow(Object sender, System.EventArgs e) { }
     private void OnMainFormResize(Object sender, System.EventArgs e)
     {
-      //MessageBox.Show("width:" + this.Width.ToString() + " height:" + this.Height.ToString());
       try
       {
         this.bottomSplitContainer.SplitterDistance = this.Height - this.settings.DefaultBottomPanelHeight;
@@ -2625,6 +2691,79 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         button.Tag = new ItemData(null, tag, null); // Tag is used for args
         Object[] parameters = new Object[2];
         parameters[0] = button; parameters[1] = null;
+
+        if (name.IndexOf("@") > -1)
+        {
+          methodname = name.Split('@')[0];
+          classname = name.Split('@')[1];
+          if (methodname.IndexOf(':') > -1)
+          {
+            accessor = methodname.Split(':')[0];
+            methodname = methodname.Split(':')[1];
+          }
+          Type type = Type.GetType(classname);
+          object instance = Activator.CreateInstance(type);
+          switch (accessor.ToLower())
+          {
+            case "private":
+              MethodInfo method = type.GetMethod(methodname, BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance);
+              method.Invoke(instance, parameters);
+              return true;
+            case "static":
+              MethodInfo method2
+                   = type.GetMethod(methodname, BindingFlags.Static | BindingFlags.Public);
+              method2.Invoke(null, parameters);
+              return true;
+            default:
+              MethodInfo method3 = type.GetMethod(methodname);
+              method3.Invoke(instance, parameters);
+              return true;
+          }
+
+          //MessageBox.Show(methodname,clasname);
+          //Type type = Type.GetType(classname);
+          //object instance = Activator.CreateInstance(type);
+          // privateメソッドを無理やり使用する方法
+          // https://qiita.com/Aki_mintproject/items/f6a8a801d71312275655
+          //MethodInfo method = type.GetMethod(methodname, BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance);
+          // publicメソッド
+          //MethodInfo method = type.GetMethod(methodname);
+          //method.Invoke(instance, parameters);
+          //return true;
+        }
+        else
+        {
+          Type mfType = this.GetType();
+          System.Reflection.MethodInfo method = mfType.GetMethod(name);
+          if (method == null) throw new MethodAccessException();
+          method.Invoke(this, parameters);
+          return true;
+        }
+      }
+      catch (Exception ex)
+      {
+        //ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString())
+          , "CallCommand(String name, String tag)");
+        return false;
+      }
+     
+      return true;
+    }
+    public Boolean CallCommandFromDll(String name, String tag)
+    {
+      return this.CallCommand(name, tag);
+      /*
+      String classname = String.Empty;
+      String methodname = String.Empty;
+      String accessor = String.Empty;
+
+      try
+      {
+        ToolStripMenuItem button = new ToolStripMenuItem();
+        button.Tag = new ItemData(null, tag, null); // Tag is used for args
+        Object[] parameters = new Object[2];
+        parameters[0] = button; parameters[1] = null;
         if (name.LastIndexOf('.') > -1)
         {
           Int32 position = name.LastIndexOf('.'); // Position of the arguments
@@ -2681,8 +2820,37 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
           , "CallCommand(String name, String tag)");
         return false;
       }
-     
       return true;
+    */
+    }
+    public Boolean CallControlCommand(String name, String tag,Control control=null)
+    {
+      if (control == null) control = CurrentDocument;
+      //MessageBox.Show(CurrentDocument.GetType().FullName);
+      //MessageBox.Show(CurrentDocument.AccessibleName);
+      //MessageBox.Show(CurrentDocument.AccessibleDescription);
+      try
+      {
+        String classname = control.AccessibleDescription.Split('@')[0];
+        String dllpath = control.AccessibleDescription.Split('@')[1];
+        Assembly assembly = Assembly.LoadFrom(dllpath);
+        Type type = assembly.GetType(classname);
+        //control = (Control)Activator.CreateInstance(type);
+        ToolStripMenuItem button = new ToolStripMenuItem();
+        button.Tag = new ItemData(null, tag, null); // Tag is used for args
+        button.AccessibleName = tag; // Tag is used for args
+        Object[] parameters = new Object[2];
+        parameters[0] = button; parameters[1] = null;
+        object instance = Activator.CreateInstance(type);
+        MethodInfo method3 = type.GetMethod(name);
+        method3.Invoke(instance, parameters);
+        return true;
+      }
+      catch (Exception exc)
+      {
+        MessageBox.Show(Lib.OutputError(exc.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        return false;
+      }
     }
     public void CallCommand(object sender, EventArgs e)
     {
@@ -2848,7 +3016,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     public void CheckUpdates(object sender, EventArgs e) { }
     public void About(object sender, EventArgs e)
     {
-      //AboutDialog.Show();
+      AntPanelApplication.Dialogs.AboutDialog.Show();
     }
     
     public void OpenProject(object sender, EventArgs e)
@@ -2857,14 +3025,23 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       {
         ToolStripItem button = (ToolStripItem)sender;
         string name = ((ItemData)button.Tag).Tag;
-        MessageBox.Show("OpenProjectメニューです " + name);
         switch (name)
         {
-          case "NewProject": //<button label = "新規プロジェクト(&amp;N)..." click="OpemProject" image="315" />
+          case "NewProject": //<button label = "新規プロジェクト(&amp;N)..."
             break;
-          case "OpenProject": break;//<button label = "プロジェクトを開く(&amp;O)..." click="OpenProject" tag="OpenProject" image="315" />
+          case "OpenProject": //<button label = "プロジェクトを開く(&amp;O)..."
+            this.openFileDialog.Multiselect = false;
+            this.openFileDialog.InitialDirectory = this.WorkingDirectory;
+            if (this.openFileDialog.ShowDialog(this) == DialogResult.OK)
+            {
+              Globals.AntPanel.InitializeTreeView(openFileDialog.FileName);
+              Globals.AntPanel.dirTreePanel.projectButton.PerformClick();
+              this.OpenDocument(openFileDialog.FileName);
+            }
+            break;
           case "ImportProject": break;//<button label = "プロジェクトをインポート(&amp;I)..." tag="ImportProject" image="315" />
-          case "CloseProject": break;//< button label = "プロジェクトを閉じる(&amp;C)" click = "OpenProject" tag = "CloseProject" image = "315" />
+          case "CloseProject":
+            break;//< button label = "プロジェクトを閉じる(&amp;C)" click = "OpenProject" tag = "CloseProject" image = "315" />
           case "OpemResource": break; //<button label = "リソースを開く(&amp;R)..." click="OpenProject" shortcut="Control|R" tag="OpemResource" image="315" />
           case "TestProject": break; //<button  = "プロジェクトをテスト" click="OpenProject" shortcut="F5" tag="TestProject" image="315" />
           case "RunProject": break; //<button label = "プロジェクトを実行(&amp;R)" click="OpenProject" tag="RunProject" image="315" />
@@ -3036,6 +3213,20 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       //this.splitContainer1.Panel1Collapsed = false;
       //this.t.tabControl1.SelectedIndex = 3;
     }
+
+    public void Test1(object sender, EventArgs e)
+    {
+      /*
+      if (sender != null)
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String msg = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
+        MessageBox.Show(msg, "MainForm Testからの送信です");
+      }
+      */
+      this.CallControlCommand("Test1", "MainForm Testからの送信です");
+    }
+
 
     #region Icon Management
 

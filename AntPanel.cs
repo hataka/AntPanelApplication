@@ -1,30 +1,27 @@
-﻿using System;
+﻿using AntPanelApplication.Managers;
+using AntPlugin.CommonLibrary;
+using AntPlugin.Controls;
+using AntPlugin.XmlTreeMenu;
+using AntPlugin.XmlTreeMenu.Managers;
+using AntPlugin.XMLTreeMenu.Controls;
+using CommonLibrary;
+using CSParser.BuildTree;
+using CSParser.Model;
+using MDIForm;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
-using System.Xml;
-using AntPlugin.XmlTreeMenu;
-using AntPlugin.CommonLibrary;
-using CSParser.BuildTree;
-using AntPlugin.Controls;
-using CSParser.Model;
-using AntPlugin.XmlTreeMenu.Managers;
-using CommonLibrary;
-using MDIForm;
-using AntPanelApplication.Managers;
-using System.Text.RegularExpressions;
-using AntPlugin.XMLTreeMenu.Controls;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace AntPanelApplication
 {
-	public partial class AntPanel : UserControl
+  public partial class AntPanel : UserControl
 	{
     #region Variables
     public const int ICON_FILE = 0;
@@ -35,15 +32,10 @@ namespace AntPanelApplication
 		public const int ICON_FDP_FILE = 37;
 		public const int ICON_MENU_ROOT = 38;
 
-    //public String projectPath = @"F:\codingground\java\Nashorn\Nashorn.fdp";
-    //public String projectPath = @"F:\codingground\codingground.fdp";
-    //public String projectPath = @"F:\codingground\java\swt-snippets\swt-snippets.fdp";
-    //public String projectPath = @"F:\codingground\java\swt-snippets\Snippet001\Snippet1.fdp";
     public String projectPath = Application.ExecutablePath;
-    //public String projectPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop-531.fdp";
     public String projectDir = Path.GetDirectoryName(Application.ExecutablePath);
     public String projectName = "AntPanel";
-    public string itemPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop\MainForm.cs";// String.Empty;
+    public string itemPath = String.Empty;
 		public string curSelText = String.Empty;
     public string targetPath = String.Empty;
 
@@ -77,10 +69,10 @@ namespace AntPanelApplication
 		public List<string> OutLinePanelMemberId = new List<string>();
 
 		private const String STORAGE_FILE_NAME = "antPluginData.txt";
-		public String antPath = @"F:\ant\apache-ant-1.10.1"; // F:\ant\apache-ant-1.10.1\bin\ant
-		public String sakuraPath = @"C:\Program Files (x86)\sakura\sakura.exe";
-		public String devenv15Path = @"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe";
-		public String devenv17Path = @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe";
+    public String antPath = String.Empty;//@"F:\ant\apache-ant-1.10.1"; // F:\ant\apache-ant-1.10.1\bin\ant
+    public String sakuraPath = String.Empty;//@"C:\Program Files (x86)\sakura\sakura.exe";
+    public String devenv15Path = String.Empty;//@"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe";
+    public String devenv17Path = String.Empty;//@"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe";
 
 		public TreeNode currentNode = new TreeNode();//null;
 
@@ -98,14 +90,14 @@ namespace AntPanelApplication
 
     public AntPanel()
 		{
-			InitializeComponent();
+      InitializeSettings();
+      InitializeComponent();
 			InitializeAntPanel();
 		}
 
     #region Initialization
     private void InitializeAntPanel()
 		{
-      ApplyArgumentSettings();
       InitializeGraphics();
 			InitializeGradleTree();
       InitializeControls();
@@ -119,13 +111,53 @@ namespace AntPanelApplication
 			this.propertyGrid1.ToolbarVisible = false;
 			this.settings = new global::AntPanelApplication.Properties.Settings();
 			this.propertyGrid3.SelectedObject = this.settings;
-
-			ReadBuildFiles();
-			RefreshData();
+      this.InitializeTreeView();
 		}
 
-    private void ApplyArgumentSettings()
+    public void InitializeTreeView()
     {
+      ReadBuildFiles();
+      RefreshData();
+    }
+
+    public void InitializeTreeView(String rootPath)
+    {
+      this.projectPath = rootPath;
+      if (File.Exists(rootPath))
+      {
+        this.projectDir = Path.GetDirectoryName(rootPath);
+        this.projectName = Path.GetFileNameWithoutExtension(rootPath);
+      }
+      else if (Directory.Exists(rootPath))
+      {
+        this.projectDir = rootPath;
+        this.projectName = Path.GetFileNameWithoutExtension(rootPath);
+      }
+      InitializeTreeView();
+    }
+
+    private void InitializeSettings()
+    {
+      //public String projectPath = @"F:\codingground\java\Nashorn\Nashorn.fdp";
+      //public String projectPath = @"F:\codingground\codingground.fdp";
+      //public String projectPath = @"F:\codingground\java\swt-snippets\swt-snippets.fdp";
+      //public String projectPath = @"F:\codingground\java\swt-snippets\Snippet001\Snippet1.fdp";
+      //public String projectPath = @"F:\GitHub\Flasdevelop\flashdevelop.5.3.1\FlashDevelop-531.fdp";
+      if(IsRunningWindows)
+      {
+        this.itemPath = @"F:\VirtualBox\ShareFolder\mono\AntPanelApplication\MainForm.cs";// String.Empty;
+        this.antPath = this.settings.AntPath;
+        this.sakuraPath = this.settings.win_SakuraPath;
+        this.devenv15Path = this.settings.Devenv15Path;
+        this.devenv17Path = this.settings.Devenv17Path;
+      }
+      else if (IsRunningUnix)
+      {
+        this.itemPath = "/media/sf_Sharefolder/mono/AntPanelApplication/MainForm.cs";// String.Empty;
+        this.antPath = "/usr/bin/ant";
+        this.sakuraPath = "/home/kazuhiko/bin/sakura.sh";
+      }
+
       if (Form1.Arguments.Length > 0 && !String.IsNullOrEmpty(Form1.Arguments[0]))
       {
         if (File.Exists(Form1.Arguments[0]))
@@ -159,6 +191,8 @@ namespace AntPanelApplication
       {
         this.targetPath = Form1.Arguments[3];
       }
+
+
     }
 
     private void InitializeControls()
@@ -728,7 +762,7 @@ namespace AntPanelApplication
 		{
 			buildFilesList.Clear();
 			String folder = GetBuildFilesStorageFolder();
-			String fullName = folder + "\\" + STORAGE_FILE_NAME;
+			String fullName = Path.Combine(folder, STORAGE_FILE_NAME);
 
 			if (File.Exists(fullName))
 			{
@@ -741,7 +775,8 @@ namespace AntPanelApplication
 				}
 				file.Close();
 			}
-		}
+      /// projectPathのファイルを入れる場合はここ
+    }
 		
 		private void SaveBuildFiles()
 		{
@@ -759,7 +794,7 @@ namespace AntPanelApplication
 
 		private String GetBuildFilesStorageFolder()
 		{
-			String projectFolder = Path.GetDirectoryName(projectPath);
+			String projectFolder = Path.GetDirectoryName(this.projectPath);
 			return Path.Combine(projectFolder, "obj");
 		}
 		 
@@ -918,27 +953,44 @@ namespace AntPanelApplication
 						if (this.内部ターゲット表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);
 						else if (antNode.ImageIndex != ICON_INTERNAL_TARGET) rootNode.Nodes.Add(antNode);
 						break;
-
-					case "property":
+          // 追加 Time-stamp: <2019-03-09 12:21:14 kahata>
+          case "xmltreenode":
+          case "xmltreemenu":
+          case "treemenu":
+          case "treenode":
+            rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file));
+            break;
+          case "property":
 					case "scriptdef":
 					case "taskdef":
 					case "macrodef":
 						// skip private targets
 						XmlAttribute propertyNameAttr = child.Attributes["name"];
 						XmlAttribute propertyResourceAttr = child.Attributes["resource"];
-						if (propertyNameAttr != null)
+            String propertyName = String.Empty;
+            if (propertyNameAttr != null)
 						{
-							String propertyName = propertyNameAttr.InnerText;
+							propertyName = propertyNameAttr.InnerText;
 							if (!String.IsNullOrEmpty(propertyName) && (propertyName[0] == '-')) continue;
 						}
-						antNode = GetBuildTargetNode(child, defaultTarget);
-						antNode.File = file;
-						//Kahata TimeStamp: 2016-04-23
-						antNode.Tag = child;
-						if (子ノード表示ToolStripMenuItem.Checked == true) this.populateChildNodes(child, antNode);
-						if (プロパティ表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);
-						break;
-					default:
+            // 追加 Time-stamp: <2019-03-11 10:29:45 kahata>
+            if (propertyName.ToLower() == "xmltreemenu" && !String.IsNullOrEmpty(child.InnerText))
+            {
+              rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file));
+            }
+            else
+            {
+              antNode = GetBuildTargetNode(child, defaultTarget);
+              antNode.File = file;
+              //Kahata TimeStamp: 2016-04-23
+              antNode.Tag = child;
+              if (子ノード表示ToolStripMenuItem.Checked == true) this.populateChildNodes(child, antNode);
+              if (プロパティ表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);
+            }
+            break;
+
+
+          default:
 						//例外発生 外す
 						//antNode = GetBuildTargetNode(child, defaultTarget);
 						//antNode.File = file;
@@ -1288,29 +1340,21 @@ namespace AntPanelApplication
 
 		}
 
-		private void 試験ToolStripMenuItem_Click(object sender, EventArgs e)
+		public void 試験ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 
       //System.Configuration.ConfigurationSettings config = new System.Configuration.ConfigurationSettings(;
-       /* 
-        System.Configuration.ConfigurationManager.OpenExeConfiguration(
-        System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal);
-      */
+      /* 
+       System.Configuration.ConfigurationManager.OpenExeConfiguration(
+       System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal);
+     */
       //Console.WriteLine(config.FilePath);
-      
-
-
-
-
-
       // 次の例では、現在選択されているコード セクションで、
       //"somestring" という語を、大文字と小文字を区別して検索します。
       //Edit.Find somestring / sel /case  
       //Process.Start(this.devenv15Path, "/Edit "+ this.itemPath+ " /Command \"Edit.Find IMainForm /doc\"");
       //Process.Start(this.devenv15Path, "/Edit "+ this.itemPath+ " /Command \"Edit.Goto 200\"");
-
-
-
+      MessageBox.Show("CurrentDocumentのMethodが呼べましたね");
     }
 
 		private void SaveSettings()
@@ -1373,6 +1417,39 @@ namespace AntPanelApplication
       //MessageBox.Show(TabPageManager.tabPageList.Count.ToString());
       */
     }
+
+    public void Test1(object sender, EventArgs e)
+    {
+      if (sender != null)
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String msg = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
+        MessageBox.Show(msg, "AntPanel Testからの送信です");
+      }
+    }
+    private void Test2(object sender, EventArgs e)
+    {
+      if (sender != null)
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String msg = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
+        MessageBox.Show(msg, "AntPanel Testからの送信です");
+      }
+    }
+    public static void Test3(object sender, EventArgs e)
+    {
+      if (sender != null)
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String msg = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
+        MessageBox.Show(msg, "AntPanel Testからの送信です");
+      }
+    }
+
+
+
+
+
   }
 
 

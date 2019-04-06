@@ -522,7 +522,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       ((Control)base.Parent).Text = "無題";
     }
 
-    private void 開くOToolStripMenuItem_Click(object sender, EventArgs e)
+    public void 開くOToolStripMenuItem_Click(object sender, EventArgs e)
     {
       string fileName = "default.txt";
       string filter = "All files(*.*)|*.*|Supported files|*.txt;*.log;*.ini;*.inf;*.tex;*.htm;*.html;*.css;*.js;*.xml;*.c;*.cpp;*.cxx;*.h;*.hpp;*.hxx;*.cs;*.java;*.py;*.rb;*.pl;*.vbs;*.bat|Text file(*.txt, *.log, *.tex, ...)|*.txt;*.log;*.ini;*.inf;*.tex|HTML file(*.htm, *.html)|*.htm;*.html|CSS file(*.css)|*.css|Javascript file(*.js)|*.js|XML file(*.xml)|*.xml|C/C++ source(*.c, *.h, ...)|*.c;*.cpp;*.cxx;*.h;*.hpp;*.hxx|C# source(*.cs)|*.cs|Java source(*.java)|*.java|Python script(*.py)|*.py|Ruby script(*.rb)|*.rb|Perl script(*.pl)|*.pl|VB script(*.vbs)|*.vbs|Batch file(*.bat)|*.bat";
@@ -1292,9 +1292,14 @@ namespace AntPlugin.XMLTreeMenu.Controls
       }
     }
 
-    private void delegate試験ToolStripMenuItem_Click(object sender, EventArgs e)
+    public void delegate試験ToolStripMenuItem_Click(object sender, EventArgs e)
     {
-
+      if (sender != null)
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String msg = button.Tag as String;
+        MessageBox.Show(msg, "delegate試験ToolStripMenuItem_Click");
+      }
     }
 
     private void queryString試験ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1312,7 +1317,19 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.statusStrip1.Visible = !this.statusStrip1.Visible;
       this.ステータスバーSToolStripMenuItem.Checked = this.ステータスバーSToolStripMenuItem1.Checked;
     }
-    
+
+    public void Test1(object sender, EventArgs e)
+    {
+      if (sender != null)
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        //String msg = button.Tag as String;
+        String msg = button.AccessibleName;
+        MessageBox.Show(msg, MethodBase.GetCurrentMethod().Name);
+      }
+    }
+
+
     #endregion
 
     #region Previous Document

@@ -43,7 +43,7 @@ namespace AntPlugin.Controls
 		private string currentProjectPath = String.Empty;
 		private ToolStripButton upButton;
 		private ToolStripButton downButton;
-		private ToolStripButton projectButton;
+		public  ToolStripButton projectButton;
 		private ToolStripButton itemButton;
 		private ToolStripDropDownButton toolStripDropDownButton1;
 		private ToolStripMenuItem 最近開いたカスタムドキュメントToolStripMenuItem;

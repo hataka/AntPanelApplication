@@ -111,14 +111,15 @@ namespace CommonLibrary
       {
         TabPage tabPage = new TabPage();
         String path = String.Empty;
-        if (!String.IsNullOrEmpty(control.AccessibleDescription)) path = control.AccessibleDescription;
+        //if (!String.IsNullOrEmpty(control.AccessibleDescription)) path = control.AccessibleDescription;
+        if (!String.IsNullOrEmpty(control.AccessibleName)) path = control.AccessibleName;
         else if (!String.IsNullOrEmpty(((Control)control.Tag).Tag as String))
         {
           path = ((Control)control.Tag).Tag as String;
         }
         // tabPage
         // コレクションを指定した文字で連結してくれるstring.Join()
-        tabPage.AccessibleDescription = control.GetType().FullName + ";" + path;
+        tabPage.AccessibleDescription = control.GetType().FullName + "@" + path;
         tabPage.Name = tabPage.AccessibleDescription;
         tabPage.Font = new Font("Meiryo UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 

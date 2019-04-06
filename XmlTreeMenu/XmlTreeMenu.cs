@@ -140,6 +140,22 @@ namespace AntPlugin.XmlTreeMenu
       return treeNode;
     }
 
+    public TreeNode getXmlTreeNodeFromString(String xml, String file)
+    {
+      XmlNode xmlNode = null;
+      XmlDocument xmldoc = new XmlDocument();
+      xmldoc.LoadXml(xml);
+      xmlNode = xmldoc.DocumentElement;
+      NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file);
+      TreeNode treeNode = this.BuildTreeNode(nodeInfo, file);
+      this.RecursiveBuildToTreeNode(xmlNode, treeNode, false);
+      treeNode.Tag = nodeInfo;
+      treeNode.ToolTipText = file;
+      return treeNode;
+    }
+
+
+
     public TreeNode getXmlTreeNode(String file, Boolean fullNode = false)
     {
       XmlNode xmlNode = null;

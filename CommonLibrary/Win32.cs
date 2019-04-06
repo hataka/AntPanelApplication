@@ -137,6 +137,7 @@ namespace CommonLibrary
           if (process.MainWindowHandle != IntPtr.Zero)
           {
             Win32.MdiUtil.SetParent(process.MainWindowHandle, ctrl.Handle);
+            Win32.ShowMaximized(process.MainWindowHandle);
           }
           return process;
         }

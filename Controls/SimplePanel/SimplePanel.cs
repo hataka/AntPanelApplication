@@ -1079,8 +1079,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
 					processStartInfo.WorkingDirectory = Path.GetDirectoryName(command);
 				}
         Process process = Win32.MdiUtil.LoadProcessInControl(processStartInfo, this.panel1);
-				Win32.ShowMaximized(process.MainWindowHandle);
-				this.processList.Insert(0, process);
+        Win32.ShowMaximized(process.MainWindowHandle);
+        this.processList.Insert(0, process);
       }
       if (!string.IsNullOrEmpty(command))
       {
