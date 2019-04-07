@@ -622,15 +622,18 @@ namespace AntPanelApplication
     }
     public Control CreateCustomControl(string path, string file, string option = "")
     {
+      //MessageBox.Show(path);
       Control result;
       Assembly assembly = null;
       String dlldir = Path.Combine(PathHelper.BaseDir, "DockableControls");
       String dllpath = Application.ExecutablePath;//String.Empty;
       String classname = String.Empty;
+      Type type = null;
       try
       {
         Control control = null;
-        switch (Path.GetFileNameWithoutExtension(path).ToLower())
+        //switch (Path.GetFileNameWithoutExtension(path).ToLower())
+        switch (path.ToLower())
         {
           case "picturepanel":
             PicturePanel picturePanel = new PicturePanel();
@@ -642,10 +645,12 @@ namespace AntPanelApplication
             classname = control.GetType().FullName;
             break;
           case "playerpanel":
+            if (IsRunningUnix) return null;
             control = new PlayerPanel() as Control;
             classname = control.GetType().FullName;
             break;
           case "browserex":
+            if (IsRunningUnix) return null;
             control = new BrowserEx();
             classname = control.GetType().FullName;
             break;
@@ -654,16 +659,13 @@ namespace AntPanelApplication
             control = new SimplePanel();
             classname = control.GetType().FullName;
             break;
-
-            //case "openglpanel":
-            //control = new XMLTreeMenu.Controls.OpenGLPanel() as Control;
-              //control = new OpenGLPanel() as Control;
-              //break;
-          //case "ReoGridPanel":
-          //control = new ReoGridPanel() as Control;
-          //ReoGridPanel reoGridPanel = new ReoGridPanel();
-          //reoGridPanel.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
-          //reoGridPanel.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+          //case "reogridpanel":
+            //reoGridPanel.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+            //reoGridPanel.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+            //break;
+          //case "openglpanel":
+          //control = new XMLTreeMenu.Controls.OpenGLPanel() as Control;
+          //control = new OpenGLPanel() as Control;
           //break;
           //case "HTMLEditor":
           //HTMLEditor htmlEditor = new HTMLEditor();
@@ -684,26 +686,25 @@ namespace AntPanelApplication
           //treeGridView.Instance.PreviousDocuments = this.settings.PreviousTreeGridViewPanelDocuments;
           //control = jsonViewer as Control;
           //break;
+          //case "reogridpanel":
           default:
-            try { 
-            //Assembly assembly = null;
-            //String dlldir = Path.Combine(PathHelper.BaseDir, "DockableControls");
-            //String dllpath = String.Empty;
-            //String classname = String.Empty;
-            if(path.IndexOf("@")>-1)
-            {
-              classname = path.Split('@')[0];
-              dllpath = path.Split('@')[1];
-            }
-            else
-            {
-              dllpath = Path.Combine(dlldir, Path.GetFileNameWithoutExtension(path) + ".dll");
-              classname = "CommonControl." + Path.GetFileNameWithoutExtension(path);
-            }
-              //MessageBox.Show(dllpath);
+            // UVIXでは戻る 追加 Time-stamp: <2019-04-07 13:09:41 kahata>
+            if (IsRunningUnix) return null;
+            try
+            { 
+              if(path.IndexOf("@")>-1)
+              {
+                classname = path.Split('@')[0];
+                dllpath = path.Split('@')[1];
+              }
+              else
+              {
+                dllpath = Path.Combine(dlldir, Path.GetFileNameWithoutExtension(path) + ".dll");
+                classname = "CommonControl." + Path.GetFileNameWithoutExtension(path);
+              }
               assembly = Assembly.LoadFrom(dllpath);
-            Type type = assembly.GetType(classname);
-            control = (Control)Activator.CreateInstance(type);
+              type = assembly.GetType(classname);
+              control = (Control)Activator.CreateInstance(type);
             }
             catch (Exception exc)
             {
@@ -711,12 +712,9 @@ namespace AntPanelApplication
                 MethodBase.GetCurrentMethod().Name);
             }
             break;
-
         }
-        //control.Name = Path.GetFileNameWithoutExtension(path);
         control.Name = Path.GetFileName(file);
         control.Dock = DockStyle.Fill;
-
         try
         {
           // 例外発生
@@ -734,11 +732,11 @@ namespace AntPanelApplication
         control.Name = classname + "@" + dllpath;
         //control.AccessibleDescription = option;
         control.AccessibleDescription = classname + "@" + dllpath;
+
+        //MessageBox.Show(file);
         control.AccessibleName = file;
         control.AccessibleDefaultActionDescription = this.GetType().FullName + "@" + Application.ExecutablePath;
-        //control.
         ((Control)control.Tag).Tag = file;
-
         StatusStrip statusStrip = (StatusStrip)Lib.FindChildControlByType(control, "StatusStrip");
         if (statusStrip != null)
         {

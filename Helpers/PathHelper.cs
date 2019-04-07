@@ -88,17 +88,17 @@ namespace AntPanelApplication.Helpers
 	/// <summary>
 	/// Path to the templates directory
 	/// </summary>
-	/*
-	public static String TemplateDir
+		public static String TemplateDir
 		{
 			get
 			{
-				String custom = PluginBase.Settings.CustomTemplateDir;
-				if (!String.IsNullOrEmpty(custom) && Directory.Exists(custom)) return custom;
-				else return Path.Combine(BaseDir, "Templates");
+				//String custom = PluginBase.Settings.CustomTemplateDir;
+				//if (!String.IsNullOrEmpty(custom) && Directory.Exists(custom)) return custom;
+				//else
+        return Path.Combine(BaseDir, "Templates");
 			}
 		}
-	*/
+	
 	/// <summary>
 	/// Path to the project templates directory
 	/// </summary>
@@ -239,5 +239,6 @@ namespace AntPanelApplication.Helpers
 			}
 		}
 
+    //public static string TemplateDir { get; internal set; }
   }
 }
