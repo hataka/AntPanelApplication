@@ -14,7 +14,9 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+//using XMLTreeMenu.Controls;
 
 namespace AntPanelApplication
 {
@@ -654,9 +656,9 @@ namespace AntPanelApplication
             break;
 
             //case "openglpanel":
-          //  control = new XMLTreeMenu.Controls.OpenGLPanel() as Control;
-          //control = openGLPanel as Control;
-          //  break;
+            //control = new XMLTreeMenu.Controls.OpenGLPanel() as Control;
+              //control = new OpenGLPanel() as Control;
+              //break;
           //case "ReoGridPanel":
           //control = new ReoGridPanel() as Control;
           //ReoGridPanel reoGridPanel = new ReoGridPanel();
@@ -735,7 +737,7 @@ namespace AntPanelApplication
         control.AccessibleName = file;
         control.AccessibleDefaultActionDescription = this.GetType().FullName + "@" + Application.ExecutablePath;
         //control.
-        //((Control)control.Tag).Tag = file;
+        ((Control)control.Tag).Tag = file;
 
         StatusStrip statusStrip = (StatusStrip)Lib.FindChildControlByType(control, "StatusStrip");
         if (statusStrip != null)
@@ -2328,6 +2330,427 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       return Process.GetProcessesByName(current.ProcessName).Length;
     }
 
+    /// <summary>
+    /// Finds the specified plugin
+    /// </summary>
+    /*
+    public IPlugin FindPlugin(String guid)
+    {
+			AvailablePlugin plugin = PluginServices.Find(guid);
+			return plugin.Instance;
+      return null;
+    }
+    */
+    /// <summary>
+    /// Themes the controls from the parent
+    /// </summary>
+    public void ThemeControls(Object parent)
+    {
+      //ThemeManager.WalkControls(parent);
+    }
+
+    /// <summary>
+    /// Gets a theme property color
+    /// </summary>
+    public Color GetThemeColor(String id)
+    {
+      //return ThemeManager.GetThemeColor(id);
+      return Color.Wheat;
+    }
+
+    /// <summary>
+    /// Gets a theme property color with a fallback
+    /// </summary>
+    public Color GetThemeColor(String id, Color fallback)
+    {
+      /*
+        Color color = ThemeManager.GetThemeColor(id);
+        if (color != Color.Empty) return color;
+        else return fallback;
+      */
+      return Color.White;
+    }
+
+    /// <summary>
+    /// Gets a theme property value
+    /// </summary>
+    public String GetThemeValue(String id)
+    {
+      //return ThemeManager.GetThemeValue(id);
+      return "";
+    }
+
+    /// <summary>
+    /// Gets a theme property value with a fallback
+    /// </summary>
+    public String GetThemeValue(String id, String fallback)
+    {
+      /*
+        String value = ThemeManager.GetThemeValue(id);
+        if (!String.IsNullOrEmpty(value)) return value;
+        else return fallback;
+      */
+      return "";
+    }
+
+    /// <summary>
+    /// Gets a theme flag value.
+    /// </summary>
+    public Boolean GetThemeFlag(String id)
+    {
+      //return GetThemeFlag(id, false);
+      return true;
+		}
+
+    /// <summary>
+    /// Gets a theme flag value with a fallback.
+    /// </summary>
+    public Boolean GetThemeFlag(String id, Boolean fallback)
+    {
+      /*
+			String value = ThemeManager.GetThemeValue(id);
+			if (String.IsNullOrEmpty(value)) return fallback;
+			switch (value.ToLower())
+			{
+				case "true": return true;
+				case "false": return false;
+				default: return fallback;
+			}
+		*/
+      return true;
+    }
+
+    /// <summary>
+    /// Lets you update menu items using the flag functionality
+    /// </summary>
+    public void AutoUpdateMenuItem(ToolStripItem item, String action)
+    {
+      /*
+			Boolean value = ButtonManager.ValidateFlagAction(item, action);
+			ButtonManager.ExecuteFlagAction(item, action, value);
+			*/
+    }
+
+    /// <summary>
+    /// Gets the specified item's shortcut keys.
+    /// </summary>
+    public Keys GetShortcutItemKeys(String id)
+    {
+      /*
+			ShortcutItem item = ShortcutManager.GetRegisteredItem(id);
+			return item == null ? Keys.None : item.Custom;
+			*/
+      return Keys.A;
+    }
+
+    /// <summary>
+    /// Gets the specified item's id.
+    /// </summary>
+    public String GetShortcutItemId(Keys keys)
+    {
+      /*
+        ShortcutItem item = ShortcutManager.GetRegisteredItem(keys);
+        return item == null ? string.Empty : item.Id;
+      */
+      return "";
+    }
+
+    /// <summary>
+    /// Registers a new menu item with the shortcut manager
+    /// </summary>
+    public void RegisterShortcutItem(String id, Keys keys)
+    {
+      //ShortcutManager.RegisterItem(id, keys);
+    }
+
+    /// <summary>
+    /// Registers a new menu item with the shortcut manager
+    /// </summary>
+    public void RegisterShortcutItem(String id, ToolStripMenuItem item)
+    {
+      //ShortcutManager.RegisterItem(id, item);
+    }
+
+    /// <summary>
+    /// Registers a new secondary menu item with the shortcut manager
+    /// </summary>
+    public void RegisterSecondaryItem(String id, ToolStripItem item)
+    {
+      //ShortcutManager.RegisterSecondaryItem(id, item);
+    }
+
+    /// <summary>
+    /// Updates a registered secondary menu item in the shortcut manager
+    /// - should be called when the tooltip changes.
+    /// </summary>
+    public void ApplySecondaryShortcut(ToolStripItem item)
+    {
+      //ShortcutManager.ApplySecondaryShortcut(item);
+    }
+
+    /// <summary>
+    /// Shows the settings dialog
+    /// </summary>
+    public void ShowSettingsDialog(String itemName)
+    {
+      //SettingDialog.Show(itemName, "");
+    }
+    public void ShowSettingsDialog(String itemName, String filter)
+    {
+      //SettingDialog.Show(itemName, filter);
+    }
+
+    /// <summary>
+    /// Shows the error dialog if the sender is ErrorManager
+    /// </summary>
+    public void ShowErrorDialog(Object sender, Exception ex)
+    {
+      /*
+			if (sender.GetType().ToString() != "PluginCore.Managers.ErrorManager")
+			{
+				String message = TextHelper.GetString("Info.OnlyErrorManager");
+				ErrorDialog.Show(new Exception(message));
+			}
+			else ErrorDialog.Show(ex);
+		*/
+    }
+
+    /// <summary>
+    /// Show a message to the user to restart FD
+    /// </summary>
+    public void RestartRequired()
+    {
+      /*
+			if (this.restartButton != null) this.restartButton.Visible = true;
+			String message = TextHelper.GetString("Info.RequiresRestart");
+			TraceManager.Add(message);
+		*/
+    }
+
+    /// <summary>
+    /// Refreshes the main form
+    /// </summary>
+    public void RefreshUI()
+    {
+      /*
+			if (this.CurrentDocument == null) return;
+			ScintillaControl sci = this.CurrentDocument.SciControl;
+			this.OnScintillaControlUpdateControl(sci);
+		*/
+    }
+
+    /// <summary>
+    /// Clears the temporary files from disk
+    /// </summary>
+    public void ClearTemporaryFiles(String file)
+    {
+      /*
+			RecoveryManager.RemoveTemporaryFile(file);
+			FileStateManager.RemoveStateFile(file);
+		*/
+    }
+
+    /// <summary>
+    /// Refreshes the scintilla configuration
+    /// </summary>
+    public void RefreshSciConfig()
+    {
+      //ScintillaManager.LoadConfiguration();
+    }
+
+    /// <summary>
+    /// Processes the incoming arguments 
+    /// </summary> 
+    public void ProcessParameters(String[] args)
+    {
+      /*
+			if (this.InvokeRequired)
+			{
+				this.BeginInvoke((MethodInvoker)delegate { this.ProcessParameters(args); });
+				return;
+			}
+			this.Activate(); this.Focus();
+			if (args != null && args.Length != 0)
+			{
+				Silent = Array.IndexOf(args, "-silent") != -1;
+				for (Int32 i = 0; i < args.Length; i++)
+				{
+					OpenDocumentFromParameters(args[i]);
+				}
+			}
+			if (Win32.ShouldUseWin32()) Win32.RestoreWindow(this.Handle);
+			// Notify plugins about start arguments
+			NotifyEvent ne = new NotifyEvent(EventType.StartArgs);
+			EventManager.DispatchEvent(this, ne);
+			*/
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void OpenDocumentFromParameters(String file)
+    {
+      /*
+			Match openParams = Regex.Match(file, "@([0-9]+)($|:([0-9]+)$)"); // path@line:col
+			if (openParams.Success)
+			{
+				file = file.Substring(0, openParams.Index);
+				file = PathHelper.GetLongPathName(file);
+				if (File.Exists(file))
+				{
+					TabbedDocument doc = this.OpenEditableDocument(file, false) as TabbedDocument;
+					if (doc != null) ApplyOpenParams(openParams, doc.SciControl);
+					else if (CurrentDocument.FileName == file) ApplyOpenParams(openParams, CurrentDocument.SciControl);
+				}
+			}
+			else if (File.Exists(file))
+			{
+				file = PathHelper.GetLongPathName(file);
+				this.OpenEditableDocument(file);
+			}
+			*/
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>		
+    ///private void ApplyOpenParams(Match openParams, ScintillaControl sci)
+    private void ApplyOpenParams(Match openParams, Control sci)
+    {
+      /*
+			if (sci == null) return;
+			Int32 col = 0;
+			Int32 line = Math.Min(sci.LineCount - 1, Math.Max(0, Int32.Parse(openParams.Groups[1].Value) - 1));
+			if (openParams.Groups.Count > 3 && openParams.Groups[3].Value.Length > 0)
+			{
+				col = Int32.Parse(openParams.Groups[3].Value);
+			}
+			Int32 position = sci.PositionFromLine(line) + col;
+			sci.SetSel(position, position);
+		*/
+    }
+
+    /// <summary>
+    /// Closes all open documents with an option: exceptCurrent
+    /// </summary>
+    public void CloseAllDocuments(Boolean exceptCurrent)
+    {
+      CloseAllDocuments(exceptCurrent, false);
+    }
+    public void CloseAllDocuments(Boolean exceptCurrent, Boolean exceptOtherPanes)
+    {
+      /*
+			ITabbedDocument current = this.CurrentDocument;
+			DockPane currentPane = (current == null) ? null : current.DockHandler.PanelPane;
+			this.closeAllCanceled = false; this.closingAll = true;
+			var documents = new List<ITabbedDocument>(Documents);
+			foreach (var document in documents)
+			{
+				Boolean close = true;
+				if (exceptCurrent && document == current) close = false;
+				if (exceptOtherPanes && document.DockHandler.PanelPane != currentPane) close = false;
+				if (close) document.Close();
+			}
+			this.closingAll = false;
+			*/
+    }
+
+    /// <summary>
+    /// Updates all needed settings after modification
+    /// </summary>
+    public void ApplyAllSettings()
+    {
+      /*
+			if (this.InvokeRequired)
+			{
+				this.BeginInvoke((MethodInvoker) this.ApplyAllSettings);
+				return;
+			}
+			ShortcutManager.ApplyAllShortcuts();
+			EventManager.DispatchEvent(this, new NotifyEvent(EventType.ApplySettings));
+			for (Int32 i = 0; i < this.Documents.Length; i++)
+			{
+				ITabbedDocument document = this.Documents[i];
+				if (document.IsEditable)
+				{
+					ScintillaManager.ApplySciSettings(document.SplitSci1, true);
+					ScintillaManager.ApplySciSettings(document.SplitSci2, true);
+				}
+			}
+			this.frInFilesDialog.UpdateSettings();
+			this.statusStrip.Visible = this.appSettings.ViewStatusBar;
+			this.toolStrip.Visible = this.isFullScreen ? false : this.appSettings.ViewToolBar;
+			ButtonManager.UpdateFlaggedButtons();
+			TabTextManager.UpdateTabTexts();
+		*/
+    }
+
+    /// <summary>
+    /// Saves all settings of the FlashDevelop
+    /// </summary>
+    public void SaveAllSettings()
+    {
+      /*
+			try
+			{
+				this.appSettings.WindowState = this.WindowState;
+				this.appSettings.LatestDialogPath = this.workingDirectory;
+				if (this.WindowState != FormWindowState.Maximized && this.WindowState != FormWindowState.Minimized)
+				{
+					this.appSettings.WindowSize = this.Size;
+					this.appSettings.WindowPosition = this.Location;
+				}
+				if (!File.Exists(FileNameHelper.SettingData))
+				{
+					String folder = Path.GetDirectoryName(FileNameHelper.SettingData);
+					if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+				}
+				ObjectSerializer.Serialize(FileNameHelper.SettingData, this.appSettings);
+				try { this.dockPanel.SaveAsXml(FileNameHelper.LayoutData); }
+				catch (Exception ex2)
+				{
+					// Ignore errors on multi instance full close...
+					if (this.MultiInstanceMode && this.ClosingEntirely) return;
+					else throw ex2;
+				}
+			}
+			catch (Exception ex)
+			{
+				ErrorManager.ShowError(ex);
+			}
+		*/
+    }
+
+    /// <summary>
+    /// Sets the text to find globally
+    /// </summary>
+    public void SetFindText(Object sender, String text)
+    {
+      /*
+			if (sender != this.quickFind) this.quickFind.SetFindText(text);
+			if (sender != this.frInDocDialog) this.frInDocDialog.SetFindText(text);
+		*/
+    }
+
+    /// <summary>
+    /// Sets the case setting to find globally
+    /// </summary>
+    public void SetMatchCase(Object sender, Boolean matchCase)
+    {
+      /*
+			if (sender != this.quickFind) this.quickFind.SetMatchCase(matchCase);
+			if (sender != this.frInDocDialog) this.frInDocDialog.SetMatchCase(matchCase);
+		*/
+    }
+
+    /// <summary>
+    /// Sets the whole word setting to find globally
+    /// </summary>
+    public void SetWholeWord(Object sender, Boolean wholeWord)
+    {
+      //if (sender != this.quickFind) this.quickFind.SetWholeWord(wholeWord);
+      //if (sender != this.frInDocDialog) this.frInDocDialog.SetWholeWord(wholeWord);
+    }
     #endregion
 
     #region MainForm Click Handler
