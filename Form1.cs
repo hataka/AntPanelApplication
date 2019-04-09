@@ -3,6 +3,7 @@
 using AntPanelApplication.Managers;
 using AntPanelApplication.Properties;
 using AntPlugin.XMLTreeMenu.Controls;
+using CommonInterface;
 using CommonLibrary;
 using CommonLibrary.Controls;
 using MDIForm;
@@ -20,7 +21,7 @@ using System.Windows.Forms;
 
 namespace AntPanelApplication
 {
-  public partial class Form1 : Form
+  public partial class Form1 : Form, CommonInterface.IMainForm//, IMessageFilter
   {
     #region Variables
     public global::AntPanelApplication.Properties.Settings
@@ -49,6 +50,7 @@ namespace AntPanelApplication
     public Form1()
     {
       Globals.MainForm = this;
+      PluginBase.Initialize(this);
       //PluginBase.Initialize(this);
       this.antPanel = new AntPanel();
       if (Arguments.Length > 1 && !String.IsNullOrEmpty(Arguments[0]))
@@ -114,6 +116,9 @@ namespace AntPanelApplication
     // Context Menus //
     private ContextMenuStrip tabMenu;
     private ContextMenuStrip editorMenu;
+    
+    /* Settings */
+    //private SettingObject appSettings;
 
     // Working Dir //
     private String workingDirectory = String.Empty;
@@ -229,7 +234,7 @@ namespace AntPanelApplication
     /// </summary>
     //public ISettings Settings
     //{
-    //get { return this.appSettings; }
+      //get { return this.appSettings; }
     //}
 
     /// <summary>
@@ -736,7 +741,7 @@ namespace AntPanelApplication
         try
         {
           // 例外発生
-          if (control is IMDIForm)
+          if (control is MDIForm.IMDIForm)
           {
             //this.InitializeCustomControlsInterface((IMDIForm)control);
             //Console.WriteLine("実装してる！");
@@ -872,11 +877,21 @@ namespace AntPanelApplication
     /// Creates a floating panel for the plugin
     /// </summary>
     //public DockContent CreateDockablePanel(Control ctrl, String guid, Image image, DockState defaultDockState)
-    public Panel CreateDockablePanel(Control ctrl, String guid, Image image,
-      System.Windows.Forms.DockStyle defaultDockState)
+    //public Panel CreateDockablePanel(Control ctrl, String guid, Image image,
+    //  System.Windows.Forms.DockStyle defaultDockState)
+    public void CreateDockableTabPage(Control ctrl, String guid, Image image, String defaultDockState)
     {
       try
       {
+        ctrl.Dock = DockStyle.Fill;
+        ctrl.Name = guid;
+        //((Control)control.Tag).Tag = args[i];
+        TabControl tbctrl = this.documentTabControl;
+        if (defaultDockState  == "DockBottom") tbctrl = this.bottomTabControl;
+        else if (defaultDockState == "DockRight") tbctrl = this.rightTabControl;
+        else if (defaultDockState == "DockLeft") tbctrl = Globals.AntPanel.antPanelTabControl;
+        TabPageManager.AddTabPage(ctrl, tbctrl, true);
+        /*
         Panel dockablePanel = new Panel();
         //DockablePanel dockablePanel = new DockablePanel(ctrl, guid);
         //dockablePanel.Image = image;
@@ -885,11 +900,12 @@ namespace AntPanelApplication
         dockablePanel.Controls.Add(ctrl);
         //LayoutManager.PluginPanels.Add(dockablePanel);
         return dockablePanel;
+        */
+
       }
       catch (Exception ex)
       {
         MessageBox.Show(Lib.OutputError(ex.Message.ToString()), "CreateDockablePanel");
-        return null;
       }
     }
 
@@ -1441,10 +1457,11 @@ namespace AntPanelApplication
               evnt.Handled = true;
               return;
             case "XMLTreeMenu.Browse":
-              //this.pluginUI.Browse(evnt.Data.ToString());
+              this.OpenCustomDocument("BrowseEx",evnt.Data.ToString());
               evnt.Handled = true;
               return;
-            case "XMLTreeMenu.BrowseEx":
+            case "XMLTreeMenu.BrowserEx":
+              this.OpenCustomDocument("BrowserEx", evnt.Data.ToString());
               //this.pluginUI.BrowseEx(evnt.Data.ToString());
               evnt.Handled = true;
               return;

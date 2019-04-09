@@ -36,7 +36,7 @@ namespace CommonInterface
     public ToolStripStatusLabel toolStripStatusLabel { get; set; }
     public ToolStripMenuItem スクリプトToolStripMenuItem { get; set; }
     public List<string> PreviousDocuments { get; set; }
-    public AxWMPLib.AxWindowsMediaPlayer mediaPlayer { get; set; }
+    //public AxWMPLib.AxWindowsMediaPlayer mediaPlayer { get; set; }
     public PictureBox pictureBox { get; set; }
     public ImageList imageList { get; set; }
     public Object settingsObject { get; set; }
@@ -88,19 +88,16 @@ namespace CommonInterface
     void Dispose();
     void InitializeInterface();
   }
-
-
+  
   public interface IPlugin : IEventHandler
   {
     #region IPlugin Methods
-
     void Dispose();
-    void Initialize();
-
+    void InitializeInterface();
     #endregion
 
     #region IPlugin Properties
-
+    /*
     Int32 Api { get; }
     String Name { get; }
     String Guid { get; }
@@ -108,7 +105,7 @@ namespace CommonInterface
     String Author { get; }
     String Description { get; }
     Object Settings { get; }
-
+    */
     // List of valid API levels:
     // FlashDevelop 4.0 = 1
 
@@ -118,9 +115,7 @@ namespace CommonInterface
   public interface IEventHandler
   {
     #region IEventHandler Methods
-
-    //void HandleEvent(Object sender, NotifyEvent e, HandlingPriority priority);
-
+    void HandleEvent(Object sender, NotifyEvent e, HandlingPriority priority);
     #endregion
   }
   /*
@@ -183,7 +178,9 @@ namespace CommonInterface
     /// <summary>
     /// Stop the currently running process.
     /// </summary>
-    void KillProcess();
+
+    //void KillProcess();
+    
     /// <summary>
     /// Refreshes the scintilla configuration.
     /// </summary>
@@ -236,7 +233,7 @@ namespace CommonInterface
     /// <summary>
     /// Create the specified new document from the given template.
     /// </summary>
-    void FileFromTemplate(String templatePath, String newFilePath);
+    //void FileFromTemplate(String templatePath, String newFilePath);
 
     /// <summary>
     /// Opens an editable document.
@@ -255,13 +252,16 @@ namespace CommonInterface
     /// Creates a new empty document.
     /// </summary>
     //DockContent CreateEditableDocument(String file, String text, Int32 codepage);
+
     /// <summary>
     /// Creates a floating panel for the plugin.
     /// </summary>
     //DockContent CreateDockablePanel(Control form, String guid, Image image, DockState defaultDockState);
-    /// <summary>
-    /// Calls a normal <see cref="IMainForm"/> method.
-    /// </summary>
+    void CreateDockableTabPage(Control ctrl, String guid, Image image, String defaultDockState);
+
+     /// <summary>
+     /// Calls a normal <see cref="IMainForm"/> method.
+     /// </summary>
     Boolean CallCommand(String command, String arguments);
     /// <summary>
     /// Finds the menu items that have the specified name.
@@ -310,7 +310,9 @@ namespace CommonInterface
     /// <summary>
     /// Finds the specified plugin.
     /// </summary>
-    IPlugin FindPlugin(String guid);
+
+    //IPlugin FindPlugin(String guid);
+    
     /// <summary>
     /// Adjusts the image for different themes.
     /// </summary>
@@ -363,7 +365,7 @@ namespace CommonInterface
     /// <summary>
     /// Gets the <see cref="ISettings"/> interface.
     /// </summary>
-    ISettings Settings { get; }
+    //ISettings Settings { get; }
     /// <summary>
     /// Gets the tool strip.
     /// </summary>
@@ -435,7 +437,7 @@ namespace CommonInterface
     /// <summary>
     /// Gets whether FlashDevelop holds modified documents.
     /// </summary>
-    Boolean HasModifiedDocuments { get; }
+    //Boolean HasModifiedDocuments { get; }
     /// <summary>
     /// Gets whether FlashDevelop is closing.
     /// </summary>
@@ -443,7 +445,7 @@ namespace CommonInterface
     /// <summary>
     /// Gets whether a process is running.
     /// </summary>
-    Boolean ProcessIsRunning { get; }
+    //Boolean ProcessIsRunning { get; }
     /// <summary>
     /// Gets whether a document is reloading.
     /// </summary>
@@ -475,7 +477,8 @@ namespace CommonInterface
     /// <summary>
     /// Gets whether FlashDevelop is in multi-instance mode.
     /// </summary>
-    Boolean MultiInstanceMode { get; }
+    
+    //Boolean MultiInstanceMode { get; }
     /// <summary>
     /// Gets whether this <see cref="IMainForm"/> is the first instance.
     /// </summary>
@@ -641,26 +644,120 @@ namespace CommonInterface
     #endregion
   }
 
+  public class PluginBase
+  {
+    private static IProject project;
+    private static IProject solution;
+    //private static InstalledSDK sdk;
+    private static IMainForm instance;
 
+    /// <summary>
+    /// Activates if the sender is MainForm
+    /// </summary>
+    public static void Initialize(IMainForm sender)
+    {
+      if (sender.GetType().ToString() == "AntPanelApplication.Form1")
+      {
+        instance = sender;
+      }
+    }
 
+    /// <summary>
+    /// Gets the instance of the Settings
+    /// </summary>
+    /*
+    public static ISettings Settings
+    {
+      get { return instance.Settings; }
+    }
+    */
+    /// <summary>
+    /// Gets the instance of the MainForm
+    /// </summary>
+    public static IMainForm MainForm
+    {
+      get { return instance; }
+    }
 
+    /// <summary>
+    /// Sets and gets the current project
+    /// </summary>
+    public static IProject CurrentProject
+    {
+      get { return project; }
+      set { project = value; }
+    }
 
+    /// <summary>
+    /// Sets and gets the current solution
+    /// </summary>
+    public static IProject CurrentSolution
+    {
+      get { return solution; }
+      set { solution = value; }
+    }
 
+    /// <summary>
+    /// Sets and gets the current project's SDK
+    /// </summary>
+    /*
+    public static InstalledSDK CurrentSDK
+    {
+      get { return sdk; }
+      set { sdk = value; }
+    }
+    */
+    /// <summary>
+    /// Run action on UI thread
+    /// </summary>
+    /// <param name="action"></param>
+    public static void RunAsync(MethodInvoker action)
+    {
+      Form ui = MainForm as Form;
+      if (ui != null && ui.InvokeRequired) ui.BeginInvoke(action);
+      else action.Invoke();
+    }
+  }
 
+  public enum DockAreas
+  {
+    Float = 1,
+    DockLeft = 2,
+    DockRight = 4,
+    DockTop = 8,
+    DockBottom = 16,
+    Document = 32
+  }
 
+  public enum DockState
+  {
+    Unknown = 0,
+    Float = 1,
+    DockTopAutoHide = 2,
+    DockLeftAutoHide = 3,
+    DockBottomAutoHide = 4,
+    DockRightAutoHide = 5,
+    Document = 6,
+    DockTop = 7,
+    DockLeft = 8,
+    DockBottom = 9,
+    DockRight = 10,
+    Hidden = 11
+  }
 
+  public enum DockAlignment
+  {
+    Left,
+    Right,
+    Top,
+    Bottom
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  public enum DocumentStyle
+  {
+    DockingMdi,
+    DockingWindow,
+    DockingSdi,
+    SystemMdi,
+  }
 }

@@ -13,8 +13,9 @@ using System.Diagnostics;
 //using PluginCore;
 using AntPlugin;
 //using MDIform;
-using MDIForm;
+//using MDIForm;
 using CommonLibrary;
+using CommonInterface;
 
 namespace AntPlugin.XMLTreeMenu.Controls
 {
