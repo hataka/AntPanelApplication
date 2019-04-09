@@ -1,13 +1,14 @@
 using AntPanelApplication.Properties;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Windows.Forms;
 
 namespace AntPanelApplication
 {
 	public class Globals
 	{
-    static global::AntPanelApplication.Properties.Settings settings;
+    public static Settings settings;
     /// <summary>
 		/// Quick reference to Form1 
 		/// </summary> 
@@ -47,22 +48,24 @@ namespace AntPanelApplication
     /// <summary>
     /// Quick reference to PreviousDocuments 
     /// </summary>
-    /*
     public static List<String> PreviousDocuments
 		{
-			get { return Settings.PreviousDocuments; }
+			get
+      {
+        List<String> pd = new List<string>();
+        foreach (string v in Settings.PreviousDocuments) pd.Add(v);
+        return pd;
+      }
 		}
-    */
     /// <summary>
     /// Quick reference to Settings 
     /// </summary>
-    /*
+    
     public static Settings Settings
 		{
 			get { return settings; }
-
     }
-    */
+    
   }
 
 }

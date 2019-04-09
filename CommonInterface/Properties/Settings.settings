@@ -1,0 +1,157 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AntPanelApplication.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Name" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AntPanelApplication</Value>
+    </Setting>
+    <Setting Name="MenuBarVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ToolBarVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="StatusBarVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="BookMarks" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;F:\My Music\２つのミサ曲\２つのミサ曲.asx&lt;/string&gt;
+  &lt;string&gt;C:\home\KingFM.asx&lt;/string&gt;
+  &lt;string&gt;F:\My Video\flv\misaki.flv&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\070104\MARTIN-Mass.wax&lt;/string&gt;
+  &lt;string&gt;F:\home\xjpeg\ePXXXFd.wmv&lt;/string&gt;
+  &lt;string&gt;http://v6.player.abacast.net/3&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="PreviousDocuments" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;F:\My Music\KingFM\061122\MOZART-Horn_Concerto_No.2_in_E-flat_K.417.wax&lt;/string&gt;
+  &lt;string&gt;F:\My Music\２つのミサ曲\２つのミサ曲.asx&lt;/string&gt;
+  &lt;string&gt;C:\home\KingFM.asx&lt;/string&gt;
+  &lt;string&gt;F:\My Video\flv\misaki.flv&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\070104\MARTIN-Mass.wax&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\060804\MOZART-Piano_Concerto_No.13_in_C_K.415_387b.wax&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\061030\MOZART-Piano_Concerto_No.12_in_A_K.414.wax&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\060805\IBERT-Escales(Ports_of_Call).wax&lt;/string&gt;
+  &lt;string&gt;F:/My Music/KingFM/070108/MOZART-Piano_Concerto_No.1_in_F,_K.37.wax&lt;/string&gt;
+  &lt;string&gt;F:\home\xjpeg\ePXXXFd.wmv&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\070107\IRELAND-Orchestral_Poem_in_A_minor.wax&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\070112\KETCLBY-Bells_Across_the_Meadow.wax&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\070115\HEINICHEN-Chamber_Sonata_in_A,_S.208.wax&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\060810\GEMINIANI-Concerto_Grosso_in_B-flat_Op.5_2.wax&lt;/string&gt;
+  &lt;string&gt;F:\My Music\KingFM\070117\FALLA-Love,_the_Magician-Ritual_Fire_Dance.wax&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="win_ServerRoot" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://192.168.0.13</Value>
+    </Setting>
+    <Setting Name="win_DocumentRoot" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Apache2.2\htdocs</Value>
+    </Setting>
+    <Setting Name="win_SakuraPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\sakura\sakura.exe</Value>
+    </Setting>
+    <Setting Name="win_PspadPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\PSPad editor\PSPad.exe</Value>
+    </Setting>
+    <Setting Name="FlashdevelopPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug\FlashDevelop.exe</Value>
+    </Setting>
+    <Setting Name="Devenv15Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe</Value>
+    </Setting>
+    <Setting Name="Devenv17Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe</Value>
+    </Setting>
+    <Setting Name="MediaPlayerPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\Windows Media Player\wmplayer.exe</Value>
+    </Setting>
+    <Setting Name="win_VlcPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\VideoLAN\VLC\vlc.exe</Value>
+    </Setting>
+    <Setting Name="win_AntExecutablePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\ant\apache-ant-1.10.1\bin\ant.bat</Value>
+    </Setting>
+    <Setting Name="win_GradlePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\gradle-3.5\bin\gradle.bat</Value>
+    </Setting>
+    <Setting Name="win_ChromePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</Value>
+    </Setting>
+    <Setting Name="win_IePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\Internet Explorer\iexplore.exe</Value>
+    </Setting>
+    <Setting Name="CmdPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Windows\system32\cmd.exe</Value>
+    </Setting>
+    <Setting Name="win_ExplorerPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Windows\explorer.exe</Value>
+    </Setting>
+    <Setting Name="DefaultFont" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Meiryo UI, 12pt</Value>
+    </Setting>
+    <Setting Name="MenuStripItemEnabled" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;101000011011&lt;/string&gt;
+  &lt;string&gt;101000011011&lt;/string&gt;
+  &lt;string&gt;101000111111&lt;/string&gt;
+  &lt;string&gt;111111011011&lt;/string&gt;
+  &lt;string&gt;101000011011&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="FileMenuVisible" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;01111101000100110&lt;/string&gt;
+  &lt;string&gt;01110100000100110&lt;/string&gt;
+  &lt;string&gt;01111101000111110&lt;/string&gt;
+  &lt;string&gt;11111111111111110&lt;/string&gt;
+  &lt;string&gt;01111100000111110&lt;/string&gt;
+  &lt;string&gt;00000000000000000&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="AntPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\ant\apache-ant-1.10.1</Value>
+    </Setting>
+    <Setting Name="StorageFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">antPluginData.txt</Value>
+    </Setting>
+    <Setting Name="HomeMenuPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug\SettingData\FDTreeMenu.xml</Value>
+    </Setting>
+    <Setting Name="win_GitPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\Git\git-bash.exe</Value>
+    </Setting>
+    <Setting Name="win_NextFTPPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\NextFTP\NEXTFTP.EXE</Value>
+    </Setting>
+    <Setting Name="FTPClientDefaultFont" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Meiryo UI, 10.8pt</Value>
+    </Setting>
+    <Setting Name="PreviousProjects" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="WindowSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1200, 800</Value>
+    </Setting>
+    <Setting Name="DefaultEditorFont" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Meiryo UI, 10.8pt</Value>
+    </Setting>
+    <Setting Name="DefaultEditor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">RichTextEditor</Value>
+    </Setting>
+    <Setting Name="DefaultBottomPanelHeight" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">42</Value>
+    </Setting>
+    <Setting Name="DefaultRightPanelWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">56</Value>
+    </Setting>
+    <Setting Name="SyntaxHighlight" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

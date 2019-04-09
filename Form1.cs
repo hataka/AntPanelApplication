@@ -23,10 +23,12 @@ namespace AntPanelApplication
   public partial class Form1 : Form
   {
     #region Variables
-    global::AntPanelApplication.Properties.Settings
+    public global::AntPanelApplication.Properties.Settings
       settings = new global::AntPanelApplication.Properties.Settings();
     global::AntPanelApplication.Properties.Resources
       resources = new global::AntPanelApplication.Properties.Resources();
+
+    //Settings.Default;
 
     public static OperatingSystem os = Environment.OSVersion;
     public static bool IsRunningOnMono = (Type.GetType("Mono.Runtime") != null);
@@ -537,7 +539,14 @@ namespace AntPanelApplication
 
     public Control OpenCustomDocument(String name, String argStr,Boolean singleton=true)
     {
-      String[] args = argStr.Split('|');
+      String alignment = "Top";
+      String[] args = null;// argStr.Split('|');
+      if (argStr.IndexOf('#')>-1)
+      {
+        args = argStr.Split('#')[0].Split('|');
+        alignment = argStr.Split('#')[1];
+      }
+      else args = argStr.Split('|');
 
       if (IsRunningUnix)
       {
@@ -608,7 +617,15 @@ namespace AntPanelApplication
               Process.Start("/usr/bin/google-chrome", args[i]);
               return control;
             }
-            TabPageManager.AddTabPage(control, this.documentTabControl,singleton);
+
+            TabControl tbctrl = this.documentTabControl;
+            if (alignment == "Bottom") tbctrl = this.bottomTabControl;
+            else if (alignment == "Right") tbctrl = this.rightTabControl;
+            else if (alignment == "Left") tbctrl = Globals.AntPanel.antPanelTabControl;
+
+            control.AccessibleName = args[i];
+            //TabPageManager.AddTabPage(control, this.documentTabControl,singleton);
+            TabPageManager.AddTabPage(control, tbctrl, singleton);
           }
         }
         return control;
@@ -703,6 +720,7 @@ namespace AntPanelApplication
                 classname = "CommonControl." + Path.GetFileNameWithoutExtension(path);
               }
               assembly = Assembly.LoadFrom(dllpath);
+              //foreach (Type pluginType in assembly.GetTypes()) MessageBox.Show(pluginType.FullName);
               type = assembly.GetType(classname);
               control = (Control)Activator.CreateInstance(type);
             }
@@ -732,8 +750,6 @@ namespace AntPanelApplication
         control.Name = classname + "@" + dllpath;
         //control.AccessibleDescription = option;
         control.AccessibleDescription = classname + "@" + dllpath;
-
-        //MessageBox.Show(file);
         control.AccessibleName = file;
         control.AccessibleDefaultActionDescription = this.GetType().FullName + "@" + Application.ExecutablePath;
         ((Control)control.Tag).Tag = file;
@@ -1092,7 +1108,7 @@ namespace AntPanelApplication
       if (IsRunningUnix) return;
       //this.LoadBrowserEx("http://192.168.0.13/pukiwiki2016/index.php");
       //this.LoadPlayerPanel(@"F:\VirtualBox\ShareFolder\Music\03-Monteverdi.mp3");
-      //this.LoadSimplePanel(@"F:\c_program\OpenGL\NeHe_1200x900\Lesson05\lesson5.exe");
+      this.LoadSimplePanel(@"F:\c_program\OpenGL\NeHe_1200x900\Lesson05\lesson5.exe");
       // だめ
       //////this.LoadSimplePanel(@"C:\Windows\System32\cmd.exe");
 
@@ -1152,7 +1168,7 @@ namespace AntPanelApplication
       this.panel.AccessibleDefaultActionDescription = this.GetType().FullName + ";" + Application.ExecutablePath;
       this.panel.AccessibleName = path;
       ((Control)this.panel.Tag).Tag = path;
-      TabPageManager.AddTabPage(this.panel, this.documentTabControl);
+      TabPageManager.AddTabPage(this.panel, this.bottomTabControl);
     }
 
     private void ApplySettings()
@@ -3045,8 +3061,11 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       {
         ToolStripItem button = (ToolStripItem)sender;
         String[] args = ((ItemData)button.Tag).Tag.Split(';');
+        String flags = ((ItemData)button.Tag).Flags;
         String action = args[0]; // Action of the command
-        String data = (args.Length > 1) ? args[1] : null;
+        String data = (args.Length > 1) ? args[1] : "";
+        //MessageBox.Show(flags);
+        if (!String.IsNullOrEmpty(flags)) data = data + "#" + flags;
         OpenCustomDocument(action, data);
       }
       catch (Exception ex)
@@ -3349,6 +3368,9 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         ToolStripItem button = (ToolStripItem)sender;
         String url = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
         this.OpenCustomDocument("Browser", url);
+        
+        
+        
         //if (url.Trim() != "") browser.WebBrowser.Navigate(url);
         //else browser.WebBrowser.GoHome();
       }

@@ -257,7 +257,8 @@ namespace AntPanelApplication
 
     private void InitializeInterface()
 		{
-			// TODO 実装 必要性検討 
+      //Globals.MainForm.settiings;
+      // TODO 実装 必要性検討 
 		 /* 
 			this.mainForm = new MDIForm.ParentFormClass();
 			this.mainForm.imageList1 = this.imageList;
