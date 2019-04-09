@@ -2,6 +2,7 @@
 //using AntPanelApplication.Helpers;
 using AntPanelApplication.Managers;
 using AntPanelApplication.Properties;
+using AntPanelApplication.Utilities;
 using AntPlugin.XMLTreeMenu.Controls;
 using CommonInterface;
 using CommonLibrary;
@@ -51,7 +52,6 @@ namespace AntPanelApplication
     {
       Globals.MainForm = this;
       PluginBase.Initialize(this);
-      //PluginBase.Initialize(this);
       this.antPanel = new AntPanel();
       if (Arguments.Length > 1 && !String.IsNullOrEmpty(Arguments[0]))
       {
@@ -1109,9 +1109,38 @@ namespace AntPanelApplication
       Globals.AntPanel.Dock = DockStyle.Fill;
       //Globals.AntPanel.Tag = this; //??
       InitializeControls();
+
+      LoadPlugins();
+
       this.Text = "AntPanel : " + Path.GetFileName(Globals.AntPanel.AccessibleDescription);
       this.Size = new Size(1200, 800);
       this.StartPosition = FormStartPosition.CenterScreen;
+
+
+
+    }
+
+    private void LoadPlugins()
+    {
+      try
+      {
+        String pluginDir = PathHelper.PluginDir; // Plugins of all users
+        if (Directory.Exists(pluginDir)) PluginServices.FindPlugins(pluginDir);
+        if (!this.StandaloneMode) // No user plugins on standalone...
+        {
+          String userPluginDir = PathHelper.UserPluginDir;
+          if (Directory.Exists(userPluginDir)) PluginServices.FindPlugins(userPluginDir);
+          else Directory.CreateDirectory(userPluginDir);
+        }
+        //LayoutManager.BuildLayoutSystems(FileNameHelper.LayoutData);
+        ShortcutManager.LoadCustomShortcuts();
+        //ArgumentDialog.LoadCustomArguments();
+        //PluginCore.Controls.UITools.Init();
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
     }
 
     private void InitializeControls()
@@ -1131,7 +1160,6 @@ namespace AntPanelApplication
       this.tabPage6.Controls.Clear();
       this.documentTabControl.Controls.Remove(this.tabPage6);
     }
-
     private void LoadRichTextEditor(String path)
     {
       this.editor = new RichTextEditor();
@@ -3687,9 +3715,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       this.CallControlCommand("Test1", "MainForm Testからの送信です");
     }
 
-
     #region Icon Management
-
     public void toggle_アイコン表示()
     {
       this.showIcon = !this.showIcon;
@@ -3699,11 +3725,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       }
       //else this.ImageList = null;
     }
-
-
-
     #endregion
-
     
   }
 }

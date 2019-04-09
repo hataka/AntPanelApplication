@@ -1,7 +1,11 @@
+using AntPanelApplication.Helpers;
+using CommonInterface;
+using CommonLibrary;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 //using PluginCore;
 //using PluginCore.Helpers;
 //using PluginCore.Localization;
@@ -11,7 +15,6 @@ namespace AntPanelApplication.Utilities
 {
 	class PluginServices
 	{
-    /*
     public static List<String> KnownDLLs;
 		public static List<AvailablePlugin> AvailablePlugins;
 		public static Int32 REQUIRED_API_LEVEL = 1;
@@ -31,7 +34,7 @@ namespace AntPanelApplication.Utilities
 			foreach (String fileOn in Directory.GetFiles(path, "*.dll"))
 			{
 				String name = Path.GetFileNameWithoutExtension(fileOn);
-				if (name != "PluginCore" && !KnownDLLs.Contains(name))
+				if (name != "PluginCore" && name != "CommonInterface" && !KnownDLLs.Contains(name))
 				{
 					KnownDLLs.Add(name);
 					AddPlugin(fileOn);
@@ -81,7 +84,8 @@ namespace AntPanelApplication.Utilities
 				} 
 				catch (Exception ex)
 				{
-					ErrorManager.ShowError(ex);
+          MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+          //ErrorManager.ShowError(ex);
 				}
 			}
 			AvailablePlugins.Clear();
@@ -99,7 +103,7 @@ namespace AntPanelApplication.Utilities
 				{
 					if (pluginType.IsPublic && !pluginType.IsAbstract)
 					{
-						Type typeInterface = pluginType.GetInterface("PluginCore.IPlugin", true);
+						Type typeInterface = pluginType.GetInterface("CommonInterface.IPlugin", true);
 						if (typeInterface != null)
 						{
 							AvailablePlugin newPlugin = new AvailablePlugin(fileName);
@@ -109,11 +113,11 @@ namespace AntPanelApplication.Utilities
 								// Invalid plugin, ignore...
 								throw new Exception("Required API level does not match.");
 							}
-							if (!Globals.Settings.DisabledPlugins.Contains(newPlugin.Instance.Guid))
-							{
-								newPlugin.Instance.Initialize();
+							//if (!Globals.Settings.DisabledPlugins.Contains(newPlugin.Instance.Guid))
+							//{
+								newPlugin.Instance.InitializeInterface();
 								newPlugin.IsActive = true;
-							}
+							//}
 							if (!AvailablePlugins.Contains(newPlugin))
 							{
 								AvailablePlugins.Add(newPlugin);
@@ -124,10 +128,11 @@ namespace AntPanelApplication.Utilities
 			}
 			catch (Exception ex)
 			{
-				String message = TextHelper.GetString("Info.UnableToLoadPlugin");
-				ErrorManager.ShowWarning(message + " \n" + fileName, ex);
-			}
-		}
+				//String message = TextHelper.GetString("Info.UnableToLoadPlugin");
+				//ErrorManager.ShowWarning(message + " \n" + fileName, ex);
+       MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
 	}
 
 	public class AvailablePlugin
@@ -140,7 +145,6 @@ namespace AntPanelApplication.Utilities
 		{
 			this.Assembly = assembly;
 		}
-		*/
 	}
 	
 }
