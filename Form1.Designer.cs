@@ -104,7 +104,6 @@
       this.documentTabControl.Size = new System.Drawing.Size(711, 572);
       this.documentTabControl.TabIndex = 0;
       this.documentTabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
-      this.documentTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.documentTabControl_MouseClick);
       // 
       // tabPage1
       // 
@@ -286,7 +285,6 @@
       this.rightTabControl.DoubleClick += new System.EventHandler(this.rightTabControl_DoubleClick);
       this.rightTabControl.Enter += new System.EventHandler(this.rightTabControl_Enter);
       this.rightTabControl.Leave += new System.EventHandler(this.rightTabControl_Leave);
-      this.rightTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.rightTabControl_MouseClick);
       // 
       // tabPage9
       // 
@@ -305,7 +303,7 @@
       this.tabPage10.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.tabPage10.Name = "tabPage10";
       this.tabPage10.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-      this.tabPage10.Size = new System.Drawing.Size(0, 564);
+      this.tabPage10.Size = new System.Drawing.Size(2, 564);
       this.tabPage10.TabIndex = 1;
       this.tabPage10.Text = "tabPage10";
       this.tabPage10.UseVisualStyleBackColor = true;
@@ -325,7 +323,6 @@
       this.bottomTabControl.DoubleClick += new System.EventHandler(this.bottomTabControl_DoubleClick);
       this.bottomTabControl.Enter += new System.EventHandler(this.bottomTabControl_Enter);
       this.bottomTabControl.Leave += new System.EventHandler(this.bottomTabControl_Leave);
-      this.bottomTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bottomTabControl_MouseClick);
       // 
       // tabPage7
       // 

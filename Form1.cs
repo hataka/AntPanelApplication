@@ -883,8 +883,10 @@ namespace AntPanelApplication
     {
       try
       {
+        if(image !=null) Globals.AntPanel.imageList2.Images.Add(image);
         ctrl.Dock = DockStyle.Fill;
         ctrl.Name = guid;
+        ctrl.Tag =  Globals.AntPanel.imageList2.Images.Count-1;
         //((Control)control.Tag).Tag = args[i];
         TabControl tbctrl = this.documentTabControl;
         if (defaultDockState  == "DockBottom") tbctrl = this.bottomTabControl;
@@ -1115,9 +1117,6 @@ namespace AntPanelApplication
       this.Text = "AntPanel : " + Path.GetFileName(Globals.AntPanel.AccessibleDescription);
       this.Size = new Size(1200, 800);
       this.StartPosition = FormStartPosition.CenterScreen;
-
-
-
     }
 
     private void LoadPlugins()
@@ -1145,7 +1144,17 @@ namespace AntPanelApplication
 
     private void InitializeControls()
     {
+      this.documentTabControl.ImageList = Globals.AntPanel.imageList2;
+      this.rightTabControl.ImageList = Globals.AntPanel.imageList2;
+      this.bottomTabControl.ImageList = Globals.AntPanel.imageList2;
+
+      this.documentTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabControl_MouseClick);
+      this.rightTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabControl_MouseClick);
+      this.bottomTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabControl_MouseClick);
+
       this.documentTabControl.TabPages.Clear();
+      this.rightTabControl.TabPages.Clear();
+      this.bottomTabControl.TabPages.Clear();
 
       this.LoadRichTextEditor("無題");
       //if(IsRunningWindows) this.LoadPicturePanel(@"F:\VirtualBox\ShareFolder\Picture\DSCN0166.JPG");
@@ -2229,6 +2238,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     public Image FindImage(String data)
     {
       return FindImage(data, true);
+      //return FindImage(data, false);
     }
 
     /// <summary>
@@ -2862,25 +2872,32 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
 
     private void documentTabControl_MouseClick(object sender, MouseEventArgs e)
     {
+
+    }
+
+    #endregion
+
+    TabControl selectedTabControl;
+    private void TabControl_MouseClick(object sender, MouseEventArgs e)
+    {
       TabControl tabcontrol = sender as TabControl;
+      selectedTabControl = tabcontrol;
       //MessageBox.Show(tabcontrol.Name);
       if (e.Button == MouseButtons.Right)
       {
         //http://note.phyllo.net/?eid=517117
-        for (int i = 0; i < this.documentTabControl.TabCount; i++)
+        for (int i = 0; i < tabcontrol.TabCount; i++)
         {
           //タブとマウス位置を比較し、クリックしたタブを選択
-          if (this.documentTabControl.GetTabRect(i).Contains(e.X, e.Y))
+          if (tabcontrol.GetTabRect(i).Contains(e.X, e.Y))
           {
-            this.documentTabControl.SelectedTab = this.documentTabControl.TabPages[i];
-            this.tabMenu.Show(this.documentTabControl, e.Location);
+            tabcontrol.SelectedTab = tabcontrol.TabPages[i];
+            this.tabMenu.Show(tabcontrol, e.Location);
             break;
           }
         }
       }
     }
-
-    #endregion
 
     #region BottomTabControl Click Handler
     private void bottomTabControl_MouseClick(object sender, MouseEventArgs e)
@@ -2907,10 +2924,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     #endregion
 
     #region RightTabControl Click Handler
-    private void rightTabControl_MouseClick(object sender, MouseEventArgs e)
-    {
-
-    }
     private void rightTabControl_Enter(object sender, EventArgs e)
     {
       this.rightSplitContainer.SplitterDistance =
@@ -3077,26 +3090,26 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     public void OnEncodeSave(object sender, EventArgs e) { }
     public void Close(object sender, EventArgs e)
     {
-      if (IsEditable)
+      //MessageBox.Show(this.selectedtc.Name);
+      if (this.selectedTabControl.Name == "documentTabControl" && IsEditable)
       {
-        bool result = ((RichTextEditor)this.CurrentDocument).parentForm_Closing(sender,e);
+        bool result = ((RichTextEditor)this.CurrentDocument).parentForm_Closing(sender, e);
         if (result == false) return;
       }
       //string msgboxString = this.tabControl1.SelectedTab.Text + " タブを削除します\nよろしいですか?";
       //if (Lib.confirmDestructionText("削除確認", msgboxString) == true)
       //{
       //TabPageManager.CloseTabPage(sender, e);
-      TabPageManager.CloseTabPage(this.documentTabControl.SelectedTab, this.documentTabControl);
-      //}
+      TabPageManager.CloseTabPage(this.selectedTabControl.SelectedTab, this.selectedTabControl);
     }
     public void ReopenClosed(object sender, EventArgs e) { }
     public void CloseOthers(object sender, EventArgs e)
     {
-      TabPageManager.CloseOtherTabPages(this.documentTabControl.SelectedTab, this.documentTabControl);
+      TabPageManager.CloseOtherTabPages(this.selectedTabControl.SelectedTab, this.selectedTabControl);
     }
     public void CloseAll(object sender, EventArgs e)
     {
-      TabPageManager.CloseAllTabPages(this.documentTabControl);
+      TabPageManager.CloseAllTabPages(this.selectedTabControl);
     }
     public void ChangeEncoding(object sender, EventArgs e) { }
     public void ToggleSaveBOM(object sender, EventArgs e) { }
@@ -3560,13 +3573,16 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     {
       ToolStripMenuItem item = sender as ToolStripMenuItem;
       //MessageBox.Show(item.Text);
-      TabControl tabControl = this.documentTabControl;
+      //TabControl tabControl = this.documentTabControl;
+      TabControl tabControl = this.selectedTabControl;
       switch (item.Text)
       {
         case "Float":
-          TabPageManager.ShowInDialog(this.documentTabControl.SelectedTab, tabControl);
+          //TabPageManager.ShowInDialog(this.documentTabControl.SelectedTab, tabControl);
+          TabPageManager.ShowInDialog(this.selectedTabControl.SelectedTab, tabControl);
           return;
         case "Top":
+          tabControl = this.documentTabControl;
           break;
         case "Right":
           tabControl = this.rightTabControl;
@@ -3578,7 +3594,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
           tabControl = Globals.AntPanel.antPanelTabControl;
           break;
       }
-      TabPageManager.MoveTabPage(this.documentTabControl.SelectedTab, tabControl);
+      TabPageManager.MoveTabPage(this.selectedTabControl.SelectedTab, tabControl);
     }
 
     public void CommandPromptHere(object sender, EventArgs e)
@@ -3712,7 +3728,12 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         MessageBox.Show(msg, "MainForm Testからの送信です");
       }
       */
-      this.CallControlCommand("Test1", "MainForm Testからの送信です");
+      //this.CallControlCommand("Test1", "MainForm Testからの送信です");
+      //String word = String.Empty;
+      String text = "this is a beautiful sleeping lady.";
+      int pos = 12;
+      String word = StringHandler.GetCurrentWord(pos, text);
+      MessageBox.Show(word);
     }
 
     #region Icon Management

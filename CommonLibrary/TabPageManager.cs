@@ -111,6 +111,7 @@ namespace CommonLibrary
       {
         TabPage tabPage = new TabPage();
         String path = String.Empty;
+        if (control.Tag is int) tabPage.ImageIndex = (int)control.Tag;
         //if (!String.IsNullOrEmpty(control.AccessibleDescription)) path = control.AccessibleDescription;
         if (!String.IsNullOrEmpty(control.AccessibleName)) path = control.AccessibleName;
         else if (!String.IsNullOrEmpty(((Control)control.Tag).Tag as String))
@@ -122,7 +123,9 @@ namespace CommonLibrary
         tabPage.AccessibleDescription = control.GetType().FullName + "@" + path;
         tabPage.Name = tabPage.AccessibleDescription;
         tabPage.Font = new Font("Meiryo UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-
+        //仮
+        //tabPage.ImageIndex = 55;
+        
         //tabPage.Parent = tabControl;
         tabPage.Tag = new PageInfo(control,tabControl, path, true);
         //tabPage.Tag = control;
@@ -200,10 +203,13 @@ namespace CommonLibrary
     public static void CloseTabPage(TabPage tabPage, TabControl tabControl)
     {
       PageInfo info = tabPage.Tag as PageInfo;
-      Control ctrl = info.Child;
       tabControl.TabPages.Remove(tabPage);
-      if (ctrl.GetType().Name != "BrowserEx") ctrl.Dispose();
-      try { tabPages.Remove(tabPage); } catch { }
+      try
+      {
+        Control ctrl = info.Child;
+        if (ctrl.GetType().Name != "BrowserEx") ctrl.Dispose();
+        tabPages.Remove(tabPage);
+      } catch { }
       tabPage.Dispose();
     }
 
@@ -276,9 +282,12 @@ namespace CommonLibrary
     public static void MoveTabPage(TabPage tabPage, TabControl tabControl)
     {
       TabControl org = ((PageInfo)tabPage.Tag).Parent;
-      org.TabPages.Remove(tabPage);
-      tabControl.TabPages.Add(tabPage);
-      ((PageInfo)tabPage.Tag).Parent = tabControl;
+      if (org != tabControl)
+      {
+        org.TabPages.Remove(tabPage);
+        tabControl.TabPages.Add(tabPage);
+        ((PageInfo)tabPage.Tag).Parent = tabControl;
+      }
     }
 
     public static List<Control> GetDocuments()

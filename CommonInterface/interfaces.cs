@@ -93,7 +93,7 @@ namespace CommonInterface
   {
     #region IPlugin Methods
     void Dispose();
-    void InitializeInterface();
+    void Initialize();
     #endregion
 
     #region IPlugin Properties

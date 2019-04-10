@@ -115,7 +115,7 @@ namespace AntPanelApplication.Utilities
 							}
 							//if (!Globals.Settings.DisabledPlugins.Contains(newPlugin.Instance.Guid))
 							//{
-								newPlugin.Instance.InitializeInterface();
+								newPlugin.Instance.Initialize();
 								newPlugin.IsActive = true;
 							//}
 							if (!AvailablePlugins.Contains(newPlugin))

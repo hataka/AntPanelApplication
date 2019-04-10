@@ -1164,6 +1164,203 @@ namespace CommonLibrary
       }
     }
 
+    public static String GetCurrentWord(Int32 pos, String text)
+    {
+      //String word = String.Empty;
+      //text = "this is a beautiful sleeping lady.";
+      //pos = 12;
+      //int start = text.Substring(0, pos).LastIndexOf(" ");
+      //int length = pos-start+text.Substring(pos).IndexOf(" ");
+      //word = text.Substring(start, length);
+      return text.Substring(text.Substring(0, pos).LastIndexOf(" "),
+        pos - text.Substring(0, pos).LastIndexOf(" ") + text.Substring(pos).IndexOf(" ")); ;
+    }
 
   }
 }
+/*
+ 
+   
+   public static String GetCurrentWord(Int32 currentPosition, String text)
+{
+	int endPos = currentPosition;
+	int startPos = currentPsition;
+
+}
+
+private void CheckCurrentWord()
+{
+    // current caret position
+    var currentposition = TxtLineCodes.SelectionStart;
+    // get line number
+    var linenumber = TxtLineCodes.GetLineFromCharIndex(currentposition);
+    // get the first character index of the line
+    var firstlineindex = currentposition;
+    if (linenumber == 0)
+    {
+        firstlineindex = 0;
+    }
+    else
+    {
+        while (TxtLineCodes.GetLineFromCharIndex(firstlineindex) == linenumber)
+        {
+            firstlineindex--;
+        }
+        //fix the last iteration
+        firstlineindex += 1;
+    }
+
+    // if caret is not in the end of the word discover it
+    var lastcaretwordindex = currentposition;
+    if (lastcaretwordindex < TxtLineCodes.Text.Length)
+        while (lastcaretwordindex < TxtLineCodes.Text.Length && TxtLineCodes.Text.Substring(lastcaretwordindex, 1) != " ")
+        {
+            lastcaretwordindex += 1;
+        }
+
+    // get the text of the line (until the cursor position)
+    var linetext = TxtLineCodes.Text.Substring(firstlineindex, lastcaretwordindex - firstlineindex);
+    // split all the words in current line
+    string[] words = linetext.Split(' ');
+    // the last word must be the current word
+   System.Diagnostics.Debug.WriteLine("current word: " + words[words.Length - 1]);
+    // and you can also get the substring indexes of the current word
+    var currentwordbysubstring = TxtLineCodes.Text.Substring(lastcaretwordindex - words[words.Length - 1].Length, words[words.Length - 1].Length);
+
+    var startindex = lastcaretwordindex - words[words.Length - 1].Length;
+    var lastindex = startindex + words[words.Length - 1].Length-1;
+    System.Diagnostics.Debug.WriteLine("current word: " + currentwordbysubstring + " and its in index (" + startindex + "," + lastindex + ")");
+}
+
+
+https://social.msdn.microsoft.com/Forums/vstudio/en-US/94637e61-54f9-4e52-acc9-31465b3696cf/how-to-get-current-word-in-richtextbox?forum=vbgeneral
+ublic Module RichTextBoxExtensions
+#Region "Methods"
+   ''' <summary> Returns word as current caret position</summary> _
+   <Runtime.CompilerServices.Extension()> _
+   Public Function GetWord(ByVal rtb As RichTextBox) As String 'Returns word as current caret position
+      Return GetWord(rtb, rtb.SelectionStart)
+   End Function
+
+   '''<summary>Returns word as specified position</summary>
+   <Runtime.CompilerServices.Extension()> _
+   Public Function GetWord(ByVal rtb As RichTextBox, ByVal position As Int32) As String
+      Dim currentSelectionStart As Int32 = rtb.SelectionStart
+      Dim currentSelectionLength As Int32 = rtb.SelectionLength
+      SelectWord(rtb, position)
+      Dim result As String = rtb.SelectedText
+      rtb.SelectionStart = currentSelectionStart
+      rtb.SelectionLength = currentSelectionLength
+      Return result
+   End Function
+
+   '''<summary>Selects word at SelectionStart</summary>
+   <Runtime.CompilerServices.Extension()> _
+   Public Sub SelectWord(ByVal rtb As RichTextBox)
+      SelectWord(rtb, rtb.SelectionStart)
+   End Sub
+
+   '''<summary>Selects word at specified position</summary>
+   <Runtime.CompilerServices.Extension()> _
+   Public Sub SelectWord(ByVal rtb As RichTextBox, ByVal Position As Int32)
+      Dim selstart, selend As Int32
+
+      If IsDelimiter(rtb, Position) OrElse Char.IsPunctuation(rtb.Text(Position)) Then
+         If Char.IsPunctuation(rtb.Text(rtb.SelectionStart)) Then
+            selstart = Position
+         Else
+            selstart = FindWordBreak(rtb, WordBreakOptions.WB_MOVEWORDLEFT, Position)
+
+         End If
+      ElseIf Position > 0 Then
+         If IsDelimiter(rtb, Position - 1) Then
+            selstart = Position
+         Else
+            selstart = FindWordBreak(rtb, WordBreakOptions.WB_MOVEWORDLEFT, Position)
+         End If
+      Else
+         selstart = 0
+      End If
+
+      Dim nextwordstart As Int32 = FindWordBreak(rtb, WordBreakOptions.WB_MOVEWORDRIGHT, selstart)
+
+      For i As Int32 = nextwordstart - 1 To selstart + 1 Step -1
+         If Not IsDelimiter(rtb, i) Then
+            selend = i : Exit For
+         End If
+      Next
+
+      If selend < selstart Then selend = selstart 'handles single character words
+
+      rtb.SelectionStart = selstart
+      rtb.SelectionLength = (selend - selstart) + 1
+   End Sub
+#End Region
+
+#Region "Helper Code"
+   Private Const WM_User As Int32 = &H400
+
+   ''' <summary>
+   ''' WB_CLASSIFY-Returns the character class and word-break flags of the character at the specified position.
+   ''' WB_ISDELIMITER-Returns TRUE if the character at the specified position is a delimiter; otherwise it returns FALSE.
+   ''' Others - Returns the character index of the word break.   
+   ''' </summary>
+   ''' <remarks></remarks>
+   Private Const EM_FINDWORDBREAK As Int32 = WM_User + 76
+
+   Public Enum WordBreakOptions As Int32
+      '''<summary>Finds the beginning of a word to the left of the specified position.</summary>
+      WB_LEFT = 0
+      '''<summary>Finds the beginning of a word to the right of the specified position. This is useful in right-aligned edit controls.</summary>
+      WB_RIGHT = 1
+      '''<summary>Returns TRUE if the character at the specified position is a delimiter, or FALSE otherwise.</summary>
+      WB_ISDELIMITER = 2
+      '''<summary>Retrieves the character class and word break flags of the character at the specified position. This value is for use with rich edit controls.</summary>
+      WB_CLASSIFY = 3
+      '''<summary>Finds the beginning of a word to the left of the specified position. This value is used during CTRL+LEFT key processing. This value is for use with rich edit controls.</summary>
+      WB_MOVEWORDLEFT = 4
+      '''<summary>Finds the beginning of a word to the right of the specified position. This value is used during CTRL+RIGHT key processing. This value is for use with rich edit controls.</summary>
+      WB_MOVEWORDRIGHT = 5
+      '''<summary>Finds the end-of-word delimiter to the left of the specified position. This value is for use with rich edit controls.</summary>
+      WB_LEFTBREAK = 6
+      '''<summary>Finds the beginning of a word to the right of the specified position. This is useful in right-aligned edit controls.</summary>
+      WB_RIGHTBREAK = 7
+   End Enum
+
+   <Flags()> _
+   Public Enum ClassificationFlags As Int32
+      WBF_CLASS = &HF
+      '''<summary>The character is a white-space character. Trailing white-space characters are not included in the length of a line when wrapping.</summary>
+      WBF_ISWHITE = &H10
+      '''<summary>The character is a delimiter. Delimiters mark the ends of words. Lines may be broken after delimiters.</summary>
+      WBF_BREAKLINE = &H20
+      '''<summary>Lines may be broken after the character,</summary>
+      WBF_BREAKAFTER = &H40
+   End Enum
+
+
+   Private Function FindWordBreak(ByVal rtb As RichTextBox, ByVal [option] As WordBreakOptions, ByVal position As Int32) As Int32
+      Return SendMessage(rtb.Handle, EM_FINDWORDBREAK, New IntPtr([option]), New IntPtr(position)).ToInt32
+   End Function
+
+   Private Function IsDelimiter(ByVal rtb As RichTextBox, ByVal position As Int32) As Boolean
+      Return CBool(SendMessage(rtb.Handle, EM_FINDWORDBREAK, New IntPtr(WordBreakOptions.WB_ISDELIMITER), New IntPtr(position)).ToInt32)
+   End Function
+
+
+   <DllImport("user32.dll", SetLastError:=True, CharSet:=CharSet.Auto)> _
+   Private Function SendMessage(ByVal hWnd As IntPtr, _
+                                ByVal Msg As Int32, _
+                                ByVal wParam As IntPtr, _
+                                ByVal lParam As IntPtr) As IntPtr
+   End Function
+#End Region
+
+End Module
+   
+   
+   
+   
+   
+   
+   */
