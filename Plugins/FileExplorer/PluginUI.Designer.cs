@@ -166,7 +166,7 @@ namespace FileExplorer
       //this.Name = "PluginUI";
       this.Size = new System.Drawing.Size(936, 493);
       this.Tag = this.treeView1;
-      this.Load += new System.EventHandler(this.PluginUI_Load);
+      //this.Load += new System.EventHandler(this.PluginUI_Load);
       this.toolStrip1.ResumeLayout(false);
       this.toolStrip1.PerformLayout();
       this.ResumeLayout(false);

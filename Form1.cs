@@ -6,6 +6,7 @@ using AntPlugin.XMLTreeMenu.Controls;
 using CommonInterface;
 using CommonLibrary;
 using CommonLibrary.Controls;
+using CSScriptLibrary;
 //using MDIForm;
 using System;
 using System.Collections.Generic;
@@ -529,10 +530,6 @@ namespace AntPanelApplication
     #endregion
 
     #region Component Creation
-    private void CreateTabPages()
-    {
-    }
-
     /// <summary>
     /// Creates a new custom document
     /// </summary>
@@ -1301,7 +1298,7 @@ namespace AntPanelApplication
       // toolStripPanel
       //
       this.toolStripPanel.Dock = DockStyle.Top;
-      if (Win32.IsRunningOnMono())
+      if (CommonLibrary.Win32.IsRunningOnMono())
       {
         this.toolStripPanel.Controls.Add(this.menuStrip);
         this.toolStripPanel.Controls.Add(this.toolStrip);
@@ -2411,14 +2408,14 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     /// <summary>
     /// Finds the specified plugin
     /// </summary>
-    /*
+    
     public IPlugin FindPlugin(String guid)
     {
 			AvailablePlugin plugin = PluginServices.Find(guid);
 			return plugin.Instance;
       return null;
     }
-    */
+    
     /// <summary>
     /// Themes the controls from the parent
     /// </summary>
@@ -3769,4 +3766,38 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     #endregion
     
   }
+
+  #region Script Host
+
+  public class Host : MarshalByRefObject
+  {
+    /// <summary>
+    /// Executes the script in a seperate appdomain and then unloads it
+    /// NOTE: This is more suitable for one pass processes
+    /// </summary>
+    public void ExecuteScriptExternal(String script)
+    {
+      if (!File.Exists(script)) throw new FileNotFoundException();
+      using (AsmHelper helper = new AsmHelper(CSScript.Compile(script, null, true), null, true))
+      {
+        helper.Invoke("*.Execute");
+      }
+    }
+
+    /// <summary>
+    /// Executes the script and adds it to the current app domain
+    /// NOTE: This locks the assembly script file
+    /// </summary>
+    public void ExecuteScriptInternal(String script, Boolean random)
+    {
+      if (!File.Exists(script)) throw new FileNotFoundException();
+      String file = random ? Path.GetTempFileName() : null;
+      AsmHelper helper = new AsmHelper(CSScript.Load(script, file, false, null));
+      helper.Invoke("*.Execute");
+    }
+
+  }
+
+  #endregion
+
 }

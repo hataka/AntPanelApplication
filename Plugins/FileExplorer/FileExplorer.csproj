@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ListViewSorter.cs" />
     <Compile Include="PluginMain.cs" />
     <Compile Include="PluginUI.cs">
       <SubType>UserControl</SubType>

@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -42,9 +43,57 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonLibrary\DeComment.cs" />
+    <Compile Include="CommonLibrary\FileHandler.cs" />
+    <Compile Include="CommonLibrary\IconExtractor.cs" />
+    <Compile Include="CommonLibrary\ImageHander.cs" />
+    <Compile Include="CommonLibrary\ImageKonverter.cs" />
+    <Compile Include="CommonLibrary\IniFileHandler.cs" />
+    <Compile Include="CommonLibrary\Lib.cs" />
+    <Compile Include="CommonLibrary\StringHandler.cs" />
+    <Compile Include="CommonLibrary\Win32.cs" />
+    <Compile Include="Controls\Common.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ScrollBarEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ShellContextMenu.cs" />
+    <Compile Include="Controls\ToolStripEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Helpers\ConfigHelper.cs" />
+    <Compile Include="Helpers\DrawHelper.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Helpers\FileInspector.cs" />
+    <Compile Include="Helpers\FolderHelper.cs" />
+    <Compile Include="Helpers\JvmConfigHelper.cs" />
+    <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="Helpers\ProcessHelper.cs" />
+    <Compile Include="Helpers\ResourceHelper.cs" />
+    <Compile Include="Helpers\ScaleHelper.cs" />
+    <Compile Include="Helpers\SnippetHelper.cs" />
+    <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="interfaces.cs" />
+    <Compile Include="Managers\DocumentManager.cs" />
     <Compile Include="Managers\Enumerators.cs" />
+    <Compile Include="Managers\ErrorManager.cs" />
+    <Compile Include="Managers\EventManager.cs" />
     <Compile Include="Managers\EventTypes.cs" />
+    <Compile Include="Managers\ImageListManager.cs" />
+    <Compile Include="Managers\TraceManager.cs" />
+    <Compile Include="Ookii.Dialogs\Interop\COMGuids.cs" />
+    <Compile Include="Ookii.Dialogs\Interop\ErrorHelper.cs" />
+    <Compile Include="Ookii.Dialogs\Interop\ShellComInterfaces.cs" />
+    <Compile Include="Ookii.Dialogs\Interop\ShellWrapperDefinitions.cs" />
+    <Compile Include="Ookii.Dialogs\Interop\WindowHandleWrapper.cs" />
+    <Compile Include="Ookii.Dialogs\NativeMethods.cs" />
+    <Compile Include="Ookii.Dialogs\SafeHandles.cs" />
+    <Compile Include="Ookii.Dialogs\VistaFolderBrowserDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ookii.Dialogs\VistaFolderNameEditor.cs" />
+    <Compile Include="PluginBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -56,6 +105,41 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="UdeLibrary\Ude.Core\Big5Prober.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\BitPackage.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\CharDistributionAnalyser.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\CharsetProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\Charsets.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\CodingStateMachine.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\EscCharsetProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\EscSM.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\EUCJPProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\EUCKRProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\EUCTWProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\GB18030Prober.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\HebrewProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\JapaneseContextAnalyser.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\LangBulgarianModel.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\LangCyrillicModel.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\LangGreekModel.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\LangHebrewModel.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\LangHungarianModel.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\LangThaiModel.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\Latin1Prober.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\MBCSGroupProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\MBCSSM.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\SBCharsetProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\SBCSGroupProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\SequenceModel.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\SJISProber.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\SMModel.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\UniversalDetector.cs" />
+    <Compile Include="UdeLibrary\Ude.Core\UTF8Prober.cs" />
+    <Compile Include="UdeLibrary\Ude\CharsetDetector.cs" />
+    <Compile Include="UdeLibrary\Ude\DetectionConfidence.cs" />
+    <Compile Include="UdeLibrary\Ude\ICharsetDetector.cs" />
+    <Compile Include="Utilities\ExtensionClasses.cs" />
+    <Compile Include="Win32.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -76,6 +160,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\PSPad.bmp" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Ookii.Dialogs\license.txt" />
+    <Content Include="Ookii.Dialogs\VistaFolderBrowserDialog.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
