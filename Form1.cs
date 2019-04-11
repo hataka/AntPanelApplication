@@ -1,13 +1,12 @@
 ﻿using AntPanelApplication.Helpers;
 //using AntPanelApplication.Helpers;
 using AntPanelApplication.Managers;
-using AntPanelApplication.Properties;
 using AntPanelApplication.Utilities;
 using AntPlugin.XMLTreeMenu.Controls;
 using CommonInterface;
 using CommonLibrary;
 using CommonLibrary.Controls;
-using MDIForm;
+//using MDIForm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,8 +29,9 @@ namespace AntPanelApplication
     global::AntPanelApplication.Properties.Resources
       resources = new global::AntPanelApplication.Properties.Resources();
 
-    //Settings.Default;
-
+    //初期化に失敗 例外発生 Globals.AntPanel.projectPath 外す
+    public String projectPath;// = Globals.AntPanel.projectPath;
+    public ImageList tabImageList = new ImageList();
     public static OperatingSystem os = Environment.OSVersion;
     public static bool IsRunningOnMono = (Type.GetType("Mono.Runtime") != null);
     public static bool IsRunningUnix = ((Environment.OSVersion.ToString()).IndexOf("Unix") >= 0) ? true : false;
@@ -265,6 +265,13 @@ namespace AntPanelApplication
       }
     }
 
+    public String ProjectPath
+    {
+      get
+      {
+        return Globals.AntPanel.projectPath;
+      }
+    }
 
     /// <summary>
     /// Is FlashDevelop closing?
@@ -741,7 +748,7 @@ namespace AntPanelApplication
         try
         {
           // 例外発生
-          if (control is MDIForm.IMDIForm)
+          if (control is IMDIForm)
           {
             //this.InitializeCustomControlsInterface((IMDIForm)control);
             //Console.WriteLine("実装してる！");
@@ -883,10 +890,10 @@ namespace AntPanelApplication
     {
       try
       {
-        if(image !=null) Globals.AntPanel.imageList2.Images.Add(image);
+        if(image !=null) this.tabImageList.Images.Add(image);
         ctrl.Dock = DockStyle.Fill;
         ctrl.Name = guid;
-        ctrl.Tag =  Globals.AntPanel.imageList2.Images.Count-1;
+        ctrl.Tag = this.tabImageList.Images.Count - 1;
         //((Control)control.Tag).Tag = args[i];
         TabControl tbctrl = this.documentTabControl;
         if (defaultDockState  == "DockBottom") tbctrl = this.bottomTabControl;
@@ -1110,7 +1117,7 @@ namespace AntPanelApplication
       //this.splitContainer1.Panel1Collapsed = false;
       Globals.AntPanel.Dock = DockStyle.Fill;
       //Globals.AntPanel.Tag = this; //??
-      InitializeControls();
+      InitializeTabControls();
 
       LoadPlugins();
 
@@ -1142,11 +1149,13 @@ namespace AntPanelApplication
       }
     }
 
-    private void InitializeControls()
+    private void InitializeTabControls()
     {
-      this.documentTabControl.ImageList = Globals.AntPanel.imageList2;
-      this.rightTabControl.ImageList = Globals.AntPanel.imageList2;
-      this.bottomTabControl.ImageList = Globals.AntPanel.imageList2;
+      this.tabImageList.ImageSize = new Size(24, 24);
+      //this.tabImageList.Images.Add(this.FindImage("100"));
+      this.documentTabControl.ImageList = this.tabImageList;// Globals.AntPanel.imageList2;
+      this.rightTabControl.ImageList = this.tabImageList; //Globals.AntPanel.imageList2;
+      this.bottomTabControl.ImageList = this.tabImageList; //Globals.AntPanel.imageList2;
 
       this.documentTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabControl_MouseClick);
       this.rightTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabControl_MouseClick);
@@ -1680,6 +1689,8 @@ namespace AntPanelApplication
     }
     private void OnMainFormLoad(Object sender, System.EventArgs e)
     {
+      this.projectPath = Globals.AntPanel.projectPath;
+
       //this.CreateTabPages();
       /**
 			* DockPanel events
@@ -2376,12 +2387,10 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     /// </summary>
     public String ProcessArgString(String args, bool dispatch)
     {
-      //return ArgsProcessor.ProcessString(args, dispatch);
-      return Globals.AntPanel.menuTree.ProcessVariable(args);
+      return ArgsProcessor.ProcessString(args, dispatch);
     }
     public String ProcessArgString(String args)
     {
-      //return ArgsProcessor.ProcessString(args, true);
       return ProcessArgString(args, true);
     }
 
@@ -2877,12 +2886,31 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
 
     #endregion
 
+    #region TabControl Click Handler
     TabControl selectedTabControl;
+    private void TabContextMenuSetting()
+    {
+      switch (this.selectedTabControl.Name)
+      {
+        case "documentTabControl":
+          break;
+        case "rightTabControl":
+        case "bottomTabControl":
+        case "leftTabControl":
+          (this.tabMenu.Items.Find("保存(&S)", true)[0]).Enabled = false;
+          (this.tabMenu.Items.Find("名前を付けて保存(&A)", true)[0]).Enabled = false;
+          (this.tabMenu.Items.Find("システムで開く(&S)", true)[0]).Enabled = false;
+          (this.tabMenu.Items.Find("コマンドプロンプト(&C)", true)[0]).Enabled = false;
+          (this.tabMenu.Items.Find("エクスプローラ(&E)", true)[0]).Enabled = false;
+          break;
+      }
+    }
+
     private void TabControl_MouseClick(object sender, MouseEventArgs e)
     {
       TabControl tabcontrol = sender as TabControl;
       selectedTabControl = tabcontrol;
-      //MessageBox.Show(tabcontrol.Name);
+      this.TabContextMenuSetting();
       if (e.Button == MouseButtons.Right)
       {
         //http://note.phyllo.net/?eid=517117
@@ -2897,12 +2925,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
           }
         }
       }
-    }
-
-    #region BottomTabControl Click Handler
-    private void bottomTabControl_MouseClick(object sender, MouseEventArgs e)
-    {
-      //this.bottomSplitContainer.Panel1Collapsed = true;//OK
     }
 
     private void bottomTabControl_Enter(object sender, EventArgs e)
@@ -2921,15 +2943,12 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       this.bottomSplitContainer.Panel1Collapsed = true;
       this.bottomSplitContainer.Panel2Collapsed = false;
     }
-    #endregion
 
-    #region RightTabControl Click Handler
     private void rightTabControl_Enter(object sender, EventArgs e)
     {
       this.rightSplitContainer.SplitterDistance =
        this.Width - this.settings.DefaultRightPanelWidth - 480;
     }
-
     private void rightTabControl_Leave(object sender, EventArgs e)
     {
       this.rightSplitContainer.SplitterDistance =
@@ -3357,7 +3376,8 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       try
       {
         ToolStripItem button = (ToolStripItem)sender;
-        String args = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
+        String args = this.ProcessArgString(((ItemData)button.Tag).Tag);
+        args = Globals.AntPanel.menuTree.ProcessVariable(args);
         Int32 position = args.IndexOf(';'); // Position of the arguments
         Arguments = args.Substring(position + 1);
         Name = args.Substring(0, position);
@@ -3375,7 +3395,8 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       try
       {
         ToolStripItem button = (ToolStripItem)sender;
-        String args = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
+        String args = this.ProcessArgString(((ItemData)button.Tag).Tag);
+        args = Globals.AntPanel.menuTree.ProcessVariable(args);
         Int32 position = args.IndexOf(';'); // Position of the arguments
         //NotifyEvent ne = new NotifyEvent(EventType.ProcessStart);
         //EventManager.DispatchEvent(this, ne);
@@ -3424,11 +3445,9 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       if (sender != null)
       {
         ToolStripItem button = (ToolStripItem)sender;
-        String url = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
+        String url = this.ProcessArgString(((ItemData)button.Tag).Tag);
+        url = Globals.AntPanel.menuTree.ProcessVariable(url);
         this.OpenCustomDocument("Browser", url);
-        
-        
-        
         //if (url.Trim() != "") browser.WebBrowser.Navigate(url);
         //else browser.WebBrowser.GoHome();
       }
@@ -3564,7 +3583,8 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       if (sender != null)
       {
         ToolStripItem button = (ToolStripItem)sender;
-        String msg = Globals.AntPanel.menuTree.ProcessVariable(((ItemData)button.Tag).Tag);
+        String msg= this.ProcessArgString(((ItemData)button.Tag).Tag);
+        msg = Globals.AntPanel.menuTree.ProcessVariable(msg);
         MessageBox.Show(msg, "Testからの送信です");
       }
     }
@@ -3706,7 +3726,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     public void InitializeTabPage(object sender, EventArgs e)
     {
       TabPageManager.CloseAllTabPages(this.documentTabControl);
-      this.InitializeControls();
+      this.InitializeTabControls();
     }
 
     #endregion

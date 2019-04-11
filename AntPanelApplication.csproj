@@ -140,7 +140,6 @@
     <Compile Include="Dialogs\AboutDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MDIForm\IMDIForm.cs" />
     <Compile Include="SyntaxHighlighter\Csharp_SyntaxClass.cs" />
     <Compile Include="SyntaxHighlighter\HighlightClass.cs" />
     <Compile Include="SyntaxHighlighter\SyntaxHighlighter.cs">

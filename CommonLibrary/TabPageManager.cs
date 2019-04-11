@@ -12,7 +12,7 @@
  * link: 
  * description: 
  *================================================================*/
-using MDIForm;
+//using MDIForm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -392,4 +392,24 @@ namespace CommonLibrary
     #endregion
 
   }
+
+
+
+  public class PageInfo
+  {
+    public Control Child;
+    public TabControl Parent;
+    public String Path;
+    public bool Visible;
+    public PageInfo(Control child, TabControl parent, String path, bool v)
+    {
+      Child = child;
+      Parent = parent;
+      Path = path;
+      Visible = v;
+    }
+  }
+
+
+
 }

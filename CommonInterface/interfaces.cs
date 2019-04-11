@@ -508,6 +508,11 @@ namespace CommonInterface
     /// </summary>
     String CommandPromptExecutable { get; }
 
+    // 追加 Time-stamp: <2019-04-11 10:04:57 kahata>
+    Control CurrentDocument { get; }
+    String CurrentDocumentPath { get; }
+    String ProjectPath { get; }
+
     #endregion
   }
 

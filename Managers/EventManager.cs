@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CommonInterface;
 using CommonLibrary;
-using MDIForm;
+//using MDIForm;
 
 namespace AntPanelApplication.Managers
 {

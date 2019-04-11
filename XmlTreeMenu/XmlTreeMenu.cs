@@ -653,46 +653,12 @@ namespace AntPlugin.XmlTreeMenu
       return nodeInfo;
     }
 
-    public string ProcessArgString(string strVar)
-    {
-      string arg = strVar;
-      /*      
-      case "Quote" : return "\"";
-      case "CBI" : return GetCBI();
-      case "STC" : return GetSTC();
-      case "AppDir" : return GetAppDir();
-      case "UserAppDir" : return GetUserAppDir();
-      case "TemplateDir": return GetTemplateDir();
-      case "BaseDir" : return GetBaseDir();
-      case "SelText" : return GetSelText();
-      case "CurFilename": return GetCurFilename();
-      case "CurFilenameNoExt": return GetCurFilenameNoExt();
-      case "CurFile" : return GetCurFile();
-      case "CurDir" : return GetCurDir();
-      case "CurWord" : return GetCurWord();
-      case "CurSyntax": return GetCurSyntax();
-      case "Timestamp" : return GetTimestamp();
-      case "OpenFile" : return GetOpenFile();
-      case "SaveFile" : return GetSaveFile();
-      case "OpenDir" : return GetOpenDir();
-      case "DesktopDir" : return GetDesktopDir();
-      case "SystemDir" : return GetSystemDir();
-      case "ProgramsDir" : return GetProgramsDir();
-      case "PersonalDir" : return GetPersonalDir();
-      case "WorkingDir" : return GetWorkingDir();
-      case "Clipboard": return GetClipboard();
-      case "Locale": return GetLocale();
-      case "Dollar": return "$";
-      */
-      return arg;
-      }
-
     public string ProcessVariable(string strVar)
     {
       string arg = strVar;
       try
       {
-        arg = this.ProcessArgString(strVar);
+        arg = Globals.MainForm.ProcessArgString(strVar);
       }
       catch { arg = strVar; }
       try

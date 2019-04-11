@@ -195,7 +195,7 @@ namespace FileExplorer
     /// </summary>
     public void CreatePluginPanel()
     {
-      this.pluginUI = new PluginUI();
+      this.pluginUI = new PluginUI(this);
       this.pluginUI.Text = "FileExplorer";
       PluginBase.MainForm.CreateDockableTabPage(this.pluginUI, Guid, this.pluginImage, "DockRight");
     }

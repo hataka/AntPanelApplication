@@ -1,6 +1,7 @@
 using AntPanelApplication.Helpers;
 using AntPanelApplication.Managers;
 using AntPlugin.XMLTreeMenu.Controls;
+using CommonLibrary;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -93,13 +94,15 @@ namespace AntPanelApplication.Utilities
 		/// </summary>
 		public static String GetCurWord()
 		{
-      /*
-      if (!Globals.CurrentDocument.IsEditable) return String.Empty;
-			String curWord = Globals.SciControl.GetWordFromPosition(Globals.SciControl.CurrentPos);
+      String curWord = String.Empty;
+      if (!Globals.MainForm.IsEditable) return String.Empty;
+      RichTextBox textBox = Globals.MainForm.CurrentDocument.Tag as RichTextBox;
+      String text = textBox.Text;
+      int pos = textBox.SelectionStart;
+      curWord = StringHandler.GetCurrentWord(pos, text);
 			if (!String.IsNullOrEmpty(curWord)) return curWord;
-			else if (PrevSelWord.Length > 0) return PrevSelWord;
-			else return String.Empty;
-      */
+			//else if (PrevSelWord.Length > 0) return PrevSelWord;
+			//else return String.Empty;
       return String.Empty;
     }
 
@@ -291,10 +294,11 @@ namespace AntPanelApplication.Utilities
 		{
       /*
       String CSLB = "$(CSLB)";
-			Int32 nextIndex = text.IndexOfOrdinal(CSLB);
-			if (nextIndex < 0) return text;
-			CodingStyle cs = PluginBase.Settings.CodingStyle;
-			if (cs == CodingStyle.BracesOnLine) return text.Replace(CSLB, "");
+			//Int32 nextIndex = text.IndexOfOrdinal(CSLB);
+      Int32 nextIndex = text.IndexOf(CSLB);
+      if (nextIndex < 0) return text;
+			//CodingStyle cs = PluginBase.Settings.CodingStyle;
+			//if (cs == CodingStyle.BracesOnLine) return text.Replace(CSLB, "");
 			Int32 eolMode = (Int32)Globals.Settings.EOLMode;
 			String lineBreak = LineEndDetector.GetNewLineMarker(eolMode);
 			String result = ""; Int32 currentIndex = 0;
@@ -306,7 +310,7 @@ namespace AntPanelApplication.Utilities
 			}
 			return result + text.Substring(currentIndex);
       */
-      return String.Empty;
+      return text;
     }
 
 		/// <summary>

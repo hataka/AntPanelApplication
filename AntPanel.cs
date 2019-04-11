@@ -7,7 +7,6 @@ using AntPlugin.XMLTreeMenu.Controls;
 using CommonLibrary;
 using CSParser.BuildTree;
 using CSParser.Model;
-using MDIForm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

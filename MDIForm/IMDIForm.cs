@@ -23,7 +23,7 @@ namespace MDIForm
 
 		void InitializeInterface();
 	}
-
+  /*
   public class PageInfo
   {
     public Control Child;
@@ -38,7 +38,7 @@ namespace MDIForm
       Visible = v;
     }
   }
-
+  */
   public class ChildFormControlClass
   {
     public delegate Boolean CallPluginCommand(String command, String arguments);
