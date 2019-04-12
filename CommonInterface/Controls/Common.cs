@@ -12,9 +12,10 @@ using CommonInterface.Helpers;
 //using PluginCore.Managers;
 //using PluginCore;
 
-namespace System.Windows.Forms
+//namespace System.Windows.Forms
+namespace CommonInterface.Controls
 {
-    public class ToolStripSpringComboBox : ToolStripComboBoxEx
+  public class ToolStripSpringComboBox : ToolStripComboBoxEx
     {
         public ToolStripSpringComboBox()
         {
@@ -608,7 +609,7 @@ namespace System.Windows.Forms
         }
 
     }
-  /*
+  
     public class DescriptiveCollectionEditor : CollectionEditor
     {
         public DescriptiveCollectionEditor(Type type) : base(type) {}
@@ -634,5 +635,5 @@ namespace System.Windows.Forms
         }
 
     }
-  */
+  
 }

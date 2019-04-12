@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -197,9 +198,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.Picture(ni);
           break;
         case "player":
-          //ActionManager.Player(path);
           ActionManager.Player(ni);
-          ((Form1)menuTree.Tag).ActivatePlayer();
           break;
         // opengl.dllが,NET4.0で互換性がないので廃止 
         //.NET3.5 のFlashdevelop 5.2.0ではdockableControlで処理
@@ -1146,8 +1145,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
       catch (Exception ex)
       {
         //ErrorManager.ShowError(ex);
+       MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
       }
-      
+
     }
 
     public static void WriteFileEncoding(string file, string text, Encoding encoding, bool saveBOM)
@@ -1163,6 +1163,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       catch (Exception ex)
       {
         //ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
       }
     }
 
@@ -1286,6 +1287,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
         else if (System.IO.File.Exists(ni.Path)) dir = Path.GetDirectoryName(ni.Path);
         if (dir != String.Empty) System.IO.Directory.SetCurrentDirectory(dir);
       }
+      Globals.MainForm.OpenCustomDocument("PicturePanel",ni.Path);
+      /*
       ///////////////////////////////////////////////////////////////	
       PictureBox pictureBox2 = ((Form1)menuTree.antPanel.Tag).picturePanel.pictureBox1;
       try
@@ -1327,6 +1330,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       //String data = pictureBox2.Tag.ToString();
       //this.AddPreviousCustomDocuments(data);
       //document2.FormClosing += new FormClosingEventHandler(this.CustomDocument_FormClosing);
+      */
     }
 
     public static void Player(String path)
@@ -1342,7 +1346,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
       if (Lib.IsSoundFile(ni.Path) || Lib.IsVideoFile(ni.Path))
       {
         //((Form1)menuTree.antPanel.Tag).axWindowsMediaPlayer1.URL = ni.Path;
-        ((Form1)menuTree.antPanel.Tag).player.axWindowsMediaPlayer1.URL = ni.Path;
+        //((Form1)menuTree.antPanel.Tag).player.axWindowsMediaPlayer1.URL = ni.Path;
+        Globals.MainForm.OpenCustomDocument("PlayerPanel",ni.Path);
       }
     }
 

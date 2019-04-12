@@ -392,8 +392,6 @@ namespace AntPanelApplication.Managers
         MessageBox.Show(ex.Message.ToString(), "GetEventHandler —áŠO");
 				return null;
 			}
-      return null;
-
     }
 
     private static EventHandler GetEventHandler(object target, String method)
@@ -408,8 +406,6 @@ namespace AntPanelApplication.Managers
         //ErrorManager.ShowError(ex);
         return null;
       }
-      return null;
-
     }
 
     public static ToolStripItem GetDropDownButtonItem(XmlNode node)

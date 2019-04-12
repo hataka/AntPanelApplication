@@ -1,6 +1,6 @@
+using CommonInterface.Managers;
 using System;
 using System.Diagnostics;
-using PluginCore.Managers;
 
 namespace CommonInterface.Helpers
 {

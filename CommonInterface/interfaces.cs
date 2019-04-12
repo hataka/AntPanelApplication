@@ -521,6 +521,8 @@ namespace CommonInterface
     Control CurrentDocument { get; }
     String CurrentDocumentPath { get; }
     String ProjectPath { get; }
+    Control[] Documents { get; }
+    Boolean IsEditable { get; }
 
     #endregion
   }

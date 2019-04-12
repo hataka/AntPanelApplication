@@ -73,7 +73,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       
       public void InitializeInterface()
       {
-        string guid = "0538077E-8C37-4A2B-962B-8FB77DC9F325";
+        //string guid = "0538077E-8C37-4A2B-962B-8FB77DC9F325";
         //this.xmlTreeMenu = (PluginMain)PluginBase.MainForm.FindPlugin(guid);
         this.Instance = new ChildFormControlClass();
         this.Instance.name = "PlayerPanel";

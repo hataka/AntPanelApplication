@@ -2,7 +2,6 @@
 using System.Text;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using PluginCore.Managers;
 using System.Reflection;
 using CommonInterface;
 

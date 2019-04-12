@@ -3,6 +3,7 @@ using CommonLibrary;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -131,11 +132,12 @@ namespace AntPanelApplication.Helpers
 				}
 			}
 			catch (Exception ex)
-			{
-				
+      {
         //ErrorManager.AddToLog("Can't update files.", ex);
-			}
-		}
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+
+      }
+    }
 
 		/// <summary>
 		/// Ensures that the file name is unique by adding a number to it

@@ -398,7 +398,7 @@ namespace CommonInterface.Helpers
             }
             else // Try detecting using Ude...
             {
-  
+              /* 
               Ude.CharsetDetector detector = new Ude.CharsetDetector();
                             detector.Feed(bytes, 0, bytes.Length); detector.DataEnd();
 
@@ -413,8 +413,10 @@ namespace CommonInterface.Helpers
                                 info.Charset = Encoding.Default.WebName;
                                 info.CodePage = Encoding.Default.CodePage;
                             }
-                        }
-                    }
+            */
+            }
+
+          }
   
               Int32 contentLength = bytes.Length - startIndex;
               if (bytes.Length > 0 && bytes.Length > startIndex)

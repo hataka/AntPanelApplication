@@ -60,7 +60,7 @@ namespace AntPanelApplication
 		//public XmlTreePanel xmlTreePanel;
 
 		private String defaultTarget;
-		private ContextMenuStrip csOutlineMenu = null;
+		//private ContextMenuStrip csOutlineMenu = null;
 		public static List<string> csOutlineTreePath = new List<string>();
 		public List<string> MemberId = new List<string>();
 
@@ -421,7 +421,7 @@ namespace AntPanelApplication
 				if (antNode.Tag is String)
 				{
 					String path = antNode.Tag as String;
-					if (path == "GradleTargetNode") this.RunTargetex(antNode.File, antNode.Target);
+          //if (path == "GradleTargetNode") this.RunTargetex(antNode.File, antNode.Target);
 					if (File.Exists(path))
 					{
 						//PluginBase.MainForm.OpenEditableDocument(path, false);
@@ -530,7 +530,13 @@ namespace AntPanelApplication
 					{
 						if (treeNode.Parent == null)
 						{
-              Globals.MainForm.OpenDocument(((NodeInfo)treeNode.Tag).Path);
+              String path = String.Empty;
+              if(File.Exists(((NodeInfo)treeNode.Tag).Path))path = ((NodeInfo)treeNode.Tag).Path;
+              else if(File.Exists(Path.Combine(this.projectDir, ((NodeInfo)treeNode.Tag).Path)))
+              {
+                path = Path.Combine(this.projectDir, ((NodeInfo)treeNode.Tag).Path);
+              }
+              if(File.Exists(path))Globals.MainForm.OpenDocument(((NodeInfo)treeNode.Tag).Path);
               //Process.Start(this.devenv15Path, "/edit " + ((NodeInfo)treeNode.Tag).Path);
 							return;
 						}
@@ -1451,7 +1457,6 @@ namespace AntPanelApplication
 
 
   }
-
 
   /// <summary>
   /// How to load xml document in Property Grid

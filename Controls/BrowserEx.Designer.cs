@@ -82,7 +82,7 @@ namespace CommonLibrary.Controls
       this.GoHomeButton = new System.Windows.Forms.ToolStripButton();
       this.printButton = new System.Windows.Forms.ToolStripButton();
       this.goButton = new System.Windows.Forms.ToolStripButton();
-      this.addressComboBox = new System.Windows.Forms.ToolStripSpringComboBox2();
+      this.addressComboBox = new ToolStripSpringComboBox2();
       this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.toolStrip.SuspendLayout();
       this.SuspendLayout();
@@ -537,7 +537,7 @@ namespace CommonLibrary.Controls
     }
 
     #endregion
-    private System.Windows.Forms.ToolStripSpringComboBox2 addressComboBox;
+    private ToolStripSpringComboBox2 addressComboBox;
     public System.Windows.Forms.WebBrowser webBrowser1;
     private System.Windows.Forms.ToolStripButton backButton;
     private System.Windows.Forms.ToolStripButton forwardButton;

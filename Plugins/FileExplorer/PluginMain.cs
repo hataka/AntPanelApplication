@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 using CommonInterface;
+using CommonInterface.CommonLibrary;
+using CommonInterface.Helpers;
 using CommonInterface.Managers;
 
 namespace FileExplorer
@@ -115,7 +121,6 @@ namespace FileExplorer
     /// </summary>
     public void HandleEvent(Object sender, NotifyEvent e, HandlingPriority priority)
     {
-      /*
       switch (e.Type)
       {
         case EventType.UIStarted:
@@ -128,22 +133,23 @@ namespace FileExplorer
           {
             case "FileExplorer.BrowseTo":
               this.pluginUI.BrowseTo(evnt.Data.ToString());
-              this.OpenPanel(null, null);
+              //this.OpenPanel(null, null);
               evnt.Handled = true;
               break;
 
             case "FileExplorer.Explore":
+              //MessageBox.Show("エクスプローラ");
               ExploreDirectory(evnt.Data.ToString());
               evnt.Handled = true;
               break;
 
             case "FileExplorer.FindHere":
-              FindHere((String[])evnt.Data);
+              //FindHere((String[])evnt.Data);
               evnt.Handled = true;
               break;
 
             case "FileExplorer.PromptHere":
-              PromptHere(evnt.Data.ToString());
+              //PromptHere(evnt.Data.ToString());
               evnt.Handled = true;
               break;
 
@@ -162,19 +168,23 @@ namespace FileExplorer
           }
           break;
       }
-    */
     }
 
     public void Initialize()
     {
       this.InitBasics();
       //this.LoadSettings();
-      //this.AddEventHandlers();
+      this.AddEventHandlers();
       this.CreatePluginPanel();
       //this.CreateMenuItem();
       //throw new NotImplementedException();
     }
 
+
+
+    #endregion
+
+    #region Custom Methods
 
     /// <summary>
     /// Initializes important variables
@@ -189,7 +199,6 @@ namespace FileExplorer
       this.pluginImage = PluginBase.MainForm.FindImage("209");
     }
 
-
     /// <summary>
     /// Creates a plugin panel for the plugin
     /// </summary>
@@ -199,6 +208,162 @@ namespace FileExplorer
       this.pluginUI.Text = "FileExplorer";
       PluginBase.MainForm.CreateDockableTabPage(this.pluginUI, Guid, this.pluginImage, "DockRight");
     }
+
+    /// </summary> 
+    public void AddEventHandlers()
+    {
+      EventType eventMask = EventType.Command | EventType.FileOpen | EventType.UIStarted;
+      EventManager.AddEventHandler(this, eventMask, HandlingPriority.Low);
+    }
+
+
+    /// <summary>
+    /// Opens the selected path in windows explorer
+    /// </summary>
+    private void ExploreDirectory(string path)
+    {
+      try
+      {
+        path = PluginBase.MainForm.ProcessArgString(path);
+        /*
+        if (BridgeManager.Active && BridgeManager.IsRemote(path) && BridgeManager.Settings.UseRemoteExplorer)
+        {
+          BridgeManager.RemoteOpen(path);
+          return;
+        }
+        */
+        //Dictionary<string, string> config = ConfigHelper.Parse(configFilename, true).Flatten();
+        //if (!config.ContainsKey("explorer")) config["explorer"] = explorerAction;
+        String explorer = PluginBase.MainForm.ProcessArgString(explorerAction);
+        int start = explorer.StartsWith('\"') ? explorer.IndexOfOrdinal("\"", 2) : 0;
+        int p = explorer.IndexOfOrdinal(" ", start);
+        if (!path.StartsWith('\"')) path = "\"" + path + "\"";
+        // Start the process...
+        ProcessStartInfo psi = new ProcessStartInfo(explorer.Substring(0, p));
+        psi.Arguments = String.Format(explorer.Substring(p + 1), path);
+        psi.WorkingDirectory = path;
+        ProcessHelper.StartAsync(psi);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+
+    /// <summary>
+    /// Opens the selected path in command prompt
+    /// </summary>
+    private void FindHere(string[] paths)
+    {
+      if (paths == null) return;
+      List<String> pathsList = new List<String>(paths);
+      pathsList.RemoveAll(p => !Directory.Exists(p));
+      if (pathsList.Count > 0)
+      {
+        String path = String.Join(";", pathsList.ToArray());
+        PluginBase.MainForm.CallCommand("FindAndReplaceInFilesFrom", path);
+      }
+    }
+
+    /// <summary>
+    /// Opens the selected path in command prompt
+    /// </summary>
+    private void PromptHere(string path)
+    {
+      /*
+      try
+      {
+        path = PluginBase.MainForm.ProcessArgString(path);
+        if (BridgeManager.Active && BridgeManager.IsRemote(path) && BridgeManager.Settings.UseRemoteConsole)
+        {
+            BridgeManager.RemoteConsole(path);
+            return;
+        }
+        Dictionary<string, string> config = ConfigHelper.Parse(configFilename, true).Flatten();
+        if (!config.ContainsKey("cmd")) config["cmd"] = PluginBase.MainForm.CommandPromptExecutable;
+        String cmd = PluginBase.MainForm.ProcessArgString(config["cmd"]).Replace("{0}", path);
+        int start = cmd.StartsWith('\"') ? cmd.IndexOfOrdinal("\"", 2) : 0;
+        int p = cmd.IndexOfOrdinal(" ", start);
+        if (path.StartsWith('\"') && path.Length > 2) path = path.Substring(1, path.Length - 2);
+        // Start the process...
+        ProcessStartInfo psi = new ProcessStartInfo(p > 0 ? cmd.Substring(0, p) : cmd);
+        if (p > 0) psi.Arguments = String.Format(cmd.Substring(p + 1), path);
+        psi.WorkingDirectory = path;
+        ProcessHelper.StartAsync(psi);
+      }
+      catch (Exception ex)
+      {
+        ErrorManager.ShowError(ex);
+      }
+      */
+    }
+
+
+
+    /// <summary>
+    /// Adds the required event     /// <summary>
+    /// Creates a menu item for the plugin
+    /// </summary>
+    public void CreateMenuItem()
+    {
+      /*
+      String label = TextHelper.GetString("Label.ViewMenuItem");
+      ToolStripMenuItem viewMenu = (ToolStripMenuItem)PluginBase.MainForm.FindMenuItem("ViewMenu");
+      ToolStripMenuItem viewItem = new ToolStripMenuItem(label, this.pluginImage, new EventHandler(this.OpenPanel));
+      PluginBase.MainForm.RegisterShortcutItem("ViewMenu.ShowFiles", viewItem);
+      viewMenu.DropDownItems.Add(viewItem);
+      */
+    }
+
+    /// <summary>
+    /// Loads the plugin settings
+    /// </summary>
+    public void LoadSettings()
+    {
+      /*
+      this.settingObject = new Settings();
+      if (!File.Exists(this.settingFilename)) this.SaveSettings();
+      else
+      {
+        Object obj = ObjectSerializer.Deserialize(this.settingFilename, this.settingObject);
+        this.settingObject = (Settings)obj;
+      }
+      if (!File.Exists(configFilename))
+      {
+        File.WriteAllText(configFilename, "[actions]\r\n#explorer=" + explorerAction + "\r\n#cmd=" + PluginBase.MainForm.CommandPromptExecutable + "\r\n");
+      }
+      */
+    }
+
+    /// <summary>
+    /// Saves the plugin settings
+    /// </summary>
+    public void SaveSettings()
+    {
+      //ObjectSerializer.Serialize(this.settingFilename, this.settingObject);
+    }
+
+    /// <summary>
+    /// Opens the plugin panel if closed
+    /// </summary>
+    public void OpenPanel(Object sender, EventArgs e)
+    {
+      //this.pluginPanel.Show();
+    }
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
     #endregion
+
+
+
   }
 }

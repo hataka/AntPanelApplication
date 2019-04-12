@@ -10,7 +10,7 @@ namespace AntPanelApplication.Helpers
     /// </summary>
     public static class TextHelper
     {
-        static ResourceManager resourceManager;
+        //static ResourceManager resourceManager;
         //static LocaleVersion storedLocale = LocaleVersion.Invalid;
 
         /// <summary>

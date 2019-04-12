@@ -143,7 +143,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator2,
             this.終了XToolStripMenuItem});
       this.ファイルFToolStripMenuItem.Name = "ファイルFToolStripMenuItem";
-      this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(86, 24);
+      this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(86, 23);
       this.ファイルFToolStripMenuItem.Text = "ファイル(&F)";
       // 
       // 新規作成NToolStripMenuItem
@@ -269,7 +269,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator4,
             this.すべて選択AToolStripMenuItem});
       this.編集EToolStripMenuItem.Name = "編集EToolStripMenuItem";
-      this.編集EToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
+      this.編集EToolStripMenuItem.Size = new System.Drawing.Size(74, 23);
       this.編集EToolStripMenuItem.Text = "編集(&E)";
       // 
       // 元に戻すUToolStripMenuItem
@@ -341,7 +341,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.playerPToolStripMenuItem,
             this.richTextRToolStripMenuItem});
       this.表示VToolStripMenuItem.Name = "表示VToolStripMenuItem";
-      this.表示VToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
+      this.表示VToolStripMenuItem.Size = new System.Drawing.Size(75, 23);
       this.表示VToolStripMenuItem.Text = "表示(V)";
       // 
       // ツールバーTToolStripMenuItem
@@ -402,7 +402,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.スクリプトを編集EToolStripMenuItem,
             this.toolStripSeparator12});
       this.スクリプトSToolStripMenuItem.Name = "スクリプトSToolStripMenuItem";
-      this.スクリプトSToolStripMenuItem.Size = new System.Drawing.Size(97, 24);
+      this.スクリプトSToolStripMenuItem.Size = new System.Drawing.Size(97, 23);
       this.スクリプトSToolStripMenuItem.Text = "スクリプト(S)";
       // 
       // スクリプトを編集EToolStripMenuItem
@@ -423,7 +423,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.オプションOToolStripMenuItem,
             this.testToolStripMenuItem});
       this.ツールTToolStripMenuItem.Name = "ツールTToolStripMenuItem";
-      this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(80, 24);
+      this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(80, 23);
       this.ツールTToolStripMenuItem.Text = "ツール(&T)";
       // 
       // カスタマイズCToolStripMenuItem
@@ -462,7 +462,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator14,
             this.kingFMKToolStripMenuItem});
       this.お気に入りFToolStripMenuItem.Name = "お気に入りFToolStripMenuItem";
-      this.お気に入りFToolStripMenuItem.Size = new System.Drawing.Size(107, 24);
+      this.お気に入りFToolStripMenuItem.Size = new System.Drawing.Size(107, 23);
       this.お気に入りFToolStripMenuItem.Text = "お気に入り(F)";
       // 
       // toolStripSeparator13
@@ -504,7 +504,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator5,
             this.バージョン情報AToolStripMenuItem});
       this.ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
-      this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
+      this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(81, 23);
       this.ヘルプHToolStripMenuItem.Text = "ヘルプ(&H)";
       // 
       // 内容CToolStripMenuItem
@@ -651,10 +651,9 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.メニューバーMToolStripMenuItem,
             this.ステータスバーSToolStripMenuItem1});
-      //this.toolStripDropDownButton1.Image = global::XMLTreeMenu.Properties.Resources.asterisk_orange;
       this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-      this.toolStripDropDownButton1.Size = new System.Drawing.Size(34, 24);
+      this.toolStripDropDownButton1.Size = new System.Drawing.Size(14, 24);
       this.toolStripDropDownButton1.Text = "toolStripDropDownButton1";
       // 
       // メニューバーMToolStripMenuItem

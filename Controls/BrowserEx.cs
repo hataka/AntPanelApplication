@@ -19,8 +19,8 @@ namespace CommonLibrary.Controls
   public partial class BrowserEx : UserControl
   {
     public string linkFilePath = string.Empty;
-    private string documentRoot;
-    private string serverRoot;
+    //private string documentRoot;
+    //private string serverRoot;
 
     public WebBrowser Browser
     {

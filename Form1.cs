@@ -4,6 +4,7 @@ using AntPanelApplication.Managers;
 using AntPanelApplication.Utilities;
 using AntPlugin.XMLTreeMenu.Controls;
 using CommonInterface;
+using CommonInterface.Managers;
 using CommonLibrary;
 using CommonLibrary.Controls;
 using CSScriptLibrary;
@@ -87,7 +88,7 @@ namespace AntPanelApplication
     #region Private Properties
 
     // AppMan //
-    private FileSystemWatcher amWatcher;
+    //private FileSystemWatcher amWatcher;
 
     // Components //
     //private QuickFind quickFind;
@@ -98,7 +99,7 @@ namespace AntPanelApplication
     private ToolStripProgressBar toolStripProgressBar;
     private ToolStripStatusLabel toolStripProgressLabel;
     private ToolStripStatusLabel toolStripStatusLabel;
-    private ToolStripButton restartButton;
+    //private ToolStripButton restartButton;
     //private ProcessRunner processRunner;
 
     // Dialogs //
@@ -130,16 +131,16 @@ namespace AntPanelApplication
     private Boolean isFullScreen = false;
     private Boolean panelIsActive = false;
     private Boolean savingMultiple = false;
-    private Boolean notifyOpenFile = false;
+    //private Boolean notifyOpenFile = false;
     private Boolean reloadingDocument = false;
     private Boolean processingContents = false;
     private Boolean restoringContents = false;
-    private Boolean closingForOpenFile = false;
+    //private Boolean closingForOpenFile = false;
     private Boolean closingEntirely = false;
     private Boolean closeAllCanceled = false;
     private Boolean restartRequested = false;
     private Boolean refreshConfig = false;
-    private Boolean closingAll = false;
+    //private Boolean closingAll = false;
 
     // Singleton //
     public static Boolean Silent;
@@ -925,8 +926,8 @@ namespace AntPanelApplication
       EncodingFileInfo info;
       //FIXME
       String file = org;// PathHelper.GetPhysicalPathName(org);
-      TextEvent te = new TextEvent(EventType.FileOpening, file);
-      EventManager.DispatchEvent(this, te);
+      CommonInterface.Managers.TextEvent te = new CommonInterface.Managers.TextEvent(CommonInterface.Managers.EventType.FileOpening, file);
+      CommonInterface.Managers.EventManager.DispatchEvent(this, te);
       if (te.Handled)
       {
         /*
@@ -1002,7 +1003,7 @@ namespace AntPanelApplication
         info.Contents = FileHelper.ReadFile(file, encoding);
         info.CodePage = encoding.CodePage;
       }
-      DataEvent de = new DataEvent(EventType.FileDecode, file, null);
+      DataEvent de = new DataEvent(CommonInterface.Managers.EventType.FileDecode, file, null);
       EventManager.DispatchEvent(this, de); // Lets ask if a plugin wants to decode the data..
 
       if (de.Handled)
@@ -1429,19 +1430,19 @@ namespace AntPanelApplication
     /// <summary>
     /// Handles the incoming events
     /// </summary>
-    public void HandleEvent(Object sender, NotifyEvent e, HandlingPriority prority)
+    public void HandleEvent(Object sender, NotifyEvent e, CommonInterface.Managers.HandlingPriority prority)
     {
       //MessageBox.Show("HandleEvent");
       switch (e.Type)
       {
-        case EventType.FileOpen:
+        case CommonInterface.Managers.EventType.FileOpen:
           TextEvent evnt2 = (TextEvent)e;
           if (File.Exists(evnt2.Value))
           {
             //this.pluginUI.AddPreviousCustomDocuments(evnt2.Value);
           }
           break;
-        case EventType.FileSwitch:
+        case CommonInterface.Managers.EventType.FileSwitch:
           /*
           this.SetEnvironmentVariable();
           */
@@ -1456,7 +1457,7 @@ namespace AntPanelApplication
 
 
           break;
-        case EventType.Command:
+        case CommonInterface.Managers.EventType.Command:
           DataEvent evnt = (DataEvent)e;
           //MessageBox.Show(evnt.Action);
           switch (evnt.Action)
@@ -1739,8 +1740,8 @@ namespace AntPanelApplication
       /**
 			* Notify plugins that the application is ready
 			*/
-      EventManager.DispatchEvent(this, new NotifyEvent(EventType.UIStarted));
-      EventManager.DispatchEvent(this, new NotifyEvent(EventType.Completion));
+      EventManager.DispatchEvent(this, new NotifyEvent(CommonInterface.Managers.EventType.UIStarted));
+      EventManager.DispatchEvent(this, new NotifyEvent(CommonInterface.Managers.EventType.Completion));
       /**
 			* Start polling for file changes outside of the editor
 			*/
@@ -2413,8 +2414,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     {
 			AvailablePlugin plugin = PluginServices.Find(guid);
 			return plugin.Instance;
-      return null;
-    }
+     }
     
     /// <summary>
     /// Themes the controls from the parent
@@ -2430,7 +2430,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     public Color GetThemeColor(String id)
     {
       //return ThemeManager.GetThemeColor(id);
-      return Color.Wheat;
+      return Color.White;
     }
 
     /// <summary>
@@ -3064,7 +3064,7 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         String[] args = ((ItemData)button.Tag).Tag.Split(';');
         String action = args[0]; // Action of the command
         String data = (args.Length > 1) ? args[1] : null;
-        DataEvent de = new DataEvent(EventType.Command, action, data);
+        DataEvent de = new DataEvent(CommonInterface.Managers.EventType.Command, action, data);
         EventManager.DispatchEvent(this, de);
       }
       catch (Exception ex)
@@ -3261,9 +3261,8 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
           , "CallCommand(String name, String tag)");
         return false;
       }
-     
-      return true;
     }
+
     public Boolean CallCommandFromDll(String name, String tag)
     {
       return this.CallCommand(name, tag);

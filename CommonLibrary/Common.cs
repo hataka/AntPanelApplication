@@ -1,13 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.ComponentModel.Design;
 using System.Windows.Forms;
-using System.Reflection;
-using CommonLibrary;
 
-namespace System.Windows.Forms
+namespace CommonLibrary
 {
 
   public class ToolStripSpringComboBox2 : ToolStripComboBoxEx
@@ -268,9 +263,9 @@ namespace System.Windows.Forms
     private ToolStrip toolStrip;
     private Boolean drawBottomBorder;
     private ProfessionalColorTable colorTable;
-    private static ToolStripRenderer renderer;
+    //private static ToolStripRenderer renderer;
 
-    public DockPanelStripRenderer() : this(true) { }
+    //public DockPanelStripRenderer() : this(true) { }
     public DockPanelStripRenderer(Boolean drawBottomBorder) : this(drawBottomBorder, true) { }
     public DockPanelStripRenderer(Boolean drawBottomBorder, Boolean useTheme)
     {
@@ -363,6 +358,7 @@ namespace System.Windows.Forms
 
     protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
     {
+      /*
       try
       {
         if (e.ToolStrip is StatusStrip) return;
@@ -378,10 +374,12 @@ namespace System.Windows.Forms
         ToolStripRenderEventArgs ea = new ToolStripRenderEventArgs(e.Graphics, e.ToolStrip, new Rectangle(-10, -3, e.AffectedBounds.Width + 20, e.AffectedBounds.Height + 6), e.BackColor);
         renderer.DrawToolStripBackground(ea);
       }catch { }
+      */
     }
 
     protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
     {
+      /*
       if (e.ToolStrip is StatusStrip)
       {
         Color back = GetThemeColor("ToolStrip.3dDarkColor");
@@ -409,10 +407,13 @@ namespace System.Windows.Forms
         Color back = GetThemeColor("ToolStrip.BorderColor");
         e.Graphics.DrawLine(back == Color.Empty ? SystemPens.ControlDark : new Pen(back), r.Left, r.Bottom - 1, r.Right, r.Bottom - 1);
       }
+      */
     }
 
     protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
     {
+
+      /*
       if (renderer is ToolStripSystemRenderer)
       {
         if (e.ToolStrip is ToolStripDropDownMenu) renderer.DrawSeparator(e);
@@ -451,10 +452,12 @@ namespace System.Windows.Forms
         }
         else renderer.DrawSeparator(e);
       }
+      */
     }
 
     protected override void OnRenderGrip(ToolStripGripRenderEventArgs e)
     {
+      /*
       if (renderer is ToolStripProfessionalRenderer)
       {
         if (e.GripStyle == ToolStripGripStyle.Hidden) return;
@@ -502,6 +505,7 @@ namespace System.Windows.Forms
         }
       }
       else renderer.DrawGrip(e);
+      */
     }
 
     protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
@@ -626,6 +630,7 @@ namespace System.Windows.Forms
 
     protected override void OnRenderImageMargin(ToolStripRenderEventArgs e)
     {
+      /*
       if (renderer is ToolStripProfessionalRenderer)
       {
         Color back2 = GetThemeColor("ToolStripMenu.MarginBackColor");
@@ -636,6 +641,7 @@ namespace System.Windows.Forms
         e.Graphics.FillRectangle(new SolidBrush(border == Color.Empty ? SystemColors.ControlLight : border), rect);
       }
       else renderer.DrawImageMargin(e);
+      */
     }
 
     protected override void OnRenderItemCheck(ToolStripItemImageRenderEventArgs e)
@@ -660,6 +666,7 @@ namespace System.Windows.Forms
 
     protected override void OnRenderStatusStripSizingGrip(ToolStripRenderEventArgs e)
     {
+      /*
       Color dark = GetThemeColor("ToolStrip.3dDarkColor");
       Color light = GetThemeColor("ToolStrip.3dLightColor");
       if (dark != Color.Empty && light != Color.Empty)
@@ -689,6 +696,7 @@ namespace System.Windows.Forms
         }
       }
       else renderer.DrawStatusStripSizingGrip(e);
+      */
     }
     private void DrawGripGlyph(Graphics g, Int32 x, Int32 y, Brush darkBrush, Brush lightBrush)
     {
@@ -752,6 +760,7 @@ namespace System.Windows.Forms
 
     protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
     {
+      /*
       if (renderer is ToolStripProfessionalRenderer)
       {
         Color text = Color.Empty;
@@ -760,53 +769,56 @@ namespace System.Windows.Forms
         if (text != Color.Empty) e.TextColor = text;
       }
       renderer.DrawItemText(e);
+      */
     }
 
     protected override void OnRenderItemImage(ToolStripItemImageRenderEventArgs e)
     {
+      /*
       if (renderer is ToolStripProfessionalRenderer)
       {
         // Do not render set blank image if its a checked. Workaround for incorrect menu width.
         if (e.Item is ToolStripMenuItem && e.Item != null && ((ToolStripMenuItem)e.Item).Checked) return;
       }
       renderer.DrawItemImage(e);
+      */
     }
 
     #region Reuse Some Renderer Stuff
 
     protected override void OnRenderItemBackground(ToolStripItemRenderEventArgs e)
     {
-      renderer.DrawItemBackground(e);
+      //renderer.DrawItemBackground(e);
     }
 
     protected override void OnRenderLabelBackground(ToolStripItemRenderEventArgs e)
     {
-      renderer.DrawLabelBackground(e);
+      //renderer.DrawLabelBackground(e);
     }
 
     protected override void OnRenderOverflowButtonBackground(ToolStripItemRenderEventArgs e)
     {
-      renderer.DrawOverflowButtonBackground(e);
+      //renderer.DrawOverflowButtonBackground(e);
     }
 
     protected override void OnRenderSplitButtonBackground(ToolStripItemRenderEventArgs e)
     {
-      renderer.DrawSplitButton(e);
+      //renderer.DrawSplitButton(e);
     }
 
     protected override void OnRenderToolStripContentPanelBackground(ToolStripContentPanelRenderEventArgs e)
     {
-      renderer.DrawToolStripContentPanelBackground(e);
+      //renderer.DrawToolStripContentPanelBackground(e);
     }
 
     protected override void OnRenderToolStripPanelBackground(ToolStripPanelRenderEventArgs e)
     {
-      renderer.DrawToolStripPanelBackground(e);
+      //renderer.DrawToolStripPanelBackground(e);
     }
 
     protected override void OnRenderToolStripStatusLabelBackground(ToolStripItemRenderEventArgs e)
     {
-      renderer.DrawToolStripStatusLabelBackground(e);
+      //renderer.DrawToolStripStatusLabelBackground(e);
     }
 
     #endregion

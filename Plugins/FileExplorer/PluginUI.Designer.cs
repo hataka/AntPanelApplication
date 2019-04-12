@@ -32,6 +32,13 @@ namespace FileExplorer
     private void InitializeComponent()
     {
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PluginUI));
+      System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            "",
+            "",
+            ""}, -1);
+      System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("");
+      System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("");
+      System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("");
       this.toolStrip1 = new System.Windows.Forms.ToolStrip();
       this.新規作成NToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.開くOToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -43,7 +50,11 @@ namespace FileExplorer
       this.貼り付けPToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.ヘルプLToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.treeView1 = new System.Windows.Forms.TreeView();
+      this.listView1 = new System.Windows.Forms.ListView();
+      this.名前 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.サイズ = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.種類 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.更新日時 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.toolStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -149,24 +160,49 @@ namespace FileExplorer
       this.ヘルプLToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.ヘルプLToolStripButton.Text = "ヘルプ(&L)";
       // 
-      // treeView1
+      // listView1
       // 
-      this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.treeView1.Location = new System.Drawing.Point(0, 27);
-      this.treeView1.Name = "treeView1";
-      this.treeView1.Size = new System.Drawing.Size(936, 466);
-      this.treeView1.TabIndex = 1;
+      this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.名前,
+            this.サイズ,
+            this.種類,
+            this.更新日時});
+      this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4});
+      this.listView1.Location = new System.Drawing.Point(0, 27);
+      this.listView1.Name = "listView1";
+      this.listView1.Size = new System.Drawing.Size(936, 466);
+      this.listView1.TabIndex = 1;
+      this.listView1.UseCompatibleStateImageBehavior = false;
+      // 
+      // 名前
+      // 
+      this.名前.Text = "名前";
+      // 
+      // サイズ
+      // 
+      this.サイズ.Text = "サイズ";
+      // 
+      // 種類
+      // 
+      this.種類.Text = "種類";
+      // 
+      // 更新日時
+      // 
+      this.更新日時.Text = "更新日時";
       // 
       // PluginUI
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.treeView1);
+      this.Controls.Add(this.listView1);
       this.Controls.Add(this.toolStrip1);
-      //this.Name = "PluginUI";
+      this.Name = "PluginUI";
       this.Size = new System.Drawing.Size(936, 493);
-      this.Tag = this.treeView1;
-      //this.Load += new System.EventHandler(this.PluginUI_Load);
       this.toolStrip1.ResumeLayout(false);
       this.toolStrip1.PerformLayout();
       this.ResumeLayout(false);
@@ -186,6 +222,10 @@ namespace FileExplorer
     private ToolStripButton 貼り付けPToolStripButton;
     private ToolStripSeparator toolStripSeparator1;
     private ToolStripButton ヘルプLToolStripButton;
-    private TreeView treeView1;
+    private ListView listView1;
+    private ColumnHeader 名前;
+    private ColumnHeader サイズ;
+    private ColumnHeader 種類;
+    private ColumnHeader 更新日時;
   }
 }

@@ -8,13 +8,18 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Ookii.Dialogs;
+using System.Text;
+using System.Reflection;
+using System.Collections.Specialized;
 
 namespace FileExplorer
 {
   public partial class PluginUI : UserControl
   {
+    #region Variables
     private PluginMain pluginMain;
     private ListViewEx fileView;
+    //private ListView fileView;
     private ToolStrip toolStrip;
     private ContextMenuStrip menu;
     private ToolStripMenuItem runButton;
@@ -43,6 +48,7 @@ namespace FileExplorer
     private ListViewSorter listViewSorter;
     private FileSystemWatcher watcher;
     public Boolean AutoKeyHandling = false;
+    #endregion
 
     public PluginUI(PluginMain pluginMain)
     {
@@ -62,6 +68,7 @@ namespace FileExplorer
                                   + "@" + System.Reflection.Assembly.GetExecutingAssembly().Location;
     }
 
+    #region Windows Forms Designer Generated Code
     /// <summary>
     /// This method is required for Windows Forms designer support.
     /// Do not change the method contents inside the source code editor. The Forms designer might
@@ -72,12 +79,12 @@ namespace FileExplorer
       this.watcher = new System.IO.FileSystemWatcher();
       this.modifiedHeader = new System.Windows.Forms.ColumnHeader();
       this.typeHeader = new System.Windows.Forms.ColumnHeader();
-      this.fileView = new System.Windows.Forms.ListViewEx();
+      this.fileView = new ListViewEx();
       this.fileHeader = new System.Windows.Forms.ColumnHeader();
       this.sizeHeader = new System.Windows.Forms.ColumnHeader();
       this.folderBrowserDialog = new Ookii.Dialogs.VistaFolderBrowserDialog();
       this.toolStrip = new CommonInterface.Controls.ToolStripEx();
-      this.selectedPath = new System.Windows.Forms.ToolStripSpringComboBox();
+      this.selectedPath = new ToolStripSpringComboBox();
       this.syncronizeButton = new System.Windows.Forms.ToolStripButton();
       this.browseButton = new System.Windows.Forms.ToolStripButton();
       ((System.ComponentModel.ISupportInitialize)(this.watcher)).BeginInit();
@@ -89,19 +96,19 @@ namespace FileExplorer
       this.watcher.EnableRaisingEvents = true;
       this.watcher.NotifyFilter = ((System.IO.NotifyFilters)((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.DirectoryName)));
       this.watcher.SynchronizingObject = this;
-      //this.watcher.Renamed += new System.IO.RenamedEventHandler(this.WatcherRenamed);
-      //this.watcher.Deleted += new System.IO.FileSystemEventHandler(this.WatcherChanged);
-      //this.watcher.Created += new System.IO.FileSystemEventHandler(this.WatcherChanged);
-      //this.watcher.Changed += new System.IO.FileSystemEventHandler(this.WatcherChanged);
+      this.watcher.Renamed += new System.IO.RenamedEventHandler(this.WatcherRenamed);
+      this.watcher.Deleted += new System.IO.FileSystemEventHandler(this.WatcherChanged);
+      this.watcher.Created += new System.IO.FileSystemEventHandler(this.WatcherChanged);
+      this.watcher.Changed += new System.IO.FileSystemEventHandler(this.WatcherChanged);
       // 
       // modifiedHeader
       // 
-      this.modifiedHeader.Text = "Modified";
+      this.modifiedHeader.Text = "更新日時";
       this.modifiedHeader.Width = 120;
       // 
       // typeHeader
       // 
-      this.typeHeader.Text = "Type";
+      this.typeHeader.Text = "種類";
       // 
       // fileView
       // 
@@ -120,7 +127,7 @@ namespace FileExplorer
       this.fileView.FullRowSelect = true;
       this.fileView.UseCompatibleStateImageBehavior = false;
       this.fileView.View = System.Windows.Forms.View.Details;
-      /*
+
       this.fileView.ItemActivate += new System.EventHandler(this.FileViewItemActivate);
       this.fileView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.FileViewAfterLabelEdit);
       this.fileView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FileViewMouseUp);
@@ -130,16 +137,16 @@ namespace FileExplorer
       this.fileView.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.FileViewBeforeLabelEdit);
       this.fileView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.FileViewDragItems);
       this.fileView.DragOver += new System.Windows.Forms.DragEventHandler(this.FileViewDragOver);
-      */
+
       // 
       // fileHeader
       // 
-      this.fileHeader.Text = "Files";
+      this.fileHeader.Text = "名前";
       this.fileHeader.Width = 190;
       // 
       // sizeHeader
       // 
-      this.sizeHeader.Text = "Size";
+      this.sizeHeader.Text = "サイズ";
       this.sizeHeader.Width = 55;
       // 
       // folderBrowserDialog
@@ -167,8 +174,8 @@ namespace FileExplorer
       this.selectedPath.Name = "selectedPath";
       this.selectedPath.Size = new System.Drawing.Size(200, 22);
       this.selectedPath.Padding = new System.Windows.Forms.Padding(0, 0, 1, 0);
-      //this.selectedPath.FlatCombo.SelectedIndexChanged += new System.EventHandler(this.SelectedPathSelectedIndexChanged);
-      //this.selectedPath.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SelectedPathKeyDown);
+      this.selectedPath.FlatCombo.SelectedIndexChanged += new System.EventHandler(this.SelectedPathSelectedIndexChanged);
+      this.selectedPath.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SelectedPathKeyDown);
       // 
       // syncronizeButton
       //
@@ -178,7 +185,7 @@ namespace FileExplorer
       this.syncronizeButton.Name = "syncronizeButton";
       this.syncronizeButton.Size = new System.Drawing.Size(23, 22);
       this.syncronizeButton.Text = "Synchronize";
-      //this.syncronizeButton.Click += new System.EventHandler(this.SynchronizeView);
+      this.syncronizeButton.Click += new System.EventHandler(this.SynchronizeView);
       // 
       // browseButton
       //
@@ -188,7 +195,7 @@ namespace FileExplorer
       this.browseButton.Name = "browseButton";
       this.browseButton.Size = new System.Drawing.Size(23, 22);
       this.browseButton.Text = "Browse";
-      //this.browseButton.Click += new System.EventHandler(this.BrowseButtonClick);
+      this.browseButton.Click += new System.EventHandler(this.BrowseButtonClick);
       // 
       // PluginUI
       //
@@ -196,6 +203,8 @@ namespace FileExplorer
       this.Controls.Add(this.fileView);
       this.Controls.Add(this.toolStrip);
       this.Size = new System.Drawing.Size(280, 352);
+      this.Tag = this.fileView;
+      this.Load += new System.EventHandler(PluginUI_Load);
       ((System.ComponentModel.ISupportInitialize)(this.watcher)).EndInit();
       this.toolStrip.ResumeLayout(false);
       this.toolStrip.PerformLayout();
@@ -203,9 +212,9 @@ namespace FileExplorer
       this.PerformLayout();
 
     }
+    #endregion
 
     #region Methods And Event Handlers
-
     /// <summary>
     /// Shows the explorer shell menu
     /// </summary>
@@ -228,7 +237,9 @@ namespace FileExplorer
       }
       this.menu.Hide(); /* Hide default menu */
       Point location = new Point(this.menu.Bounds.Left, this.menu.Bounds.Top);
+
       scm.ShowContextMenu(selectedPathsAndFiles, location);
+
     }
 
     /// <summary>
@@ -236,38 +247,41 @@ namespace FileExplorer
     /// </summary>
     private void InitializeContextMenu()
     {
-      /*
+      
       this.menu = new ContextMenuStrip();
       this.menu.ImageScalingSize = ScaleHelper.Scale(new Size(16, 16));
-      this.menu.Items.Add(new ToolStripMenuItem("RefreshView", null, new EventHandler(this.RefreshFileView)));
-      this.menu.Items.Add(new ToolStripMenuItem("SynchronizeView", null, new EventHandler(this.SynchronizeView)));
+      this.menu.Items.Add(new ToolStripMenuItem("再読込み(R)", null, new EventHandler(this.RefreshFileView)));
+      this.menu.Items.Add(new ToolStripMenuItem("プロジェクトにシンクロ(S)", null, new EventHandler(this.SynchronizeView)));
       this.menu.Items.Add(new ToolStripSeparator());
-      this.menu.Items.Add(new ToolStripMenuItem("CreateFileHere", null, new EventHandler(this.CreateFileHere)));
-      this.menu.Items.Add(new ToolStripMenuItem("CreateFolderHere", null, new EventHandler(this.CreateFolderHere)));
+      this.menu.Items.Add(new ToolStripMenuItem("新規ファイル(N)...", null, new EventHandler(this.CreateFileHere)));
+      this.menu.Items.Add(new ToolStripMenuItem("新規フォルダ(F)...", null, new EventHandler(this.CreateFolderHere)));
       this.menu.Items.Add(new ToolStripSeparator());
-      this.menu.Items.Add(new ToolStripMenuItem("ExploreHere", null, new EventHandler(this.ExploreHere)));
-      this.menu.Items.Add(new ToolStripMenuItem("FindHere", null, new EventHandler(this.FindHere)));
-      this.menu.Items.Add(new ToolStripMenuItem("CommandPromptHere", null, new EventHandler(this.CommandPromptHere)));
+      this.menu.Items.Add(new ToolStripMenuItem("エクスプローラーで開く(X)...", null, new EventHandler(this.ExploreHere)));
+      this.menu.Items.Add(new ToolStripMenuItem("検索と置換(F)...", null, new EventHandler(this.FindHere)));
+      this.menu.Items.Add(new ToolStripMenuItem("コマンドプロンプト(P)...", null, new EventHandler(this.CommandPromptHere)));
       if (Win32.ShouldUseWin32())
       {
-        this.shellButton = new ToolStripMenuItem(TextHelper.GetString("Label.ShellMenu"), null, new EventHandler(this.ShowShellMenu));
+        this.shellButton = new ToolStripMenuItem("コンテキストメニュー...", null, new EventHandler(this.ShowShellMenu));
         this.menu.Items.Add(this.shellButton);
       }
       this.menu.Items.Add(new ToolStripSeparator());
-      this.menu.Items.Add(new ToolStripMenuItem(TextHelper.GetString("Label.TrustHere"), null, new EventHandler(this.TrustHere)));
+      this.menu.Items.Add(new ToolStripMenuItem("信頼するパスに追加(T)", null, new EventHandler(this.TrustHere)));
       this.separator = new ToolStripSeparator();
-      this.runButton = new ToolStripMenuItem(TextHelper.GetString("Label.Run"), null, new EventHandler(this.OpenItem));
-      this.editButton = new ToolStripMenuItem(TextHelper.GetString("Label.Edit"), null, new EventHandler(this.EditItems));
-      this.copyButton = new ToolStripMenuItem(TextHelper.GetString("Label.Copy"), null, new EventHandler(this.CopyItems));
-      this.pasteButton = new ToolStripMenuItem(TextHelper.GetString("Label.Paste"), null, new EventHandler(this.PasteItems));
-      this.renameButton = new ToolStripMenuItem(TextHelper.GetString("Label.Rename"), null, new EventHandler(this.RenameItem));
-      this.deleteButton = new ToolStripMenuItem(TextHelper.GetString("Label.Delete"), null, new EventHandler(this.DeleteItems));
+      this.runButton = new ToolStripMenuItem("実行(F)", null, new EventHandler(this.OpenItem));
+      this.editButton = new ToolStripMenuItem("開く(O)", null, new EventHandler(this.EditItems));
+      this.copyButton = new ToolStripMenuItem("コピー(C)", null, new EventHandler(this.CopyItems));
+      this.pasteButton = new ToolStripMenuItem("貼り付け(P)", null, new EventHandler(this.PasteItems));
+      this.renameButton = new ToolStripMenuItem("名前の変更(M)", null, new EventHandler(this.RenameItem));
+      this.deleteButton = new ToolStripMenuItem("削除(D)", null, new EventHandler(this.DeleteItems));
       this.menu.Items.Add(this.separator);
       this.menu.Items.AddRange(new ToolStripMenuItem[6] { this.runButton, this.editButton, this.copyButton, this.pasteButton, this.renameButton, this.deleteButton });
-      this.menu.Font = PluginBase.Settings.DefaultFont;
-      this.menu.Renderer = new DockPanelStripRenderer(false);
+      this.menu.Font = new Font("Meiryo UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+      //「(コントロール名)Renderer」という名前のクラスを使うことで、コントロールをvisualスタイルで描画できます。
+      // https://dobon.net/vb/dotnet/graphics/drawvisualcontrol.html
+      //this.menu.Renderer = new DockPanelStripRenderer(false);
       this.fileView.ContextMenuStrip = this.menu;
       // Set default key strings
+      /*
       if (PluginBase.Settings.ViewShortcuts)
       {
         this.editButton.ShortcutKeyDisplayString = DataConverter.KeysToString(Keys.Enter);
@@ -286,9 +300,10 @@ namespace FileExplorer
     {
       this.imageList = new ImageListManager();
       //this.imageList.ImageSize = new Size(20, 20);//ScaleHelper.Scale(new Size(16, 16));
+      this.imageList.ImageSize = ScaleHelper.Scale(new Size(16, 16));
       this.imageList.ColorDepth = ColorDepth.Depth32Bit;
-      //this.imageList.Populate += RefreshFileView;
-      //this.AddNonWin32Images();
+      this.imageList.Populate += RefreshFileView;
+      this.AddNonWin32Images();
       this.syncronizeButton.Image = PluginBase.MainForm.FindImage("203|9|-3|-3");
       this.browseButton.Image = PluginBase.MainForm.FindImage("203");
       this.fileView.SmallImageList = this.imageList;
@@ -299,14 +314,14 @@ namespace FileExplorer
     /// </summary>
     public void InitializeTexts()
     {
-      this.fileHeader.Text = "Files";
-      this.modifiedHeader.Text = "Modified";
+      this.fileHeader.Text = "名前";
+      this.modifiedHeader.Text = "更新日時";
       this.folderBrowserDialog.UseDescriptionForTitle = true;
       this.folderBrowserDialog.Description = "BrowseDescription";
       this.syncronizeButton.ToolTipText = "Synchronize";
       this.browseButton.ToolTipText = "Browse";
-      this.typeHeader.Text = "Header";
-      this.sizeHeader.Text = "Size";
+      this.typeHeader.Text = "種類";
+      this.sizeHeader.Text = "サイズ";
     }
 
     /// <summary>
@@ -314,7 +329,7 @@ namespace FileExplorer
     /// </summary>
     private void InitializeLayout()
     {
-      //this.selectedPath.FlatStyle = ComboBoxFlatStyle.;// PluginBase.Settings.ComboBoxFlatStyle;
+      this.selectedPath.FlatStyle = FlatStyle.Standard; // PluginBase.Settings.ComboBoxFlatStyle;
       //this.toolStrip.Renderer = new DockPanelStripRenderer();
       this.toolStrip.ImageScalingSize = ScaleHelper.Scale(new Size(16, 16));
       foreach (ColumnHeader column in fileView.Columns)
@@ -323,17 +338,12 @@ namespace FileExplorer
       }
     }
 
-
-
-
-
-
     /// <summary>
     /// Browses to the selected path
     /// </summary>
     public void BrowseTo(String path)
     {
-      //this.PopulateFileView(path);
+      this.PopulateFileView(path);
     }
 
     /// <summary>
@@ -354,15 +364,6 @@ namespace FileExplorer
         this.selectedPath.Items.Add(path);
       }
     }
-
-
-
-
-
-
-
-
-    
     
     /// <summary>
     /// List last open path on load
@@ -375,12 +376,14 @@ namespace FileExplorer
       //this.listViewSorter.SortColumn = this.pluginMain.Settings.SortColumn;
       //if (this.pluginMain.Settings.SortOrder == 0) this.listViewSorter.Order = SortOrder.Ascending;
       //else this.listViewSorter.Order = SortOrder.Descending;
-      //this.watcher.Path = path;
-      //this.watcher.EnableRaisingEvents = true;
-      //this.fileView.ListViewItemSorter = this.listViewSorter;
-      //this.PopulateFileView(path);
+      this.listViewSorter.SortColumn = 0;// this.pluginMain.Settings.SortColumn;
+      this.listViewSorter.Order = SortOrder.Ascending;
+      this.watcher.Path = path;
+      this.watcher.EnableRaisingEvents = true;
+      this.fileView.ListViewItemSorter = this.listViewSorter;
+      this.PopulateFileView(path);
     }
-    /*
+    
     /// <summary>
     /// Update files listview. If the path is invalid, use the last valid path
     /// </summary>
@@ -422,7 +425,7 @@ namespace FileExplorer
     private void UpdateUI(string path, DirectoryInfo directory, FileSystemInfo[] infos)
     {
       this.ClearImageList();
-      this.pluginMain.Settings.FilePath = path;
+      //this.pluginMain.Settings.FilePath = path;
       this.selectedPath.Text = path;
       this.fileView.BeginUpdate();
       this.fileView.ListViewItemSorter = null;
@@ -457,7 +460,7 @@ namespace FileExplorer
           FileInfo file = info as FileInfo;
           if (file != null && (file.Attributes & FileAttributes.Hidden) == 0)
           {
-            String kbs = TextHelper.GetString("Info.Kilobytes");
+            String kbs = "KB";
             item = new ListViewItem(file.Name, ExtractIconIfNecessary(file.FullName, true));
             item.Tag = file.FullName;
             if (file.Length / 1024 < 1) item.SubItems.Add("1 " + kbs);
@@ -514,7 +517,8 @@ namespace FileExplorer
       }
       catch (Exception ex)
       {
-        ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
       }
     }
 
@@ -657,7 +661,7 @@ namespace FileExplorer
               if (e.Effect == DragDropEffects.Move)
               {
                 File.Move(path, target);
-                DocumentManager.MoveDocuments(path, target);
+                //DocumentManager.MoveDocuments(path, target);
               }
               else File.Copy(path, target, true);
             }
@@ -668,7 +672,7 @@ namespace FileExplorer
               if (e.Effect == DragDropEffects.Move)
               {
                 Directory.Move(path, target);
-                DocumentManager.MoveDocuments(path, target);
+                //DocumentManager.MoveDocuments(path, target);
               }
               else FolderHelper.CopyFolder(path, target);
             }
@@ -677,7 +681,8 @@ namespace FileExplorer
       }
       catch (Exception ex)
       {
-        ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
       }
     }
 
@@ -737,17 +742,18 @@ namespace FileExplorer
         if (File.Exists(file))
         {
           File.Move(path + this.previousItemLabel, path + e.Label);
-          DocumentManager.MoveDocuments(path + this.previousItemLabel, path + e.Label);
+          //DocumentManager.MoveDocuments(path + this.previousItemLabel, path + e.Label);
         }
         else if (Directory.Exists(path))
         {
           Directory.Move(path + this.previousItemLabel, path + e.Label);
-          DocumentManager.MoveDocuments(path + this.previousItemLabel, path + e.Label);
+          //DocumentManager.MoveDocuments(path + this.previousItemLabel, path + e.Label);
         }
       }
       catch (Exception ex)
       {
-        if (item != null) ErrorManager.ShowError(ex);
+        if (item != null) MessageBox.Show(ex.Message.ToString(), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
         e.CancelEdit = true;
       }
     }
@@ -830,19 +836,20 @@ namespace FileExplorer
     /// </summary>
     private void SynchronizeView(Object sender, System.EventArgs e)
     {
-      
       //String path = this.selectedPath.Text;
 	    //MessageBox.Show(path);
 	    //if (!String.IsNullOrEmpty(path)) this.PopulateFileView(path);
       String path = null;
-      ITabbedDocument document = PluginBase.MainForm.CurrentDocument;
-      if (PluginBase.CurrentProject != null && this.pluginMain.Settings.SynchronizeToProject)
+      //ITabbedDocument document = PluginBase.MainForm.CurrentDocument;
+      Control document = PluginBase.MainForm.CurrentDocument;
+      /*
+      if (PluginBase.CurrentProject != null )//&& this.pluginMain.Settings.SynchronizeToProject)
       {
-        path = Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
-        if (document.IsEditable && !document.IsUntitled && !document.FileName.StartsWith(path, StringComparison.OrdinalIgnoreCase))
-        {
-          path = Path.GetDirectoryName(document.FileName);
-        }
+        path = Path.GetDirectoryName(PluginBase.MainForm.ProjectPath);
+        //if (PluginBase.MainForm.IsEditable)// && !document.IsUntitled && !document.FileName.StartsWith(path, StringComparison.OrdinalIgnoreCase))
+        //{
+          //path = Path.GetDirectoryName(document.FileName);
+        //}
       }
       else if (document.IsEditable && !document.IsUntitled)
       {
@@ -852,6 +859,7 @@ namespace FileExplorer
       {
         this.PopulateFileView(path);
       }
+      */
     }
 
     /// <summary>
@@ -888,8 +896,9 @@ namespace FileExplorer
       EventManager.DispatchEvent(this, deTrust);
       if (deTrust.Handled)
       {
-        String message = TextHelper.GetString("Info.PathTrusted");
-        ErrorManager.ShowInfo("\"" + path + "\"\n" + message);
+        String message = "Info.PathTrusted";
+        //ErrorManager.ShowInfo("\"" + path + "\"\n" + message);
+        MessageBox.Show("\"" + path + "\"\n" + message);
       }
     }
 
@@ -932,11 +941,11 @@ namespace FileExplorer
       else this.listViewSorter.Order = SortOrder.Ascending;
       if (this.listViewSorter.Order == SortOrder.Ascending)
       {
-        this.pluginMain.Settings.SortOrder = 0;
+        //this.pluginMain.Settings.SortOrder = 0;
       }
-      else this.pluginMain.Settings.SortOrder = 1;
+      //else this.pluginMain.Settings.SortOrder = 1;
       this.prevColumnClick = e.Column;
-      this.pluginMain.Settings.SortColumn = e.Column;
+      //this.pluginMain.Settings.SortColumn = e.Column;
       this.listViewSorter.SortColumn = e.Column;
       this.fileView.Sort();
     }
@@ -948,17 +957,19 @@ namespace FileExplorer
     {
       try
       {
-        String filename = TextHelper.GetString("Info.NewFileName");
-        Int32 codepage = (Int32)PluginBase.MainForm.Settings.DefaultCodePage;
-        String extension = PluginBase.MainForm.Settings.DefaultFileExtension;
+        String filename = "無題";
+        Int32 codepage = 65001;// (Int32)PluginBase.MainForm.Settings.DefaultCodePage;
+        String extension = ".cs";// PluginBase.MainForm.Settings.DefaultFileExtension;
         String file = Path.Combine(this.selectedPath.Text, filename) + "." + extension;
         String unique = FileHelper.EnsureUniquePath(file);
-        FileHelper.WriteFile(unique, "", Encoding.GetEncoding(codepage), PluginBase.Settings.SaveUnicodeWithBOM);
+        //FileHelper.WriteFile(unique, "", Encoding.GetEncoding(codepage), PluginBase.Settings.SaveUnicodeWithBOM);
+        FileHelper.WriteFile(unique, "", Encoding.GetEncoding(codepage), false);
         this.autoSelectItem = Path.GetFileName(unique);
       }
       catch (Exception ex)
       {
-        ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
       }
     }
 
@@ -969,7 +980,7 @@ namespace FileExplorer
     {
       try
       {
-        String folderName = TextHelper.GetString("Info.NewFolderName");
+        String folderName= "新規フォルダ";
         String target = Path.Combine(this.selectedPath.Text, folderName);
         String unique = FolderHelper.EnsureUniquePath(target);
         Directory.CreateDirectory(unique);
@@ -977,7 +988,8 @@ namespace FileExplorer
       }
       catch (Exception ex)
       {
-        ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
       }
     }
 
@@ -1038,8 +1050,8 @@ namespace FileExplorer
     {
       try
       {
-        String message = TextHelper.GetString("Info.ConfirmDelete");
-        String confirm = TextHelper.GetString("FlashDevelop.Title.ConfirmDialog");
+        String message = "Info.ConfirmDelete";
+        String confirm = "FlashDevelop.Title.ConfirmDialog";
         DialogResult result = MessageBox.Show(message, " " + confirm, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         if (result == DialogResult.Yes)
         {
@@ -1048,16 +1060,17 @@ namespace FileExplorer
             String path = this.fileView.SelectedItems[i].Tag.ToString();
             if (!FileHelper.Recycle(path))
             {
-              String error = TextHelper.GetString("FlashDevelop.Info.CouldNotBeRecycled");
+              String error = "FlashDevelop.Info.CouldNotBeRecycled";
               throw new Exception(error + " " + path);
             }
-            DocumentManager.CloseDocuments(path);
+            //DocumentManager.CloseDocuments(path);
           }
         }
       }
       catch (Exception ex)
       {
-        ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
       }
     }
 
@@ -1081,7 +1094,8 @@ namespace FileExplorer
       }
       catch (Exception ex)
       {
-        ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
       }
     }
 
@@ -1131,22 +1145,15 @@ namespace FileExplorer
     {
       this.WatcherChanged(sender, null);
     }
-
-
     #endregion
 
     private void PluginUI_Load(object sender, EventArgs e)
     {
+      this.InitializeTexts();
+      this.Initialize(null, null);
+      //this.PopulateFileView(@"F:\VirtualBox\ShareFolder\mono\AntPanelApplication\bin\Debug\CsMacro\AddDropdownButton.cs");
+      this.PopulateFileView(PluginBase.MainForm.ProjectPath);
     }
-
-
-
-
-
-
-
-
-
 
     #region Icon Management
     /// <summary>
@@ -1186,18 +1193,6 @@ namespace FileExplorer
       this.imageList.Images.Add(PluginBase.MainForm.FindImageAndSetAdjust("526"));
       this.imageList.Images.Add(PluginBase.MainForm.FindImageAndSetAdjust("203"));
     }
-
-  */
-    
-    
-    
-    
     #endregion
-
-
-
-
-
   }
-  
 }

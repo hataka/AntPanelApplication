@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
-using PluginCore.Managers;
 
 namespace CommonInterface.Helpers
 {

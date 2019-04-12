@@ -340,7 +340,7 @@ namespace AntPanelApplication.Managers
         else if (System.IO.File.Exists(path)) dir = Path.GetDirectoryName(path);
         if (dir != String.Empty) System.IO.Directory.SetCurrentDirectory(dir);
       }
-      String result = "";
+      //String result = "";
       // command前処理					
       if (command == String.Empty) command = path;
       else if (args == String.Empty) args = path;

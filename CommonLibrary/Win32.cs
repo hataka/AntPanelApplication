@@ -339,7 +339,10 @@ namespace CommonLibrary
     private void this_activate(Form form)
     {
       int windowThreadProcessId = Win32.GetWindowThreadProcessId(Win32.GetForegroundWindow(), IntPtr.Zero);
-      int currentThreadId = AppDomain.GetCurrentThreadId();
+      //int currentThreadId = AppDomain.GetCurrentThreadId();
+      //https://tilfin.hatenablog.com/entry/20070211/1171203152
+      int currentThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+
       Win32.AttachThreadInput(currentThreadId, windowThreadProcessId, true);
       form.Activate();
       Win32.AttachThreadInput(currentThreadId, windowThreadProcessId, false);

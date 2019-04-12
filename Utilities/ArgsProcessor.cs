@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 //using FlashDevelop.Dialogs;
@@ -29,7 +30,7 @@ namespace AntPanelApplication.Utilities
 		/// <summary>
 		/// Regexes and variables for enhanced arguments
 		/// </summary>
-		private static Dictionary<String, String> userArgs;
+		//private static Dictionary<String, String> userArgs;
 		private static Regex reUserArgs = new Regex("\\$\\$\\(([a-z0-9]+)\\=?([^\\)]+)?\\)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 		private static Regex reSpecialArgs = new Regex("\\$\\$\\(\\#([a-z]+)\\#=?([^\\)]+)?\\)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 		private static Regex reEnvArgs = new Regex("\\$\\$\\(\\%([a-z]+)\\%\\)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
@@ -366,9 +367,10 @@ namespace AntPanelApplication.Utilities
 				return result;
 			}
 			catch (Exception ex)
-			{
-				//ErrorManager.ShowError(ex);
-				return String.Empty;
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
+        return args;
 			}
 		}
 
@@ -468,9 +470,12 @@ namespace AntPanelApplication.Utilities
 		/// </summary>
 		public static String ReplaceUserArgs(Match match)
 		{
-			if (match.Groups.Count > 0) return userArgs[match.Groups[1].Value];
+      /*
+      if (match.Groups.Count > 0) return userArgs[match.Groups[1].Value];
 			else return match.Value;
-		}
+	    */
+      return match.Value;
+    }
 
 		/// <summary>
 		/// Match evaluator for Environment Variables

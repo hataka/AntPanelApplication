@@ -6,12 +6,12 @@ using System.Timers;
 using System.Windows.Forms;
 using Timer = System.Timers.Timer;
 
-namespace PluginCore.Managers
+namespace CommonInterface.Managers
 {
     public class TraceManager
     {
         private static Boolean synchronizing;
-        private static Int32 MAX_QUEUE = 1000;
+        //private static Int32 MAX_QUEUE = 1000;
         private static List<TraceItem> traceLog;
         private static List<TraceItem> asyncQueue;
         private static Timer asyncTimer;
