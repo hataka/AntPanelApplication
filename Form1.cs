@@ -11,6 +11,7 @@ using CSScriptLibrary;
 //using MDIForm;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -46,6 +47,7 @@ namespace AntPanelApplication
     public PlayerPanel player;
     public SimplePanel panel;
 
+    public List<string> previousDocuments = new List<string>();
     public bool showIcon = true;
     #endregion
 
@@ -527,6 +529,19 @@ namespace AntPanelApplication
     {
       get { return Environment.OSVersion.Version; }
     }
+
+    /// <summary>
+    /// Gets or sets the WorkingDirectory
+    /// </summary>
+    public List<String> PreviousDocuments
+    {
+      get
+      {
+        return this.previousDocuments;
+      }
+      set { this.previousDocuments = value; }
+    }
+
 
     #endregion
 
@@ -1111,6 +1126,7 @@ namespace AntPanelApplication
     public void InitializeWindow() { }
     public void InitializeMainForm()
     {
+      this.ApplySettings();
       // https://dobon.net/vb/dotnet/control/tabpagehide.html
       //TabPageManagerオブジェクトの作成
       TabPageManager.AddTabControl(this.documentTabControl);
@@ -1244,7 +1260,13 @@ namespace AntPanelApplication
       this.menuStrip.Visible = this.settings.MenuBarVisible;
       this.toolStrip.Visible = this.settings.ToolBarVisible;
       this.statusStrip.Visible = this.settings.StatusBarVisible;
+      // https://stackoverflow.com/questions/844412/convert-stringcollection-to-liststring
+      //this.previousDocuments = new List<string>(((StringCollection)this.settings.PreviousDocuments).Cast<string>());
+      //string[] names = this.previousDocuments.Cast<string>().ToArray();
+      this.previousDocuments = new List<string>();
 
+      foreach (string item in this.settings.PreviousDocuments) this.previousDocuments.Add(item);
+      this.PopulatePreviousDocumentsMenu();
       //this.gradleButton.Image = global::AntPanelApplication.Properties.Resources.gradle;
       //this.gradleButton.Image = Resources.gradle;
     }
@@ -1830,77 +1852,77 @@ namespace AntPanelApplication
 			}
       */
     }
-    /*
+    
     /// <summary>
     /// Updates the UI, tabbing, working directory and the button states. 
     /// Also notifies the plugins for the FileOpen and FileSwitch events.
     /// </summary>
     public void OnActiveDocumentChanged(Object sender, System.EventArgs e)
     {
-			try
+      try
 			{
 				if (this.CurrentDocument == null) return;
-				this.OnScintillaControlUpdateControl(this.CurrentDocument.SciControl);
-				this.quickFind.CanSearch = this.CurrentDocument.IsEditable;
-				/ **
-				* Bring this newly active document to the top of the tab history
-				* unless you're currently cycling through tabs with the keyboard
-				* /
-				TabbingManager.UpdateSequentialIndex(this.CurrentDocument);
-				if (!TabbingManager.TabTimer.Enabled)
-				{
-					TabbingManager.TabHistory.Remove(this.CurrentDocument);
-					TabbingManager.TabHistory.Insert(0, this.CurrentDocument);
-				}
-				if (this.CurrentDocument.IsEditable)
-				{
-					/ **
-					* Apply correct extension when saving
-					* /
-      if (this.appSettings.ApplyFileExtension)
-      {
-        String extension = Path.GetExtension(this.CurrentDocument.FileName);
-        if (extension != "") this.saveFileDialog.DefaultExt = extension;
+				//this.OnScintillaControlUpdateControl(this.CurrentDocument.SciControl);
+				//this.quickFind.CanSearch = this.CurrentDocument.IsEditable;
+				//
+				// Bring this newly active document to the top of the tab history
+				// unless you're currently cycling through tabs with the keyboard
+				//
+				//TabbingManager.UpdateSequentialIndex(this.CurrentDocument);
+				//if (!TabbingManager.TabTimer.Enabled)
+				//{
+				//	TabbingManager.TabHistory.Remove(this.CurrentDocument);
+				//	TabbingManager.TabHistory.Insert(0, this.CurrentDocument);
+				//}
+				//if (this.CurrentDocument.IsEditable)
+				//{
+					//
+					// Apply correct extension when saving
+					//
+      //if (this.appSettings.ApplyFileExtension)
+      //{
+        //String extension = Path.GetExtension(this.CurrentDocument.FileName);
+        //if (extension != "") this.saveFileDialog.DefaultExt = extension;
+      //}
+      //
+      // Set current working directory
+      //
+      //String path = Path.GetDirectoryName(this.CurrentDocument.FileName);
+      //if (!this.CurrentDocument.IsUntitled && Directory.Exists(path))
+      //{
+        //this.workingDirectory = path;
+      //}
+      //
+      // Checks the file changes
+      //
+      //TabbedDocument document = (TabbedDocument)this.CurrentDocument;
+      //document.Activate();
+      //
+      // Processes the opened file
+      //
+      //if (this.notifyOpenFile)
+      //{
+        //ScintillaManager.UpdateControlSyntax(this.CurrentDocument.SciControl);
+        //if (File.Exists(this.CurrentDocument.FileName))
+        //{
+          //TextEvent te = new TextEvent(EventType.FileOpen, this.CurrentDocument.FileName);
+          //EventManager.DispatchEvent(this, te);
+        //}
+        //this.notifyOpenFile = false;
+      //}
+    //}
+    //TabTextManager.UpdateTabTexts();
+				//NotifyEvent ne = new NotifyEvent(EventType.FileSwitch);
+    //EventManager.DispatchEvent(this, ne);
+    //NotifyEvent ce = new NotifyEvent(EventType.Completion);
+    //EventManager.DispatchEvent(this, ce);
       }
-      / **
-      * Set current working directory
-      * /
-      String path = Path.GetDirectoryName(this.CurrentDocument.FileName);
-      if (!this.CurrentDocument.IsUntitled && Directory.Exists(path))
-      {
-        this.workingDirectory = path;
-      }
-      / **
-      * Checks the file changes
-      * /
-      TabbedDocument document = (TabbedDocument)this.CurrentDocument;
-      document.Activate();
-      / **
-      * Processes the opened file
-      * /
-      if (this.notifyOpenFile)
-      {
-        ScintillaManager.UpdateControlSyntax(this.CurrentDocument.SciControl);
-        if (File.Exists(this.CurrentDocument.FileName))
-        {
-          TextEvent te = new TextEvent(EventType.FileOpen, this.CurrentDocument.FileName);
-          EventManager.DispatchEvent(this, te);
-        }
-        this.notifyOpenFile = false;
-      }
-    }
-    TabTextManager.UpdateTabTexts();
-				NotifyEvent ne = new NotifyEvent(EventType.FileSwitch);
-    EventManager.DispatchEvent(this, ne);
-    NotifyEvent ce = new NotifyEvent(EventType.Completion);
-    EventManager.DispatchEvent(this, ce);
-    }
 			catch (Exception ex)
 			{
-				ErrorManager.ShowError(ex);
+				//ErrorManager.ShowError(ex);
 			}
 		}
-}
+/*
 /// <summary>
 /// Checks that if the are any modified documents when closing.
 /// </summary>
@@ -3742,6 +3764,115 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     }
 
     #endregion
+
+
+    #region Previous Document
+    public void AddPreviousDocuments(string data)
+    {
+      try
+      {
+        if (this.previousDocuments.Contains(data))
+        {
+          this.previousDocuments.Remove(data);
+        }
+        this.previousDocuments.Insert(0, data);
+        this.PopulatePreviousDocumentsMenu();
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message.ToString());
+      }
+    }
+
+    public void PopulatePreviousDocumentsMenu()
+    {
+      try
+      {
+        ToolStripMenuItem toolStripMenuItem = this.FindMenuItem("ReopenMenu") as ToolStripMenuItem;
+        toolStripMenuItem.DropDownItems.Clear();
+        for (int i = 0; i < this.previousDocuments.Count; i++)
+        {
+          string text = this.previousDocuments[i];
+          ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem();
+          toolStripMenuItem2.Click += new EventHandler(this.PreviousDocumentsMenuItem_Click);
+          toolStripMenuItem2.Tag = text;
+          //string[] array = text.Split('!');
+          //string text2 = array[0];
+          toolStripMenuItem2.Text = text;
+          if (i < 15)
+          {
+            toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
+          }
+          else
+          {
+            this.previousDocuments.Remove(text);
+          }
+        }
+        if (this.previousDocuments.Count > 0)
+        {
+          ToolStripMenuItem 最近開いたファイルをクリアCToolStripMenuItem = new ToolStripMenuItem();
+          最近開いたファイルをクリアCToolStripMenuItem.Text = "最近開いたファイルをクリア(C)";
+          最近開いたファイルをクリアCToolStripMenuItem.Click += new EventHandler(this.最近開いたファイルをクリアCToolStripMenuItem_Click);
+          toolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+          toolStripMenuItem.DropDownItems.Add(最近開いたファイルをクリアCToolStripMenuItem);
+          toolStripMenuItem.Enabled = true;
+        }
+        else
+        {
+          toolStripMenuItem.Enabled = false;
+        }
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message.ToString());
+      }
+    }
+
+    private void PreviousDocumentsMenuItem_Click(object sender, EventArgs e)
+    {
+      ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
+      string text = toolStripMenuItem.Tag as string;
+        if (File.Exists(text))
+        {
+          this.OpenDocument(text);
+          //this.AddPreviousDocuments(text);
+          //this.UpdateStatusText(text);
+        }
+    }
+
+    private void 最近開いたファイルをクリアCToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      this.previousDocuments.Clear();
+      this.PopulatePreviousDocumentsMenu();
+    }
+
+    private void UpdateStatusText(string data)
+    {
+      /*
+      int x = this.currentPoint.X;
+      int y = this.currentPoint.Y;
+      string format = " 行: {0} | 列: {1} | 改行コード: ({2}) | 文字コード: {3} | {4}";
+      string[] array = data.Split(new char[] { '!' });
+      if (array.Length > 1)
+      {
+        this.上書き保存SToolStripMenuItem.Enabled = (this.上書き保存SToolStripButton.Enabled = false);
+      }
+      else
+      {
+        this.上書き保存SToolStripMenuItem.Enabled = (this.上書き保存SToolStripButton.Enabled = true);
+      }
+#if Interface
+      string text = array[0];
+      string text2 = Lib.File_GetEofCode(text);
+      string text3 = Lib.File_GetCode(text);
+      this.toolStripStatusLabel1.Text = string.Format(format, new object[]{y,x,text2,text3,text});
+#endif
+      */
+    }
+    #endregion
+
+
+
 
     public void ActivatePlayer()
     {
