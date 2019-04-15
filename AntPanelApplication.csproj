@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>im-irc.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Scripting">
       <HintPath>.\Scripting.dll</HintPath>
@@ -144,6 +147,7 @@
     <Compile Include="Dialogs\AboutDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Helpers\ResourceHelper.cs" />
     <Compile Include="SyntaxHighlighter\Csharp_SyntaxClass.cs" />
     <Compile Include="SyntaxHighlighter\HighlightClass.cs" />
     <Compile Include="SyntaxHighlighter\SyntaxHighlighter.cs">
@@ -284,7 +288,7 @@
       <DependentUpon>FTPClientPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -347,6 +351,11 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="im-irc.ico" />
+    <None Include="Resources\im-irc.png" />
+    <None Include="Resources\im-irc.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

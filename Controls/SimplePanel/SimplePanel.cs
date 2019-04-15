@@ -1049,7 +1049,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
           argstring = this.panel1.Tag.ToString();
         }
         argstring = this.panel1.Tag.ToString();
-				string[] array = argstring.Split('|');
+				string[] array = argstring.Split('!');
 				//command = this.antPanel.xmlTree.ProcessVariable(array[0]);
 				//args = ((array.Length > 1) ? this.pluginUI.ProcessVariable(array[1]) : string.Empty);
 				//path = ((array.Length > 2) ? this.pluginUI.ProcessVariable(array[2]) : string.Empty);

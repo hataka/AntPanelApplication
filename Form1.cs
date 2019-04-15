@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace AntPanelApplication
 {
-  public partial class Form1 : Form, CommonInterface.IMainForm//, IMessageFilter
+  public partial class Form1 : Form, CommonInterface.IMainForm, IEventHandler//, IMessageFilter
   {
     #region Variables
     public global::AntPanelApplication.Properties.Settings
@@ -615,7 +615,8 @@ namespace AntPanelApplication
         }
         for (int i = 0; i < args.Length; i++)
         {
-           control = this.CreateCustomControl(name, args[i]);
+           //control = this.CreateCustomControl(name, args[i]);
+           control = this.CreateCustomControl(name, this.ProcessArgString(args[i]));
           if (control != null)
           {
             control.Dock = DockStyle.Fill;
@@ -633,7 +634,8 @@ namespace AntPanelApplication
             else if (alignment == "Right") tbctrl = this.rightTabControl;
             else if (alignment == "Left") tbctrl = Globals.AntPanel.antPanelTabControl;
 
-            control.AccessibleName = args[i];
+            control.AccessibleName = this.ProcessArgString(args[i]);
+            //control.AccessibleName = args[i];
             //TabPageManager.AddTabPage(control, this.documentTabControl,singleton);
             TabPageManager.AddTabPage(control, tbctrl, singleton);
           }
@@ -1089,7 +1091,13 @@ namespace AntPanelApplication
     #endregion
 
     #region Construct Components
-    private void InitializeGraphics() { }
+    private void InitializeGraphics()
+    {
+      //Icon icon = new Icon(ResourceHelper.GetStream("im_irc.ico"));
+      //this.Icon = this.printPreviewDialog.Icon = icon;
+      //this.Icon = CommonLibrary.ImageKonverter.ImageToIcon(Properties.Resources.im_irc1);
+      this.Icon = Properties.Resources.im_irc;
+    }
     private void InitializeConfig() { }
     private void AppManUpdate(Object sender, FileSystemEventArgs e) { }
     private void InitializeRestartButton() { }
@@ -1425,6 +1433,13 @@ namespace AntPanelApplication
       //MessageBox.Show(tabControl.Name);
     }
 
+    /// </summary> 
+    public void AddEventHandlers()
+    {
+      CommonInterface.Managers.EventType eventMask = CommonInterface.Managers.EventType.Command;// | CommonInterface.Managers.EventType.FileOpen | CommonInterface.Managers.EventType.UIStarted;
+      CommonInterface.Managers.EventManager.AddEventHandler(this, eventMask, CommonInterface.Managers.HandlingPriority.Low);
+    }
+
     /// Handles the incoming events
     /// </summary>
     /// <summary>
@@ -1687,6 +1702,7 @@ namespace AntPanelApplication
     }
     private void OnMainFormLoad(Object sender, System.EventArgs e)
     {
+      this.AddEventHandlers();
       this.projectPath = Globals.AntPanel.projectPath;
 
       //this.CreateTabPages();
