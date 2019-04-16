@@ -630,8 +630,8 @@ namespace AntPanelApplication
         }
         for (int i = 0; i < args.Length; i++)
         {
-           //control = this.CreateCustomControl(name, args[i]);
-           control = this.CreateCustomControl(name, this.ProcessArgString(args[i]));
+          //control = this.CreateCustomControl(name, this.ProcessArgString(args[i]));
+          control = this.CreateCustomControl(name, Globals.AntPanel.menuTree.ProcessVariable(args[i]));
           if (control != null)
           {
             control.Dock = DockStyle.Fill;
@@ -649,9 +649,11 @@ namespace AntPanelApplication
             else if (alignment == "Right") tbctrl = this.rightTabControl;
             else if (alignment == "Left") tbctrl = Globals.AntPanel.antPanelTabControl;
 
-            control.AccessibleName = this.ProcessArgString(args[i]);
-            //control.AccessibleName = args[i];
-            //TabPageManager.AddTabPage(control, this.documentTabControl,singleton);
+            //control.AccessibleName = this.ProcessArgString(args[i]);
+            control.AccessibleName = Globals.AntPanel.menuTree.ProcessVariable(args[i]);
+            this.AddPreviousDocuments(this.ProcessArgString(args[i]));
+
+              
             TabPageManager.AddTabPage(control, tbctrl, singleton);
           }
         }
@@ -1111,7 +1113,7 @@ namespace AntPanelApplication
       //Icon icon = new Icon(ResourceHelper.GetStream("im_irc.ico"));
       //this.Icon = this.printPreviewDialog.Icon = icon;
       //this.Icon = CommonLibrary.ImageKonverter.ImageToIcon(Properties.Resources.im_irc1);
-      this.Icon = Properties.Resources.im_irc;
+      this.Icon = Properties.Resources.im_irc1;
     }
     private void InitializeConfig() { }
     private void AppManUpdate(Object sender, FileSystemEventArgs e) { }
@@ -1264,7 +1266,6 @@ namespace AntPanelApplication
       //this.previousDocuments = new List<string>(((StringCollection)this.settings.PreviousDocuments).Cast<string>());
       //string[] names = this.previousDocuments.Cast<string>().ToArray();
       this.previousDocuments = new List<string>();
-
       foreach (string item in this.settings.PreviousDocuments) this.previousDocuments.Add(item);
       this.PopulatePreviousDocumentsMenu();
       //this.gradleButton.Image = global::AntPanelApplication.Properties.Resources.gradle;
@@ -1801,7 +1802,60 @@ namespace AntPanelApplication
 			*/
       this.CheckForUpdates();
     }
-    public void OnMainFormClosing(Object sender, System.ComponentModel.CancelEventArgs e){ }
+    public void OnMainFormClosing(Object sender, System.ComponentModel.CancelEventArgs e)
+    {
+			//this.closingEntirely = true;
+			//Session session = SessionManager.GetCurrentSession();
+			NotifyEvent ne = new NotifyEvent(CommonInterface.Managers.EventType.UIClosing);
+			EventManager.DispatchEvent(this, ne);
+			if (ne.Handled)
+			{
+				this.closingEntirely = false;
+				e.Cancel = true;
+			}
+      /*
+      if (!e.Cancel && Globals.Settings.ConfirmOnExit)
+			{
+				String title = TextHelper.GetString("Title.ConfirmDialog");
+				String message = TextHelper.GetString("Info.AreYouSureToExit");
+				DialogResult result = MessageBox.Show(this, message, " " + title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (result == DialogResult.No) e.Cancel = true;
+			}
+      */
+      if (!e.Cancel) this.CloseAllDocuments(false);
+			if (this.closeAllCanceled)
+			{
+				this.closeAllCanceled = false;
+				this.closingEntirely = false;
+				e.Cancel = true;
+			}
+			if (!e.Cancel && this.isFullScreen)
+			{
+				this.ToggleFullScreen(null, null);
+			}
+			if (!e.Cancel && this.Documents.Length == 0)
+			{
+				NotifyEvent fe = new NotifyEvent(CommonInterface.Managers.EventType.FileEmpty);
+				EventManager.DispatchEvent(this, fe);
+				if (!fe.Handled) this.SmartNew(null, null);
+			}
+			if (!e.Cancel)
+			{
+				//String file = FileNameHelper.SessionData;
+				//SessionManager.SaveSession(file, session);
+				//ShortcutManager.SaveCustomShortcuts();
+				//ArgumentDialog.SaveCustomArguments();
+				//PluginServices.DisposePlugins();
+				//this.KillProcess();
+				this.SaveAllSettings();
+			}
+			else this.restartRequested = false;
+     
+      //this.settings.PreviousDocuments.Clear();
+      //foreach (string item in this.previousDocuments) this.settings.PreviousDocuments.Add(item);
+      //this.settings.Save();
+    }
+    
     /// <summary>
     /// When form is closed restart if requested.
     /// </summary>
@@ -2803,35 +2857,46 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     /// </summary>
     public void SaveAllSettings()
     {
-      /*
-			try
+ 			try
 			{
-				this.appSettings.WindowState = this.WindowState;
-				this.appSettings.LatestDialogPath = this.workingDirectory;
+				//this.appSettings.WindowState = this.WindowState;
+				//this.appSettings.LatestDialogPath = this.workingDirectory;
 				if (this.WindowState != FormWindowState.Maximized && this.WindowState != FormWindowState.Minimized)
 				{
-					this.appSettings.WindowSize = this.Size;
-					this.appSettings.WindowPosition = this.Location;
+					//this.appSettings.WindowSize = this.Size;
+					//this.appSettings.WindowPosition = this.Location;
 				}
 				if (!File.Exists(FileNameHelper.SettingData))
 				{
 					String folder = Path.GetDirectoryName(FileNameHelper.SettingData);
 					if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 				}
-				ObjectSerializer.Serialize(FileNameHelper.SettingData, this.appSettings);
-				try { this.dockPanel.SaveAsXml(FileNameHelper.LayoutData); }
+
+
+
+        //ObjectSerializer.Serialize(FileNameHelper.SettingData, this.appSettings);
+        this.settings.PreviousDocuments.Clear();
+        foreach (string item in this.previousDocuments) this.settings.PreviousDocuments.Add(item);
+        this.settings.Save();
+
+
+
+
+        /*
+        try { this.dockPanel.SaveAsXml(FileNameHelper.LayoutData); }
 				catch (Exception ex2)
 				{
 					// Ignore errors on multi instance full close...
 					if (this.MultiInstanceMode && this.ClosingEntirely) return;
 					else throw ex2;
 				}
-			}
-			catch (Exception ex)
+        */
+      }
+      catch (Exception ex)
 			{
-				ErrorManager.ShowError(ex);
-			}
-		*/
+				//ErrorManager.ShowError(ex);
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
     }
 
     /// <summary>
@@ -3763,6 +3828,22 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       this.InitializeTabControls();
     }
 
+    public void ToggleBar(object sender, EventArgs e)
+    {
+      ToolStripMenuItem button = (ToolStripMenuItem)sender;
+      //MessageBox.Show(button.Name);
+      switch (button.Name)
+      {
+        case "ToggleToolStrip":
+          this.ToolStrip.Visible = !this.ToolStrip.Visible;
+          button.Checked = this.ToolStrip.Visible;
+          break;
+        case "ToggleStatusStrip":
+          this.StatusStrip.Visible = !this.StatusStrip.Visible;
+          button.Checked = this.StatusStrip.Visible;
+          break;
+      }
+    }
     #endregion
 
 
@@ -3895,8 +3976,11 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       //String word = String.Empty;
       String text = "this is a beautiful sleeping lady.";
       int pos = 12;
-      String word = StringHandler.GetCurrentWord(pos, text);
-      MessageBox.Show(word);
+      //String word = StringHandler.GetCurrentWord(pos, text);
+      //MessageBox.Show(this.CurrentDocument.Tag.GetType().FullName);
+      RichTextBox rtb = this.CurrentDocument.Tag as RichTextBox;
+      //rtb.SelectionFont = new Font("メイリオ", 0.00001F, FontStyle.Bold);
+      rtb.SelectedRtf = @"{\rtf1\ansi\v " + "aaaa" + @"\v0}";
     }
 
     #region Icon Management

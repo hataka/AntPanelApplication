@@ -71,22 +71,22 @@ namespace AntPanelApplication.Properties {
         }
         
         /// <summary>
-        ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
-        public static System.Drawing.Icon im_irc {
+        public static System.Drawing.Bitmap im_irc {
             get {
                 object obj = ResourceManager.GetObject("im_irc", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
-        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
         /// </summary>
-        public static System.Drawing.Bitmap im_irc1 {
+        public static System.Drawing.Icon im_irc1 {
             get {
                 object obj = ResourceManager.GetObject("im_irc1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

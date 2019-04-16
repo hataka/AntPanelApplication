@@ -1,19 +1,17 @@
 ﻿using AntPanelApplication;
-using AntPlugin.CommonLibrary;
-using AxWMPLib;
+using AntPlugin.XmlTreeMenu;
 using CommonLibrary;
 //using AntPlugin.XmlTreeMenu.Controls;
 //using AntPlugin.XMLTreeMenu.Controls;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
 namespace AntPlugin.XmlTreeMenu.Managers
+//namespace AntPanelApplication.XmlTreeMenu.Managers
 {
   public class ActionManager
   {
@@ -37,6 +35,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       string arg = strVar;
       try
       {
+        arg = Globals.MainForm.ProcessArgString(arg);
         arg = arg.Replace("$(CurProjectDir)", Path.GetDirectoryName(menuTree.antPanel.projectPath));
         arg = arg.Replace("$(CurProjectName)", Path.GetFileNameWithoutExtension(menuTree.antPanel.projectPath));
         arg = arg.Replace("$(CurProjectUrl)", Lib.Path2Url(Path.GetDirectoryName(menuTree.antPanel.projectPath), 
@@ -121,6 +120,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       ActionManager.NodeAction(ni);
     }
 
+    // IMportant action は全てここを通る
     public static void NodeAction(NodeInfo ni)
     {
       ToolStripMenuItem button = new ToolStripMenuItem();
