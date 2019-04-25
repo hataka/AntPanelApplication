@@ -1,4 +1,5 @@
-﻿using AntPanelApplication.Managers;
+﻿using AntPanelApplication.Controls;
+using AntPanelApplication.Managers;
 using AntPlugin.CommonLibrary;
 using AntPlugin.Controls;
 using AntPlugin.XmlTreeMenu;
@@ -871,7 +872,15 @@ namespace AntPanelApplication
 			treeView.EndUpdate();
 		}
 
-		public TreeNode GetBuildFileNode(string file)
+    public void OpenProject(String path)
+    {
+      this.InitializeTreeView(path);
+      this.dirTreePanel.projectButton.PerformClick();
+      Globals.MainForm.AddPreviousProjects(path);
+      Globals.MainForm.Text = "AntPanel : " + path;
+    }
+
+    public TreeNode GetBuildFileNode(string file)
 		{
 			XmlDocument xml = new XmlDocument();
 			xml.PreserveWhitespace = true;
@@ -1409,6 +1418,8 @@ namespace AntPanelApplication
 
     private void AntPanel_Load(object sender, EventArgs e)
     {
+      Globals.MainForm.Text = "AntPanel : " + this.projectPath;
+
       /*
       if (Form1.Arguments.Length > 0 && !String.IsNullOrEmpty(Form1.Arguments[0])) this.projectPath = Form1.Arguments[0];
       if (Form1.Arguments.Length > 1 && !String.IsNullOrEmpty(Form1.Arguments[1])) this.itemPath = Form1.Arguments[1];

@@ -121,7 +121,7 @@
       <Value Profile="(Default)">antPluginData.txt</Value>
     </Setting>
     <Setting Name="HomeMenuPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">F:\VCSharp\Flashdevelop5.1.1-LL\FlashDevelop\Bin\Debug\SettingData\FDTreeMenu.xml</Value>
+      <Value Profile="(Default)">F:\VirtualBox\ShareFolder\mono\AntPanelApplication\bin\Debug\SettingData\FDTreeMenu.xml</Value>
     </Setting>
     <Setting Name="win_GitPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Program Files\Git\git-bash.exe</Value>
@@ -133,13 +133,18 @@
       <Value Profile="(Default)">Meiryo UI, 10.8pt</Value>
     </Setting>
     <Setting Name="PreviousProjects" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;F:\VirtualBox\ShareFolder\mono\AntPanelApplication\bin\Debug\Nashorn.fdp&lt;/string&gt;
+  &lt;string&gt;F:\VirtualBox\ShareFolder\java\java-swing-tips\AccordionPanel\AccordionPanel.fdp&lt;/string&gt;
+  &lt;string&gt;F:\codingground\java\Nashorn\Nashorn.fdp&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="WindowSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">1200, 800</Value>
     </Setting>
     <Setting Name="DefaultEditorFont" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Meiryo UI, 10.8pt</Value>
+      <Value Profile="(Default)">Meiryo UI, 12pt</Value>
     </Setting>
     <Setting Name="DefaultEditor" Type="System.String" Scope="User">
       <Value Profile="(Default)">RichTextEditor</Value>

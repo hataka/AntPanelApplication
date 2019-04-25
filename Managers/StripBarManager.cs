@@ -307,7 +307,7 @@ namespace AntPanelApplication.Managers
 		/// </summary>
 		private static String GetStrippedString(String text, Boolean removeWhite)
 		{
-			text = TextHelper.RemoveMnemonicsAndEllipsis(text);
+			text = CommonInterface.Localization.TextHelper.RemoveMnemonicsAndEllipsis(text);
 			if (removeWhite)
 			{
 				text = text.Replace(" ", "");
@@ -324,8 +324,8 @@ namespace AntPanelApplication.Managers
 			try
 			{
         if (!key.StartsWith("Label.")) return key;
-        //else return TextHelper.GetString(key);
-        else return key.Replace("Label.", "");
+        else return CommonInterface.Localization.TextHelper.GetString(key);
+        //else return key.Replace("Label.", "");
       }
 			catch (Exception ex)
 			{

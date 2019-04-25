@@ -100,6 +100,9 @@
     <Compile Include="CommonLibrary\TwoKeysHashTable.cs" />
     <Compile Include="CommonLibrary\WebHandler.cs" />
     <Compile Include="CommonLibrary\Win32.cs" />
+    <Compile Include="Controls\Browser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\BrowserEx.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -145,6 +148,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Dialogs\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\RunProcessDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Helpers\ResourceHelper.cs" />
@@ -193,7 +199,6 @@
     <Compile Include="Helpers\FileNameHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\ScaleHelper.cs" />
-    <Compile Include="Helpers\TextHelper.cs" />
     <Compile Include="Helpers\UdeLibrary\Ude.Core\Big5Prober.cs" />
     <Compile Include="Helpers\UdeLibrary\Ude.Core\BitPackage.cs" />
     <Compile Include="Helpers\UdeLibrary\Ude.Core\CharDistributionAnalyser.cs" />
@@ -251,6 +256,9 @@
     <EmbeddedResource Include="AntPanel.resx">
       <DependentUpon>AntPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Browser.resx">
+      <DependentUpon>Browser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\BrowserEx.resx">
       <DependentUpon>BrowserEx.cs</DependentUpon>
     </EmbeddedResource>
@@ -268,6 +276,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SimplePanel\SimplePanel.resx">
       <DependentUpon>SimplePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\RunProcessDialog.resx">
+      <DependentUpon>RunProcessDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SyntaxHighlighter\SyntaxHighlighter.resx">
       <DependentUpon>SyntaxHighlighter.cs</DependentUpon>

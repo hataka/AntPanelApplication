@@ -378,8 +378,8 @@ namespace AntPanelApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F:\\VCSharp\\Flashdevelop5.1.1-LL\\FlashDevelop\\Bin\\Debug\\SettingData\\FDTreeMenu.xml" +
-            "")]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\VirtualBox\\ShareFolder\\mono\\AntPanelApplication\\bin\\Debug\\SettingData\\FDTreeMe" +
+            "nu.xml")]
         public string HomeMenuPath {
             get {
                 return ((string)(this["HomeMenuPath"]));
@@ -427,6 +427,12 @@ namespace AntPanelApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>F:\VirtualBox\ShareFolder\mono\AntPanelApplication\bin\Debug\Nashorn.fdp</string>
+  <string>F:\VirtualBox\ShareFolder\java\java-swing-tips\AccordionPanel\AccordionPanel.fdp</string>
+  <string>F:\codingground\java\Nashorn\Nashorn.fdp</string>
+</ArrayOfString>")]
         public global::System.Collections.Specialized.StringCollection PreviousProjects {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["PreviousProjects"]));
@@ -450,7 +456,7 @@ namespace AntPanelApplication.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Meiryo UI, 10.8pt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Meiryo UI, 12pt")]
         public global::System.Drawing.Font DefaultEditorFont {
             get {
                 return ((global::System.Drawing.Font)(this["DefaultEditorFont"]));

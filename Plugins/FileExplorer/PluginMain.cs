@@ -12,6 +12,7 @@ using CommonInterface;
 using CommonInterface.CommonLibrary;
 using CommonInterface.Helpers;
 using CommonInterface.Managers;
+using CommonInterface.Utilities;
 
 namespace FileExplorer
 {
@@ -23,8 +24,9 @@ namespace FileExplorer
       private String pluginDesc = "Adds a file explorer panel to FlashDevelop.";
       private String pluginAuth = "FlashDevelop Team";
       private String settingFilename;
+      private String settingSoapFilename;
       private String configFilename;
-    //private Settings settingObject;
+      private Settings settingObject;
     //private DockContent pluginPanel;
       private PluginUI pluginUI;
       private Image pluginImage;
@@ -80,25 +82,25 @@ namespace FileExplorer
       get { return this.pluginHelp; }
     }
 
-    public object Settings => throw new NotImplementedException();
 
     /// <summary>
     /// Object that contains the settings
     /// </summary>
     [Browsable(false)]
-    //Object IPlugin.Settings
-    //{
-    //  get { return this.settingObject; }
-    //}
+    Object IPlugin.Settings
+    {
+      get { return this.settingObject; }
+    }
 
+    //public object Settings => throw new NotImplementedException();
     /// <summary>
     /// Internal access to settings
     /// </summary>
-    //[Browsable(false)]
-    //public Settings Settings
-    //{
-    //get { return this.settingObject; }
-    //}
+    [Browsable(false)]
+    public Settings Settings
+    {
+      get { return this.settingObject; }
+    }
 
     #endregion
 
@@ -113,7 +115,9 @@ namespace FileExplorer
     /// </summary>
     public void Dispose()
     {
-      //this.SaveSettings();
+      this.SaveSettings();
+      ObjectSerializer.SoapSerialize(this.settingSoapFilename, this.settingObject);
+      //FileExplorer.Settings.Serialize(this.settingSoapFilename, this.settingObject);
     }
 
     /// <summary>
@@ -173,15 +177,12 @@ namespace FileExplorer
     public void Initialize()
     {
       this.InitBasics();
-      //this.LoadSettings();
+      this.LoadSettings();
       this.AddEventHandlers();
       this.CreatePluginPanel();
       //this.CreateMenuItem();
       //throw new NotImplementedException();
     }
-
-
-
     #endregion
 
     #region Custom Methods
@@ -191,10 +192,11 @@ namespace FileExplorer
     /// </summary>
     public void InitBasics()
     {
-      //String dataPath = Path.Combine(PathHelper.DataDir, "FileExplorer");
-      //if (!Directory.Exists(dataPath)) Directory.CreateDirectory(dataPath);
-      //this.settingFilename = Path.Combine(dataPath, "Settings.fdb");
-      //this.configFilename = Path.Combine(dataPath, "Config.ini");
+      String dataPath = Path.Combine(PathHelper.DataDir, "FileExplorer");
+      if (!Directory.Exists(dataPath)) Directory.CreateDirectory(dataPath);
+      this.settingFilename = Path.Combine(dataPath, "Settings.fdb");
+      this.settingSoapFilename = Path.Combine(dataPath, "Settings.xml");
+      this.configFilename = Path.Combine(dataPath, "Config.ini");
       //this.pluginDesc = TextHelper.GetString("Info.Description");
       this.pluginImage = PluginBase.MainForm.FindImage("209");
     }
@@ -298,8 +300,6 @@ namespace FileExplorer
       */
     }
 
-
-
     /// <summary>
     /// Adds the required event     /// <summary>
     /// Creates a menu item for the plugin
@@ -320,7 +320,6 @@ namespace FileExplorer
     /// </summary>
     public void LoadSettings()
     {
-      /*
       this.settingObject = new Settings();
       if (!File.Exists(this.settingFilename)) this.SaveSettings();
       else
@@ -332,7 +331,6 @@ namespace FileExplorer
       {
         File.WriteAllText(configFilename, "[actions]\r\n#explorer=" + explorerAction + "\r\n#cmd=" + PluginBase.MainForm.CommandPromptExecutable + "\r\n");
       }
-      */
     }
 
     /// <summary>
@@ -340,7 +338,7 @@ namespace FileExplorer
     /// </summary>
     public void SaveSettings()
     {
-      //ObjectSerializer.Serialize(this.settingFilename, this.settingObject);
+      ObjectSerializer.Serialize(this.settingFilename, this.settingObject);
     }
 
     /// <summary>
@@ -351,19 +349,7 @@ namespace FileExplorer
       //this.pluginPanel.Show();
     }
 
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
     #endregion
-
-
 
   }
 }

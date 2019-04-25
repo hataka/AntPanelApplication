@@ -1,4 +1,6 @@
 ﻿using AntPanelApplication;
+using AntPanelApplication.Controls;
+using AntPanelApplication.Dialogs;
 using AntPlugin.XmlTreeMenu;
 using CommonLibrary;
 //using AntPlugin.XmlTreeMenu.Controls;
@@ -17,6 +19,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
   {
     static global::AntPanelApplication.Properties.Settings 
       settings = new global::AntPanelApplication.Properties.Settings();
+    
 
     public static XmlMenuTree menuTree
     {
@@ -184,10 +187,12 @@ namespace AntPlugin.XmlTreeMenu.Managers
         //case "runprocessdialog":
         //RunProcessDialog();
         //break;
-
+        case "openproject":
+          ActionManager.OpenProject(ni);
+          break;
         case "openeditabledocument":
         case "opendocument":
-        case "openproject":
+        //case "openproject":
         case "open":
         case "openedit":
         case "openfile":
@@ -258,6 +263,30 @@ namespace AntPlugin.XmlTreeMenu.Managers
       else if (File.Exists(ni.Path))
       {
         menuTree.treeView.Nodes.Clear();
+        // bug fix 2018-03-16
+        // タブコントロールに組み込むと最初に加えたノードが表示されなくなる
+        // 間に合せのパッチ
+        TreeNode dummy = new TreeNode("dummy");
+        menuTree.treeView.Nodes.Add(dummy);
+        menuTree.treeView.Nodes.Add(menuTree.getXmlTreeNode(ni.Path, true));
+      }
+      else return;
+    }
+
+    public static void AddBuildFiles(NodeInfo ni,Boolean clear = true)
+    {
+      String dir = String.Empty;
+      if (ni == null) return;
+      if (ni.Path != String.Empty)
+      {
+        if (System.IO.Directory.Exists(ni.Path)) dir = ni.Path;
+        else if (System.IO.File.Exists(ni.Path)) dir = Path.GetDirectoryName(ni.Path);
+        if (dir != String.Empty) System.IO.Directory.SetCurrentDirectory(dir);
+      }
+      if (ni.Command == "OpenTreeDataDialog") menuTree.antPanel.addButton_Click(null, null);
+      else if (File.Exists(ni.Path))
+      {
+        if(clear == true)menuTree.treeView.Nodes.Clear();
         // bug fix 2018-03-16
         // タブコントロールに組み込むと最初に加えたノードが表示されなくなる
         // 間に合せのパッチ
@@ -366,9 +395,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
     }
 
+    //static SimplePanel simplePanel = new SimplePanel(); 
     public static void ExecuteInPlace(object sender, EventArgs e)
     {
-      /*
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
 
@@ -402,6 +431,15 @@ namespace AntPlugin.XmlTreeMenu.Managers
       ///////////////////////////////////////////////////////////////	
       try
       {
+        Globals.MainForm.OpenCustomDocument("SimplePanel", command);
+        //simplePanel = new SimplePanel();
+        //simplePanel.Dock = DockStyle.Fill;
+        //simplePanel.AccessibleName = command;
+        //TabControl tbctrl = Globals.MainForm.documentTabControl;
+        Globals.MainForm.AddPreviousDocuments((command));
+        //TabPageManager.AddTabPage(simplePanel, tbctrl, true);
+ 
+        /*
         SimplePanel simplePanel = new SimplePanel(menuTree.pluginUI);
         ((Control)simplePanel.Tag).Tag = argstring;
         simplePanel.Dock = DockStyle.Fill;
@@ -423,12 +461,13 @@ namespace AntPlugin.XmlTreeMenu.Managers
         // Patch 2016-03-23
         //this.AddPreviousCustomDocuments("SimplePanel!" + command + "|" + args);
         document.FormClosing += new FormClosingEventHandler(menuTree.CustomDocument_FormClosing);
+        */
       }
       catch (Exception exc)
       {
         MessageBox.Show(Lib.OutputError(exc.Message.ToString()));
       }
-      */
+      
     }
 
     public static void OpenDocument(object sender, EventArgs e)
@@ -621,7 +660,30 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
       return;
     }
-    
+
+    public static void OpenProject(NodeInfo ni)
+    {
+      if (ni == null) return;
+
+      ///////////////////////////////////////////////////////////////
+      //実行出力
+      String file = ni.Path;
+      Directory.SetCurrentDirectory(Path.GetDirectoryName(file));
+      try
+      {
+        //Globals.AntPanel.InitializeTreeView(file);
+        //Globals.AntPanel.dirTreePanel.projectButton.PerformClick();
+        //Globals.MainForm.AddPreviousProjects(file);
+        Globals.AntPanel.OpenProject(file);
+      }
+      catch (Exception exc)
+      {
+        String errmsg = exc.Message.ToString();
+        MessageBox.Show(Lib.OutputError(errmsg), MethodBase.GetCurrentMethod().Name);
+      }
+      return;
+    }
+
     public static void CustomDocument(object sender, EventArgs e)
     {
       ToolStripMenuItem button = sender as ToolStripMenuItem;
@@ -630,7 +692,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       String args = String.Empty;
       String path = String.Empty;
       String option = String.Empty;
- /*
+ 
       if (String.IsNullOrEmpty(argstring)) return;
       try
       {
@@ -651,9 +713,42 @@ namespace AntPlugin.XmlTreeMenu.Managers
         return;
       }
       if (args == String.Empty) args = path;
-      if (!string.IsNullOrEmpty(option)) menuTree.CreateCustomDocument(command, args, option);
-      else menuTree.CreateCustomDocument(command, args);
-      */
+
+      switch (command)
+      {
+        //case "AzukiEditor": break;
+        //case "RichTextEditor": break;
+        //case "HtmlEditor" ; break;
+        //case "BrowserEx": break;
+        //case "OpenGLPanel": break;
+        //case "SimplePanel": break;
+        //case "FlashPanel": break;
+        //case "PDFPanel": break;
+        //case "ReoGridPanel": break;
+        //case "VlcPlayerPanel": break;
+        //case "DataGridPanel": break;
+        case "PlayerPanel":
+        case "Player":
+          command = @"CommonControl.PlayerPanel@F:\VirtualBox\ShareFolder\mono\CommonControls\PlayerPanel\bin\Debug\PlayerPanel.dll";
+          break;
+        case "JsonViewer":
+        case "JsonViewerPanel":
+          command = @"XMLTreeMenu.Controls.JsonViewerPanel@F:\VirtualBox\ShareFolder\mono\CommonControls\JsonViewerPanel\bin\Debug\JsonViewerPanel.dll";
+          break;
+        case "TreeGridView":
+        case "TreeGridViewPanel":
+          command = @"CommonControl.TreeGridViewPanel@F:\VirtualBox\ShareFolder\mono\CommonControls\TreeGridViewPanel\bin\Debug\TreeGridViewPanel.dll";
+          break;
+        case "ListViewPanel":
+        case "ListView":
+          command = @"CommonControl.ListViewPanel@F:\VirtualBox\ShareFolder\mono\CommonControls\ListViewPanel\bin\Debug\ListViewPanel.dll";
+          break;
+      }
+      //if (!string.IsNullOrEmpty(option)) Globals.MainForm.OpenCustomDocument(command, args, option);
+      //else Globals.MainForm.OpenCustomDocument(command, args);
+
+      Globals.MainForm.OpenCustomDocument(command, args);
+
     }
 
     public static void RunTarget(object sender, EventArgs e)
@@ -791,26 +886,18 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void PluginCommand(object sender, EventArgs e)
     {
-      /*
-            ToolStripMenuItem button = sender as ToolStripMenuItem;
-            String argstring = button.Tag as String;
-            if (argstring == "") return;
-
-            //MessageBox.Show(argstring);
-
-            NodeInfo ni = MakeNodeInfo(argstring);
-            try
-            {
-              //MessageBox.Show(ni.Args, ni.Command);
-
-              //PluginBase.MainForm.CallCommand("PluginCommand", ni.Command + ";" + ni.Path);
-              PluginBase.MainForm.CallCommand("PluginCommand", ni.Command + ";" + ni.Args.Replace(";","semicolon"));
-            }
-            catch (Exception exc)
-            {
-              MessageBox.Show(Lib.OutputError(exc.Message.ToString()));
-            }
-      */
+      ToolStripMenuItem button = sender as ToolStripMenuItem;
+      String argstring = button.Tag as String;
+      if (argstring == "") return;
+      NodeInfo ni = MakeNodeInfo(argstring);
+      try
+      {
+        Globals.MainForm.CallCommand("PluginCommand", ni.Command + ";" + ni.Args.Replace(";","semicolon"));
+      }
+      catch (Exception exc)
+      {
+        MessageBox.Show(Lib.OutputError(exc.Message.ToString()));
+      }
     }
 
     public static void CallCommand(object sender, EventArgs e)
@@ -1047,6 +1134,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       */
     }
 
+    public RunProcessDialog runProcessDialog;// = new RunProcessDialog();
     public static void RunProcessDialog(object sender, EventArgs e)
     {
       /*
@@ -1057,7 +1145,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
         {
           Path.GetFileName(menuTree.runProcessDialog.commandComboBox.Text);
           string standardOutput = ProcessHandler.getStandardOutput(menuTree.runProcessDialog.commandComboBox.Text, menuTree.runProcessDialog.argumentComboBox.Text);
-          TraceManager.Add(standardOutput);
+          //TraceManager.Add(standardOutput);
         }
         if (menuTree.runProcessDialog.consoleOutputCheckBox.Checked)
         {
@@ -1337,7 +1425,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
     {
       if (Lib.IsSoundFile(path) || Lib.IsVideoFile(path))
       {
-        ((Form1)menuTree.antPanel.Tag).axWindowsMediaPlayer1.URL = path;
+        //((Form1)menuTree.antPanel.Tag).axWindowsMediaPlayer1.URL = path;
+        Globals.MainForm.OpenCustomDocument("PlayerPanel", path);
       }
     }
 
@@ -1393,7 +1482,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
         else
         {
           //Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", url);
-          Process.Start(settings.win_ChromePath, url);
+          Globals.MainForm.OpenCustomDocument("BrowserEx", url);
+          //Process.Start(settings.win_ChromePath, url);
         }
       }
       catch (Exception exc)
@@ -1442,8 +1532,11 @@ namespace AntPlugin.XmlTreeMenu.Managers
             Process.Start(settings.win_IePath, url);
             break;
           case "chrome":
-          default:
             Process.Start(settings.win_ChromePath, url);
+            break;
+          default:
+            //Process.Start(settings.win_ChromePath, url);
+            Globals.MainForm.OpenCustomDocument("Browser", url);
             break;
         }
       }

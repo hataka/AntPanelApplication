@@ -10,6 +10,7 @@ using AntPlugin.CommonLibrary;
 using System.Net;
 using CommonLibrary;
 using AntPlugin.XmlTreeMenu.Managers;
+using AntPanelApplication.Dialogs;
 
 namespace AntPlugin.XmlTreeMenu
 {

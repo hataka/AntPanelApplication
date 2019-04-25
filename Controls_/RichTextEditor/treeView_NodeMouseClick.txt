@@ -1,0 +1,202 @@
+	
+	  this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
+	  this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
+	  this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
+	  this.treeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView_MouseDown);
+	
+	
+	
+	private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right)
+			{
+				if(treeView.GetNodeAt(e.Location) is AntTreeNode)
+				{
+					AntTreeNode currentNode = treeView.GetNodeAt(e.Location) as AntTreeNode;
+					treeView.SelectedNode = currentNode;
+					if (currentNode.Parent == null)
+						buildFileMenu.Show(treeView, e.Location);
+					else
+						targetMenu.Show(treeView, e.Location);
+				}
+				else
+				{
+					TreeNode currentNode = treeView.GetNodeAt(e.Location) as TreeNode;
+					treeView.SelectedNode = currentNode;
+					if (currentNode.Tag == null) return;
+					if (currentNode.Tag.GetType().Name == "NodeInfo")
+					{
+						try
+						{
+							this.menuTree.contextMenuStrip1.Show(treeView, e.Location);
+						}
+						catch (Exception Exception)
+						{
+							MessageBox.Show(Exception.Message.ToString(), "TreeMenu:treeView_NodeMouseClick:125");
+						}
+					}
+					else if(currentNode.Tag.GetType().Name == "MemberModel")
+					{
+						MessageBox.Show(((MemberModel)currentNode.Tag).Name);
+					}
+					else if (currentNode.Tag.GetType().Name == "string")
+					{
+						MessageBox.Show((string)currentNode.Tag);
+					}
+				}
+			}
+		}
+		
+		
+		
+		private void DirTreeView_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right)
+			{
+				TreeNode currentNode = this.GetNodeAt(e.Location) as TreeNode;
+				this.SelectedNode = currentNode;
+				this.contextMenuStrip1.Show(this, e.Location);
+			}
+		}
+
+using System;
+using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+
+namespace Highlighter
+{
+	public partial class Form1 : Form
+	{
+		public Form1()
+		{
+			InitializeComponent();
+
+		}
+
+		private void codeRichTextBox_TextChanged(object sender, EventArgs e)
+		{
+			// getting keywords/functions
+			string keywords = @"\b(public|private|partial|static|namespace|class|using|void|foreach|in)\b";
+			MatchCollection keywordMatches = Regex.Matches(codeRichTextBox.Text, keywords);
+
+			// getting types/classes from the text 
+			string types = @"\b(Console)\b";
+			MatchCollection typeMatches = Regex.Matches(codeRichTextBox.Text, types);
+
+			// getting comments (inline or multiline)
+			string comments = @"(\/\/.+?$|\/\*.+?\*\/)";   
+			MatchCollection commentMatches = Regex.Matches(codeRichTextBox.Text, comments, RegexOptions.Multiline);
+
+			// getting strings
+			string strings = "\".+?\"";
+			MatchCollection stringMatches = Regex.Matches(codeRichTextBox.Text, strings);
+
+			// saving the original caret position + forecolor
+			int originalIndex = codeRichTextBox.SelectionStart;
+			int originalLength = codeRichTextBox.SelectionLength;
+			Color originalColor = Color.Black;
+
+			// MANDATORY - focuses a label before highlighting (avoids blinking)
+			titleLabel.Focus();
+
+			// removes any previous highlighting (so modified words won't remain highlighted)
+			codeRichTextBox.SelectionStart = 0;
+			codeRichTextBox.SelectionLength = codeRichTextBox.Text.Length;
+			codeRichTextBox.SelectionColor = originalColor;
+
+			// scanning...
+			foreach (Match m in keywordMatches)
+			{
+				codeRichTextBox.SelectionStart = m.Index;
+				codeRichTextBox.SelectionLength = m.Length;
+				codeRichTextBox.SelectionColor = Color.Blue;
+			}
+
+			foreach (Match m in typeMatches)
+			{
+				codeRichTextBox.SelectionStart = m.Index;
+				codeRichTextBox.SelectionLength = m.Length;
+				codeRichTextBox.SelectionColor = Color.DarkCyan;
+			}
+
+			foreach (Match m in commentMatches)
+			{
+				codeRichTextBox.SelectionStart = m.Index;
+				codeRichTextBox.SelectionLength = m.Length;
+				codeRichTextBox.SelectionColor = Color.Green;
+			}
+
+			foreach (Match m in stringMatches)
+			{
+				codeRichTextBox.SelectionStart = m.Index;
+				codeRichTextBox.SelectionLength = m.Length;
+				codeRichTextBox.SelectionColor = Color.Brown;
+			}
+
+			// restoring the original colors, for further writing
+			codeRichTextBox.SelectionStart = originalIndex;
+			codeRichTextBox.SelectionLength = originalLength;
+			codeRichTextBox.SelectionColor = originalColor;
+
+			// giving back the focus
+			codeRichTextBox.Focus();
+		}
+	}
+}
+I think you are just looking for the "IsSplitterFixed" property
+
+
+
+
+
+using System.Windows.Forms;
+
+namespace Example
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+
+            // イベントの割当
+            panel1.Scroll += panel1_Scroll;
+            panel2.Scroll += panel2_Scroll;
+            panel1.MouseWheel += panel1_MouseWheel;
+            panel2.MouseWheel += panel2_MouseWheel;
+        }
+
+        // Scroll, MouseWheelイベントの設定
+        private void panel1_Scroll(object sender, ScrollEventArgs e)
+        {
+            MoveLinkageScrollableControl(sender as Panel, panel2);
+        }
+        private void panel1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            MoveLinkageScrollableControl(sender as Panel, panel2);
+        }
+
+        private void panel2_Scroll(object sender, ScrollEventArgs e)
+        {
+            MoveLinkageScrollableControl(sender as Panel, panel1);
+        }
+        private void panel2_MouseWheel(object sender, MouseEventArgs e)
+        {
+            MoveLinkageScrollableControl(sender as Panel, panel1);
+        }
+
+        /// <summary>
+        /// 連動するパネルのスクロール位置を設定します。
+        /// </summary>
+        /// <param name="self">イベントが発生したパネル</param>
+        /// <param name="linkage">もう片方のパネル</param>
+        private void MoveLinkageScrollableControl(Panel self, Panel linkage)
+        {
+            int x = self.HorizontalScroll.Value;
+            int y = self.VerticalScroll.Value;
+            linkage.AutoScrollPosition = new System.Drawing.Point(x, y);
+        }
+    }
+}
+簡単に説明すると、スクロールの移動が走ったパネルのScrollイベントとMous

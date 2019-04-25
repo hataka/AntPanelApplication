@@ -1,9 +1,8 @@
+using AntPanelApplication.Controls;
 using AntPanelApplication.Helpers;
-using AntPanelApplication.Managers;
 using AntPlugin.XMLTreeMenu.Controls;
 using CommonLibrary;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -19,7 +18,7 @@ using System.Windows.Forms;
 
 namespace AntPanelApplication.Utilities
 {
-	public class ArgsProcessor
+  public class ArgsProcessor
 	{
 		/// <summary>
 		/// Regexes for tab and var replacing

@@ -35,6 +35,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -61,6 +63,7 @@
     <Compile Include="Controls\ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DistroConfig.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\DrawHelper.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
@@ -74,6 +77,9 @@
     <Compile Include="Helpers\SnippetHelper.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="interfaces.cs" />
+    <Compile Include="Localization\Attributes.cs" />
+    <Compile Include="Localization\LocaleVersion.cs" />
+    <Compile Include="Localization\TextHelper.cs" />
     <Compile Include="Managers\DocumentManager.cs" />
     <Compile Include="Managers\Enumerators.cs" />
     <Compile Include="Managers\ErrorManager.cs" />
@@ -105,6 +111,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Utilities\ExtensionClasses.cs" />
+    <Compile Include="Utilities\ObjectSerializer.cs" />
     <Compile Include="Win32.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -130,10 +137,10 @@
   <ItemGroup>
     <None Include="Resources\PSPad.bmp" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Ookii.Dialogs\license.txt" />
     <Content Include="Ookii.Dialogs\VistaFolderBrowserDialog.bmp" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

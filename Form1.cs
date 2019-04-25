@@ -1,17 +1,17 @@
-﻿using AntPanelApplication.Helpers;
-//using AntPanelApplication.Helpers;
+﻿using AntPanelApplication.Controls;
+using AntPanelApplication.Dialogs;
+using AntPanelApplication.Helpers;
 using AntPanelApplication.Managers;
 using AntPanelApplication.Utilities;
+using AntPlugin.XmlTreeMenu.Managers;
 using AntPlugin.XMLTreeMenu.Controls;
 using CommonInterface;
 using CommonInterface.Managers;
 using CommonLibrary;
 using CommonLibrary.Controls;
 using CSScriptLibrary;
-//using MDIForm;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -20,7 +20,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-//using XMLTreeMenu.Controls;
 
 namespace AntPanelApplication
 {
@@ -46,8 +45,10 @@ namespace AntPanelApplication
     public RichTextEditor editor;
     public PlayerPanel player;
     public SimplePanel panel;
+    //public RunProcessDialog runProcessDialog;// = new RunProcessDialog();
 
     public List<string> previousDocuments = new List<string>();
+    public List<string> previousProjects = new List<string>();
     public bool showIcon = true;
     #endregion
 
@@ -76,7 +77,10 @@ namespace AntPanelApplication
       this.InitializeComponents();
       this.InitializeProcessRunner();
       this.InitializeSmartDialogs();
+
       this.InitializeMainForm();
+
+
       this.InitializeGraphics();
       //Application.AddMessageFilter(this);
       //}
@@ -541,6 +545,14 @@ namespace AntPanelApplication
       }
       set { this.previousDocuments = value; }
     }
+    public List<String> PreviousProjects
+    {
+      get
+      {
+        return this.previousProjects;
+      }
+      set { this.previousProjects = value; }
+    }
 
 
     #endregion
@@ -561,7 +573,6 @@ namespace AntPanelApplication
         OpenCustomDocument(name, args);
       }
     }
-
     public Control OpenCustomDocument(String name, String argStr,Boolean singleton=true)
     {
       String alignment = "Top";
@@ -597,13 +608,14 @@ namespace AntPanelApplication
             for (int i = 0; i < args.Length; i++)
             {
               //MessageBox.Show(args[i]);
-              BrowserEx browser = new BrowserEx();
-              browser.AccessibleDescription = args[i];
+              //BrowserEx browser = new BrowserEx();
+              Browser browser = new Browser();
+              browser.AccessibleName = args[i];
               browser.Dock = DockStyle.Fill;
               browser.AccessibleDescription = args[i];
-              //(String)((Control)browser.Tag).Tag  = args[i];
-              String url = ((Control)browser.Tag).Tag as String;
-              url = args[i];
+              ((Control)browser.Tag).Tag  = args[i];
+              //String url = ((Control)browser.Tag).Tag as String;
+              //url = args[i];
               TabPageManager.AddTabPage((Control)browser, this.documentTabControl);
               WebBrowser br = browser.Tag as WebBrowser;
               br.Navigate(args[i]);
@@ -693,6 +705,11 @@ namespace AntPanelApplication
           case "playerpanel":
             if (IsRunningUnix) return null;
             control = new PlayerPanel() as Control;
+            classname = control.GetType().FullName;
+            break;
+          case "browser":
+            if (IsRunningUnix) return null;
+            control = new Browser();
             classname = control.GetType().FullName;
             break;
           case "browserex":
@@ -807,7 +824,6 @@ namespace AntPanelApplication
       }
       return result;
     }
-
     public void OpenDocument(String tagStr,Boolean singleton=true)
     {
       String name = String.Empty;
@@ -829,8 +845,10 @@ namespace AntPanelApplication
 
         if(Path.GetExtension(args[i]) == ".fdp")
         {
-          Globals.AntPanel.InitializeTreeView(args[i]);
-          Globals.AntPanel.dirTreePanel.projectButton.PerformClick();
+          //Globals.AntPanel.InitializeTreeView(args[i]);
+          //Globals.AntPanel.dirTreePanel.projectButton.PerformClick();
+          //this.AddPreviousProjects(args[i]);
+          Globals.AntPanel.OpenProject(args[i]);
         }
 
         if (IsRunningUnix)
@@ -934,7 +952,6 @@ namespace AntPanelApplication
         MessageBox.Show(Lib.OutputError(ex.Message.ToString()), "CreateDockablePanel");
       }
     }
-
     /// <summary>
     /// Opens the specified file and creates a editable document
     /// </summary>
@@ -1069,7 +1086,6 @@ namespace AntPanelApplication
       //ButtonManager.UpdateFlaggedButtons();
       return createdDoc;
     }
-
     public Control OpenEditableDocument(String file, Boolean restorePosition)
     {
       return this.OpenEditableDocument(file, null, restorePosition);
@@ -1121,33 +1137,49 @@ namespace AntPanelApplication
     public void InitializeSmartDialogs() { }
     //private DialogResult InitializeFirstRun() { }
     private void InitializeRendering() { }
-    private void InitializeSettings() { }
+    private void InitializeSettings()
+    {
+      this.settings = new Properties.Settings();
+      this.resources = new Properties.Resources();
+      this.settings.Reload();
+
+      /*
+      this.appSettings = SettingObject.GetDefaultSettings();
+      if (File.Exists(FileNameHelper.SettingData))
+      {
+        Object obj = ObjectSerializer.Deserialize(FileNameHelper.SettingData, this.appSettings, false);
+        this.appSettings = (SettingObject)obj;
+      }
+      SettingObject.EnsureValidity(this.appSettings);
+      FileStateManager.RemoveOldStateFiles();
+      */
+    }
     private void InitializeLocalization() { }
     public void InitializeProcessRunner() { }
     public void CheckForUpdates() { }
     public void InitializeWindow() { }
     public void InitializeMainForm()
     {
-      this.ApplySettings();
+      //this.ApplySettings();
       // https://dobon.net/vb/dotnet/control/tabpagehide.html
       //TabPageManagerオブジェクトの作成
       TabPageManager.AddTabControl(this.documentTabControl);
       TabPageManager.AddTabControl(this.rightTabControl);
       TabPageManager.AddTabControl(this.bottomTabControl);
-
       this.settings = new global::AntPanelApplication.Properties.Settings();
       this.splitContainer1.Panel1.Controls.Add(Globals.AntPanel);
       //this.splitContainer1.Panel2Collapsed = true;
       //this.splitContainer1.Panel1Collapsed = false;
       Globals.AntPanel.Dock = DockStyle.Fill;
       //Globals.AntPanel.Tag = this; //??
+
       InitializeTabControls();
 
       LoadPlugins();
-
       this.Text = "AntPanel : " + Path.GetFileName(Globals.AntPanel.AccessibleDescription);
       this.Size = new Size(1200, 800);
       this.StartPosition = FormStartPosition.CenterScreen;
+
     }
 
     private void LoadPlugins()
@@ -1238,7 +1270,7 @@ namespace AntPanelApplication
     }
     private void LoadPlayerPanel(String path)
     {
-      this.player = new AntPlugin.XMLTreeMenu.Controls.PlayerPanel();
+      this.player = new PlayerPanel();
       this.player.Dock = System.Windows.Forms.DockStyle.Fill;
       this.player.AccessibleDescription = "二つのミサ曲";
       this.player.AccessibleDefaultActionDescription = this.GetType().FullName + ";" + Application.ExecutablePath;
@@ -1256,22 +1288,28 @@ namespace AntPanelApplication
       ((Control)this.panel.Tag).Tag = path;
       TabPageManager.AddTabPage(this.panel, this.bottomTabControl);
     }
-
+    /*
     private void ApplySettings()
     {
+      Properties.Settings.Default.Reload();
       this.menuStrip.Visible = this.settings.MenuBarVisible;
       this.toolStrip.Visible = this.settings.ToolBarVisible;
       this.statusStrip.Visible = this.settings.StatusBarVisible;
       // https://stackoverflow.com/questions/844412/convert-stringcollection-to-liststring
       //this.previousDocuments = new List<string>(((StringCollection)this.settings.PreviousDocuments).Cast<string>());
       //string[] names = this.previousDocuments.Cast<string>().ToArray();
+
       this.previousDocuments = new List<string>();
       foreach (string item in this.settings.PreviousDocuments) this.previousDocuments.Add(item);
       this.PopulatePreviousDocumentsMenu();
+
+      this.previousProjects = new List<string>();
+      foreach (string item in this.settings.PreviousProjects) this.previousProjects.Add(item);
+      this.PopulatePreviousProjectsMenu();
       //this.gradleButton.Image = global::AntPanelApplication.Properties.Resources.gradle;
       //this.gradleButton.Image = Resources.gradle;
     }
-
+    */
     private System.Windows.Forms.ToolStrip toolStrip2;
     //private System.Windows.Forms.StatusStrip statusStrip;
     //private ToolStripPanel toolStripPanel;
@@ -1317,7 +1355,6 @@ namespace AntPanelApplication
       this.tabMenu = StripBarManager.GetContextMenu(FileNameHelper.TabMenu);
       this.tabMenu.Tag = this.documentTabControl;
       this.tabMenu.Name = "tabMenu";
-      //this.tabMenu.Font = this.settings.DefaultFont; 
       this.toolStripStatusLabel = new ToolStripStatusLabel();
       this.toolStripProgressLabel = new ToolStripStatusLabel();
       this.toolStripProgressBar = new ToolStripProgressBar();
@@ -1343,7 +1380,7 @@ namespace AntPanelApplication
 
       //this.tabMenu.Font = this.settings.DefaultFont;
       //this.toolStrip.Font = this.settings.DefaultFont;
-      //this.menuStrip.Font = this.settings.DefaultFont;
+      //this.menuStrip.Font = toFont(this.settings.DefaultFont);
       //this.editorMenu.Font = this.settings.DefaultFont;
       this.tabMenu.Font = new Font("Meiryo UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
       this.toolStrip.Font = new Font("Meiryo UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
@@ -1360,8 +1397,8 @@ namespace AntPanelApplication
       // 
       // openFileDialog
       //
-      this.openFileDialog.Title = " " + TextHelper.GetString("Title.OpenFileDialog");
-      this.openFileDialog.Filter = TextHelper.GetString("Info.FileDialogFilter") + "|*.*";
+      this.openFileDialog.Title = " " + CommonInterface.Localization.TextHelper.GetString("Title.OpenFileDialog");
+      this.openFileDialog.Filter = CommonInterface.Localization.TextHelper.GetString("Info.FileDialogFilter") + "|*.*";
       this.openFileDialog.RestoreDirectory = true;
       //
       // colorDialog
@@ -1379,17 +1416,9 @@ namespace AntPanelApplication
       // 
       // saveFileDialog
       //
-      this.saveFileDialog.Title = " " + TextHelper.GetString("Title.SaveFileDialog");
-      this.saveFileDialog.Filter = TextHelper.GetString("Info.FileDialogFilter") + "|*.*";
+      this.saveFileDialog.Title = " " + CommonInterface.Localization.TextHelper.GetString("Title.SaveFileDialog");
+      this.saveFileDialog.Filter = CommonInterface.Localization.TextHelper.GetString("Info.FileDialogFilter") + "|*.*";
       this.saveFileDialog.RestoreDirectory = true;
-      // 
-      // dockPanel
-      //
-      //this.dockPanel.TabIndex = 2;
-      //this.dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
-      //this.dockPanel.DockWindows[DockState.Document].Controls.Add(this.quickFind);
-      //this.dockPanel.Dock = DockStyle.Fill;
-      //this.dockPanel.Name = "dockPanel";
       //
       // toolStripStatusLabel
       //
@@ -1432,7 +1461,6 @@ namespace AntPanelApplication
       this.Controls.Add(this.statusStrip);
       this.MainMenuStrip = this.menuStrip;
       this.Size = this.settings.WindowSize;
-      //this.Font = this.settings.DefaultFont;
       this.Font = new Font("Meiryo UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
       this.StartPosition = FormStartPosition.CenterScreen;
       this.Closing += new CancelEventHandler(this.OnMainFormClosing);
@@ -1470,7 +1498,6 @@ namespace AntPanelApplication
     /// </summary>
     public void HandleEvent(Object sender, NotifyEvent e, CommonInterface.Managers.HandlingPriority prority)
     {
-      //MessageBox.Show("HandleEvent");
       switch (e.Type)
       {
         case CommonInterface.Managers.EventType.FileOpen:
@@ -1484,31 +1511,25 @@ namespace AntPanelApplication
           /*
           this.SetEnvironmentVariable();
           */
-
-
           //以下OK
           //string fileName = PluginBase.MainForm.CurrentDocument.FileName;
           //if (File.Exists(fileName))
           //{
           //this.pluginUI.AddPreviousCustomDocuments(fileName);
           //}
-
-
           break;
         case CommonInterface.Managers.EventType.Command:
           DataEvent evnt = (DataEvent)e;
-          //MessageBox.Show(evnt.Action);
+          NodeInfo ni = new NodeInfo();
           switch (evnt.Action)
           {
             case "XMLTreeMenu.Load":
-              string path = Globals.MainForm.ProcessArgString(evnt.Data.ToString());
-
-              //Globals.AntPanel.menuTree.LoadFile(path);
-              //Globals.AntPanel.OpenPanel(null, null);
+              ni.Path = Globals.MainForm.ProcessArgString(evnt.Data.ToString());
+              ActionManager.AddBuildFiles(ni);
               evnt.Handled = true;
               return;
             case "XMLTreeMenu.ImportXml":
-              //this.pluginUI.ImportXml();
+              //Globals.AntPanel.menuTree.ImportXml();
               //this.OpenPanel(null, null);
               evnt.Handled = true;
               return;
@@ -1553,7 +1574,9 @@ namespace AntPanelApplication
               evnt.Handled = true;
               return;
             case "XMLTreeMenu.ExecuteInPlace":
-              //this.pluginUI.ExecuteInPlace(evnt.Data.ToString());
+              this.OpenCustomDocument("SimplePanel", evnt.Data.ToString());
+              //ActionManager.ExecuteInPlace()
+              //pluginUI.ExecuteInPlace(evnt.Data.ToString());
               evnt.Handled = true;
               return;
             case "XMLTreeMenu.CloseOpen":
@@ -1726,12 +1749,29 @@ namespace AntPanelApplication
     private void OnMainFormLoad(Object sender, System.EventArgs e)
     {
       this.AddEventHandlers();
+
+
+
+
+
       this.projectPath = Globals.AntPanel.projectPath;
 
+
+      this.ApplyAllSettings();
+
+
+
+
+
+
+
+
+
+
       //this.CreateTabPages();
-      /**
-			* DockPanel events
-			*/
+      ///
+      ///  DockPanel events
+      ///  
       /*
       this.dockPanel.ActivePaneChanged += new EventHandler(this.OnActivePaneChanged);
       this.dockPanel.ActiveContentChanged += new EventHandler(this.OnActiveContentChanged);
@@ -1755,7 +1795,7 @@ namespace AntPanelApplication
 			*/
       if (Arguments != null && Arguments.Length != 0)
       {
-        //this.ProcessParameters(Arguments);
+        this.ProcessParameters(Arguments);
         //Arguments = null;
         this.OpenDocument(Arguments[0]);
       }
@@ -1802,6 +1842,7 @@ namespace AntPanelApplication
 			*/
       this.CheckForUpdates();
     }
+
     public void OnMainFormClosing(Object sender, System.ComponentModel.CancelEventArgs e)
     {
 			//this.closingEntirely = true;
@@ -1845,8 +1886,8 @@ namespace AntPanelApplication
 				//SessionManager.SaveSession(file, session);
 				//ShortcutManager.SaveCustomShortcuts();
 				//ArgumentDialog.SaveCustomArguments();
-				//PluginServices.DisposePlugins();
-				//this.KillProcess();
+				PluginServices.DisposePlugins();
+				this.KillProcess();
 				this.SaveAllSettings();
 			}
 			else this.restartRequested = false;
@@ -1972,87 +2013,92 @@ namespace AntPanelApplication
     //EventManager.DispatchEvent(this, ce);
       }
 			catch (Exception ex)
-			{
-				//ErrorManager.ShowError(ex);
-			}
-		}
-/*
-/// <summary>
-/// Checks that if the are any modified documents when closing.
-/// </summary>
-public void OnDocumentClosing(Object sender, System.ComponentModel.CancelEventArgs e)
-{
-  ITabbedDocument document = (ITabbedDocument)sender;
-  if (this.closeAllCanceled && this.closingAll) e.Cancel = true;
-  else if (document.IsModified)
-  {
-    String saveChanges = TextHelper.GetString("Info.SaveChanges");
-    String saveChangesTitle = TextHelper.GetString("Title.SaveChanges");
-    DialogResult result = MessageBox.Show(this, saveChanges, saveChangesTitle + " " + document.Text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-    if (result == DialogResult.Yes)
-    {
-      if (document.IsUntitled)
       {
-        this.saveFileDialog.FileName = document.FileName;
-        if (this.saveFileDialog.ShowDialog(this) == DialogResult.OK && this.saveFileDialog.FileName.Length != 0)
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //ErrorManager.ShowError(ex);
+      }
+    }
+
+    /// <summary>
+    /// Checks that if the are any modified documents when closing (未着手).
+    /// </summary>
+    public void OnDocumentClosing(Object sender, System.ComponentModel.CancelEventArgs e)
+    {
+      /*
+      Control document = (Control)sender;
+      if (this.closeAllCanceled && this.closingAll) e.Cancel = true;
+      else if (document.IsModified)
+      {
+        String saveChanges = TextHelper.GetString("Info.SaveChanges");
+        String saveChangesTitle = TextHelper.GetString("Title.SaveChanges");
+        DialogResult result = MessageBox.Show(this, saveChanges, saveChangesTitle + " " + document.Text, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+        if (result == DialogResult.Yes)
         {
-          ButtonManager.AddNewReopenMenuItem(this.saveFileDialog.FileName);
-          document.Save(this.saveFileDialog.FileName);
+          if (document.IsUntitled)
+          {
+            this.saveFileDialog.FileName = document.FileName;
+            if (this.saveFileDialog.ShowDialog(this) == DialogResult.OK && this.saveFileDialog.FileName.Length != 0)
+            {
+              ButtonManager.AddNewReopenMenuItem(this.saveFileDialog.FileName);
+              document.Save(this.saveFileDialog.FileName);
+            }
+            else
+            {
+              if (this.closingAll) this.closeAllCanceled = true;
+              e.Cancel = true;
+            }
+          }
+          else if (document.IsModified) document.Save();
         }
-        else
+        else if (result == DialogResult.Cancel)
         {
           if (this.closingAll) this.closeAllCanceled = true;
           e.Cancel = true;
         }
+        else if (result == DialogResult.No)
+        {
+          RecoveryManager.RemoveTemporaryFile(document.FileName);
+        }
       }
-      else if (document.IsModified) document.Save();
+      if (this.Documents.Length == 1 && document.IsUntitled && !document.IsModified && document.SciControl.Length == 0 && !e.Cancel && !this.closingForOpenFile && !this.restoringContents)
+      {
+        e.Cancel = true;
+      }
+      if (this.Documents.Length == 1 && !e.Cancel && !this.closingForOpenFile && !this.closingEntirely && !this.restoringContents)
+      {
+        NotifyEvent ne = new NotifyEvent(EventType.FileEmpty);
+        EventManager.DispatchEvent(this, ne);
+        if (!ne.Handled) this.SmartNew(null, null);
+      }
+      */
     }
-    else if (result == DialogResult.Cancel)
-    {
-      if (this.closingAll) this.closeAllCanceled = true;
-      e.Cancel = true;
-    }
-    else if (result == DialogResult.No)
-    {
-      RecoveryManager.RemoveTemporaryFile(document.FileName);
-    }
-  }
-  if (this.Documents.Length == 1 && document.IsUntitled && !document.IsModified && document.SciControl.Length == 0 && !e.Cancel && !this.closingForOpenFile && !this.restoringContents)
-  {
-    e.Cancel = true;
-  }
-  if (this.Documents.Length == 1 && !e.Cancel && !this.closingForOpenFile && !this.closingEntirely && !this.restoringContents)
-  {
-    NotifyEvent ne = new NotifyEvent(EventType.FileEmpty);
-    EventManager.DispatchEvent(this, ne);
-    if (!ne.Handled) this.SmartNew(null, null);
-  }
-}
 
-/// <summary>
-/// Activates the previous document when document is closed
-/// </summary>
-public void OnDocumentClosed(Object sender, System.EventArgs e)
-{
-  ITabbedDocument document = sender as ITabbedDocument;
-  TabbingManager.TabHistory.Remove(document);
-  TextEvent ne = new TextEvent(EventType.FileClose, document.FileName);
-  EventManager.DispatchEvent(this, ne);
-  if (this.appSettings.SequentialTabbing)
-  {
-    if (TabbingManager.SequentialIndex == 0) this.Documents[0].Activate();
-    else TabbingManager.NavigateTabsSequentially(-1);
-  }
-  else TabbingManager.NavigateTabHistory(0);
-  if (document.IsEditable && !document.IsUntitled)
-  {
-    if (this.appSettings.RestoreFileStates) FileStateManager.SaveFileState(document);
-    RecoveryManager.RemoveTemporaryFile(document.FileName);
-    OldTabsManager.SaveOldTabDocument(document.FileName);
-  }
-  ButtonManager.UpdateFlaggedButtons();
-}
-
+    /// <summary>
+    /// Activates the previous document when document is closed (未着手)
+    /// </summary>
+    public void OnDocumentClosed(Object sender, System.EventArgs e)
+    {
+      /*
+      ITabbedDocument document = sender as ITabbedDocument;
+      TabbingManager.TabHistory.Remove(document);
+      TextEvent ne = new TextEvent(EventType.FileClose, document.FileName);
+      EventManager.DispatchEvent(this, ne);
+      if (this.appSettings.SequentialTabbing)
+      {
+        if (TabbingManager.SequentialIndex == 0) this.Documents[0].Activate();
+        else TabbingManager.NavigateTabsSequentially(-1);
+      }
+      else TabbingManager.NavigateTabHistory(0);
+      if (document.IsEditable && !document.IsUntitled)
+      {
+        if (this.appSettings.RestoreFileStates) FileStateManager.SaveFileState(document);
+        RecoveryManager.RemoveTemporaryFile(document.FileName);
+        OldTabsManager.SaveOldTabDocument(document.FileName);
+      }
+      ButtonManager.UpdateFlaggedButtons();
+      */
+    }
+    /*
 /// <summary>
 /// Refreshes the statusbar display and updates the important edit buttons
 /// </summary>
@@ -2302,30 +2348,29 @@ public void OnDocumentModify(ITabbedDocument document)
     EventManager.DispatchEvent(this, te);
   }
 }
-
-/// <summary>
-/// Notifies the plugins for the FileSave event
-/// </summary>
-public void OnFileSave(ITabbedDocument document, String oldFile)
-{
-
-  if (oldFile != null)
-  {
-    String args = document.FileName + ";" + oldFile;
-    TextEvent rename = new TextEvent(EventType.FileRename, args);
-    EventManager.DispatchEvent(this, rename);
-    TextEvent open = new TextEvent(EventType.FileOpen, document.FileName);
-    EventManager.DispatchEvent(this, open);
-  }
-  this.OnUpdateMainFormDialogTitle();
-  if (document.IsEditable) document.SciControl.MarkerDeleteAll(2);
-  TextEvent save = new TextEvent(EventType.FileSave, document.FileName);
-  EventManager.DispatchEvent(this, save);
-  ButtonManager.UpdateFlaggedButtons();
-  TabTextManager.UpdateTabTexts();
- 
-}
 */
+  /// <summary>
+  /// Notifies the plugins for the FileSave event 未着手
+  /// </summary>
+  public void OnFileSave(Control document, String oldFile)
+  {
+    /*
+    if (oldFile != null)
+    {
+      String args = document.FileName + ";" + oldFile;
+      TextEvent rename = new TextEvent(EventType.FileRename, args);
+      EventManager.DispatchEvent(this, rename);
+      TextEvent open = new TextEvent(EventType.FileOpen, document.FileName);
+      EventManager.DispatchEvent(this, open);
+    }
+    this.OnUpdateMainFormDialogTitle();
+    if (document.IsEditable) document.SciControl.MarkerDeleteAll(2);
+    TextEvent save = new TextEvent(EventType.FileSave, document.FileName);
+    EventManager.DispatchEvent(this, save);
+    ButtonManager.UpdateFlaggedButtons();
+    TabTextManager.UpdateTabTexts();
+  */
+  }
 
     #endregion
 
@@ -2730,7 +2775,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     /// </summary> 
     public void ProcessParameters(String[] args)
     {
-      /*
 			if (this.InvokeRequired)
 			{
 				this.BeginInvoke((MethodInvoker)delegate { this.ProcessParameters(args); });
@@ -2745,11 +2789,13 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
 					OpenDocumentFromParameters(args[i]);
 				}
 			}
-			if (Win32.ShouldUseWin32()) Win32.RestoreWindow(this.Handle);
-			// Notify plugins about start arguments
-			NotifyEvent ne = new NotifyEvent(EventType.StartArgs);
-			EventManager.DispatchEvent(this, ne);
-			*/
+
+
+      //if (Win32.ShouldUseWin32()) Win32.RestoreWindow(this.Handle);
+      // Notify plugins about start arguments
+      //NotifyEvent ne = new NotifyEvent(Managers.EventType.StartArgs);
+      //EventManager.DispatchEvent(this, ne);
+
     }
 
     /// <summary>
@@ -2757,25 +2803,25 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     /// </summary>
     private void OpenDocumentFromParameters(String file)
     {
-      /*
-			Match openParams = Regex.Match(file, "@([0-9]+)($|:([0-9]+)$)"); // path@line:col
+ 			Match openParams = Regex.Match(file, "@([0-9]+)($|:([0-9]+)$)"); // path@line:col
 			if (openParams.Success)
 			{
 				file = file.Substring(0, openParams.Index);
-				file = PathHelper.GetLongPathName(file);
+				//file = PathHelper.GetLongPathName(file);
 				if (File.Exists(file))
 				{
-					TabbedDocument doc = this.OpenEditableDocument(file, false) as TabbedDocument;
-					if (doc != null) ApplyOpenParams(openParams, doc.SciControl);
-					else if (CurrentDocument.FileName == file) ApplyOpenParams(openParams, CurrentDocument.SciControl);
-				}
-			}
+          this.OpenEditableDocument(file);
+          //TabbedDocument doc = this.OpenEditableDocument(file, false) as TabbedDocument;
+          //if (doc != null) ApplyOpenParams(openParams, doc.SciControl);
+          //else if (CurrentDocument.FileName == file) ApplyOpenParams(openParams, CurrentDocument.SciControl);
+        }
+      }
 			else if (File.Exists(file))
 			{
-				file = PathHelper.GetLongPathName(file);
+				//file = PathHelper.GetLongPathName(file);
 				this.OpenEditableDocument(file);
 			}
-			*/
+			
     }
 
     /// <summary>
@@ -2828,6 +2874,28 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     public void ApplyAllSettings()
     {
       /*
+      this.menuStrip.Visible = this.settings.MenuBarVisible;
+      this.toolStrip.Visible = this.settings.ToolBarVisible;
+      this.statusStrip.Visible = this.settings.StatusBarVisible;
+      */
+      // https://stackoverflow.com/questions/844412/convert-stringcollection-to-liststring
+      //this.previousDocuments = new List<string>(((StringCollection)this.settings.PreviousDocuments).Cast<string>());
+      //string[] names = this.previousDocuments.Cast<string>().ToArray();
+
+      //this.runProcessDialog = new RunProcessDialog();
+
+      this.previousDocuments = new List<string>();
+      foreach (string item in this.settings.PreviousDocuments) this.previousDocuments.Add(item);
+      this.PopulatePreviousDocumentsMenu();
+
+      this.previousProjects = new List<string>();
+      foreach (string item in this.settings.PreviousProjects) this.previousProjects.Add(item);
+      this.PopulatePreviousProjectsMenu();
+      
+      
+      //this.gradleButton.Image = global::AntPanelApplication.Properties.Resources.gradle;
+      //this.gradleButton.Image = Resources.gradle;
+      /*
 			if (this.InvokeRequired)
 			{
 				this.BeginInvoke((MethodInvoker) this.ApplyAllSettings);
@@ -2871,30 +2939,16 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
 					String folder = Path.GetDirectoryName(FileNameHelper.SettingData);
 					if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 				}
-
-
-
         //ObjectSerializer.Serialize(FileNameHelper.SettingData, this.appSettings);
         this.settings.PreviousDocuments.Clear();
         foreach (string item in this.previousDocuments) this.settings.PreviousDocuments.Add(item);
+
+        this.settings.PreviousProjects.Clear();
+        foreach (string item2 in this.previousProjects) this.settings.PreviousProjects.Add(item2);
         this.settings.Save();
-
-
-
-
-        /*
-        try { this.dockPanel.SaveAsXml(FileNameHelper.LayoutData); }
-				catch (Exception ex2)
-				{
-					// Ignore errors on multi instance full close...
-					if (this.MultiInstanceMode && this.ClosingEntirely) return;
-					else throw ex2;
-				}
-        */
       }
       catch (Exception ex)
 			{
-				//ErrorManager.ShowError(ex);
         MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
       }
     }
@@ -3153,12 +3207,84 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         editor.上書き保存SToolStripMenuItem.PerformClick();
       }
     }
-    public void SaveAll(object sender, EventArgs e) { }
-    public void Print(object sender, EventArgs e) { }
-    public void ToggleBookmark(object sender, EventArgs e) { }
-    public void NextBookmark(object sender, EventArgs e) { }
-    public void PrevBookmark(object sender, EventArgs e) { }
-    public void ClearBookmarks(object sender, EventArgs e) { }
+    public void SaveAll(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void Print(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ToggleBookmark(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void NextBookmark(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void PrevBookmark(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ClearBookmarks(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
     public void PluginCommand(object sender, EventArgs e)
     {
       try
@@ -3175,8 +3301,32 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         MessageBox.Show(Lib.OutputError(ex.Message.ToString()), "PluginCommand");
       }
     }
-    public void EditSnippets(object sender, EventArgs e) { }
-    public void NewFromTemplate(object sender, EventArgs e) { }
+    public void EditSnippets(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void NewFromTemplate(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
     public void Reload(object sender, EventArgs e)
     {
       if(this.IsEditable && File.Exists(this.CurrentDocumentPath))
@@ -3206,22 +3356,41 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         editor.名前を付けて保存AToolStripMenuItem.PerformClick();
       }
     }
-    public void OnEncodeSave(object sender, EventArgs e) { }
+    public void OnEncodeSave(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
     public void Close(object sender, EventArgs e)
     {
-      //MessageBox.Show(this.selectedtc.Name);
       if (this.selectedTabControl.Name == "documentTabControl" && IsEditable)
       {
         bool result = ((RichTextEditor)this.CurrentDocument).parentForm_Closing(sender, e);
         if (result == false) return;
       }
-      //string msgboxString = this.tabControl1.SelectedTab.Text + " タブを削除します\nよろしいですか?";
-      //if (Lib.confirmDestructionText("削除確認", msgboxString) == true)
-      //{
-      //TabPageManager.CloseTabPage(sender, e);
       TabPageManager.CloseTabPage(this.selectedTabControl.SelectedTab, this.selectedTabControl);
     }
-    public void ReopenClosed(object sender, EventArgs e) { }
+    public void ReopenClosed(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
     public void CloseOthers(object sender, EventArgs e)
     {
       TabPageManager.CloseOtherTabPages(this.selectedTabControl.SelectedTab, this.selectedTabControl);
@@ -3230,8 +3399,32 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     {
       TabPageManager.CloseAllTabPages(this.selectedTabControl);
     }
-    public void ChangeEncoding(object sender, EventArgs e) { }
-    public void ToggleSaveBOM(object sender, EventArgs e) { }
+    public void ChangeEncoding(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ToggleSaveBOM(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
     public void OpenCustomDocument(object sender, EventArgs e)
     {
       try
@@ -3251,9 +3444,45 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
           "OpenCustomDocument(object sender, EventArgs e)");
       }
     }
-    public void OpenIn(object sender, EventArgs e) { }
-    public void ConvertEOL(object sender, EventArgs e) { }
-    public void PrintPreview(object sender, EventArgs e) { }
+    public void OpenIn(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ConvertEOL(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void PrintPreview(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
     public void Restart(object sender, EventArgs e)
     {
       if (this.GetInstanceCount() == 1)
@@ -3266,33 +3495,402 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     {
       this.Close();
     }
-    public void ScintillaCommand(object sender, EventArgs e) { }
-    public void SmartPaste(object sender, EventArgs e) { }
-    public void SortLineGroups(object sender, EventArgs e) { }
-    public void SortLines(object sender, EventArgs e) { }
-    public void ToggleLineComment(object sender, EventArgs e) { }
-    public void ToggleBlockComment(object sender, EventArgs e) { }
-    public void SaveAsTemplate(object sender, EventArgs e) { }
-    public void SaveAsSnippet(object sender, EventArgs e) { }
-    public void ToggleBooleanSetting(object sender, EventArgs e) { }
-    public void ToggleFold(object sender, EventArgs e) { }
-    public void ToggleFullScreen(object sender, EventArgs e) { }
-    public void ToggleSplitView(object sender, EventArgs e) { }
-    public void QuickFind(object sender, EventArgs e) { }
-    public void FindNext(object sender, EventArgs e) { }
-    public void FindPrevious(object sender, EventArgs e) { }
-    public void FindAndReplace(object sender, EventArgs e) { }
-    public void FindAndReplaceInFiles(object sender, EventArgs e) { }
-    public void GoTo(object sender, EventArgs e) { }
-    public void GoToMatchingBrace(object sender, EventArgs e) { }
-    public void InsertFile(object sender, EventArgs e) { }
-    public void InsertFileDetails(object sender, EventArgs e) { }
-    public void InsertTimestamp(object sender, EventArgs e) { }
-    public void InsertSnippet(object sender, EventArgs e) { }
-    public void InsertColor(object sender, EventArgs e) { }
-    public void InsertGUID(object sender, EventArgs e) { }
-    public void InsertHash(object sender, EventArgs e) { }
-    public void KillProcess(object sender, EventArgs e) { }
+    public void ScintillaCommand(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(command);
+        switch (command)
+        {
+          case "LineCut":
+            break;
+          case "LineCopy": //"行のコピー(&amp;O)"
+            break;
+          case "LineDelete": //"行の削除(&amp;D)"
+            break;
+          case "MoveLineUp": //"行を上に移動"
+            break;
+          case "MoveLineDown": //"行を下に移動"
+            break;
+          case "LineTranspose":  //"行の入れ替え(&amp;T)"
+            break;
+          case "SmartSelectionDuplicate": //"行/選択範囲の複製(&amp;A)"
+            break;
+          case "UpperCase":
+            break;
+          case "LowerCase": //"小文字に変換(&amp;W)" 
+            break;
+          case "Undo":
+            break;
+          case "Redo":
+            break;
+          case "CutAllowLine":
+            break;
+          case "CopyAllowLineEx":
+            break;
+          case "SelectAll":
+            break;
+        }
+        //Type mfType = Globals.SciControl.GetType();
+        //MethodInfo method = mfType.GetMethod(command);
+        //method.Invoke(Globals.SciControl, null);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void SmartPaste(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void SortLineGroups(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void SortLines(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ToggleLineComment(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ToggleBlockComment(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void SaveAsTemplate(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void SaveAsSnippet(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ToggleBooleanSetting(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ToggleFold(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ToggleFullScreen(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ToggleSplitView(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void QuickFind(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void FindNext(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void FindPrevious(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void FindAndReplace(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void FindAndReplaceInFiles(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void GoTo(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void GoToMatchingBrace(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void InsertFile(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void InsertFileDetails(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void InsertTimestamp(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void InsertSnippet(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void InsertColor(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void InsertGUID(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void InsertHash(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void KillProcess(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    /// <summary>
+    /// Stop the currently running process
+    /// </summary>
+    public void KillProcess()
+    {
+      //if (this.processRunner.IsRunning)
+      //{
+        //this.processRunner.KillProcess();
+      //}
+    }
+
     /// <summary>
     /// Calls a normal MainForm method
     /// </summary>
@@ -3365,7 +3963,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         return false;
       }
     }
-
     public Boolean CallCommandFromDll(String name, String tag)
     {
       return this.CallCommand(name, tag);
@@ -3617,13 +4214,95 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       }
       this.rightPanel_toggleIndex++;
     }
-    public void EditSyntax(object sender, EventArgs e) { }
-    public void SelectTheme(object sender, EventArgs e) { }
-    public void EditShortcuts(object sender, EventArgs e) { }
-    public void ShowArguments(object sender, EventArgs e) { }
-    public void BackupSettings(object sender, EventArgs e) { }
-    public void ShowSettings(object sender, EventArgs e) { }
-    public void ExecuteScript(object sender, EventArgs e) { }
+    public void EditSyntax(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void SelectTheme(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void EditShortcuts(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ShowArguments(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void BackupSettings(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
+    public void ShowSettings(object sender, EventArgs e)
+    {
+      //SettingDialog.Show(DistroConfig.DISTRIBUTION_NAME, "");
+    }
+    public void ExecuteScript(object sender, EventArgs e)
+    {
+      ToolStripItem button = (ToolStripItem)sender;
+      String file = this.ProcessArgString(((ItemData)button.Tag).Tag);
+      try
+      {
+        Host host = new Host();
+        String[] args = file.Split(new Char[1] { ';' });
+        if (args.Length == 1 || String.IsNullOrEmpty(args[1])) return; // no file selected / the open file dialog was cancelled
+        if (args[0] == "Internal") host.ExecuteScriptInternal(args[1], false);
+        else if (args[0] == "Development") host.ExecuteScriptInternal(args[1], true);
+        else host.ExecuteScriptExternal(file);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        //String message = TextHelper.GetString("Info.CouldNotExecuteScript");
+        //ErrorManager.ShowWarning(message + "\r\n" + ex.Message, null);
+      }
+    }
     public void ShowHelp(object sender, EventArgs e)
     {
       this.CallCommand("Browse", "http://www.flashdevelop.org/wikidocs/");
@@ -3632,42 +4311,64 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     {
       this.CallCommand("Browse", "http://www.flashdevelop.org/");
     }
-    public void CheckUpdates(object sender, EventArgs e) { }
+    public void CheckUpdates(object sender, EventArgs e)
+    {
+      try
+      {
+        ToolStripItem button = (ToolStripItem)sender;
+        String command = ((ItemData)button.Tag).Tag;
+        MessageBox.Show(button.Name);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+      }
+    }
     public void About(object sender, EventArgs e)
     {
       AntPanelApplication.Dialogs.AboutDialog.Show();
     }
-    
     public void OpenProject(object sender, EventArgs e)
     {
       try
       {
         ToolStripItem button = (ToolStripItem)sender;
         string name = ((ItemData)button.Tag).Tag;
-        switch (name)
+        if(File.Exists(name))
         {
-          case "NewProject": //<button label = "新規プロジェクト(&amp;N)..."
-            break;
-          case "OpenProject": //<button label = "プロジェクトを開く(&amp;O)..."
-            this.openFileDialog.Multiselect = false;
-            this.openFileDialog.InitialDirectory = this.WorkingDirectory;
-            if (this.openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-              Globals.AntPanel.InitializeTreeView(openFileDialog.FileName);
-              Globals.AntPanel.dirTreePanel.projectButton.PerformClick();
-              this.OpenDocument(openFileDialog.FileName);
-            }
-            break;
-          case "ImportProject": break;//<button label = "プロジェクトをインポート(&amp;I)..." tag="ImportProject" image="315" />
-          case "CloseProject":
-            break;//< button label = "プロジェクトを閉じる(&amp;C)" click = "OpenProject" tag = "CloseProject" image = "315" />
-          case "OpemResource": break; //<button label = "リソースを開く(&amp;R)..." click="OpenProject" shortcut="Control|R" tag="OpemResource" image="315" />
-          case "TestProject": break; //<button  = "プロジェクトをテスト" click="OpenProject" shortcut="F5" tag="TestProject" image="315" />
-          case "RunProject": break; //<button label = "プロジェクトを実行(&amp;R)" click="OpenProject" tag="RunProject" image="315" />
-          case "BuildProject": break; //<button label = "プロジェクトをビルド(&amp;N)" click="OpenProject" shortcut=F8" tag="BuildProject" image="315" />
-          case "CleanProject": break; //<button label = "プロジェクトのクリーニング(&amp;C)" click="OpenProject" shortcut="Shift|F8" tag="CleanProject" image="315" />
-          case "AirApplicationSetting": break; //<button label = "エアアプリケーションの設定" click="OpenProject" tag="AirApplicationSetting" image="315" />
-          case "ProjectSetting": break; //<button label = "プロジェクトの設定(&amp;P)..." click="OpenProject" tag="ProjectSetting" image="315" />
+          this.OpenDocument(name);
+          this.AddPreviousProjects(name);
+          return;
+        }
+        else
+        {
+          switch (name)
+          {
+            case "NewProject": //<button label = "新規プロジェクト(&amp;N)..."
+              break;
+            case "OpenProject": //<button label = "プロジェクトを開く(&amp;O)..."
+              this.openFileDialog.Multiselect = false;
+              this.openFileDialog.InitialDirectory = this.WorkingDirectory;
+              if (this.openFileDialog.ShowDialog(this) == DialogResult.OK)
+              {
+                Globals.AntPanel.OpenProject(openFileDialog.FileName);
+                //Globals.AntPanel.InitializeTreeView(openFileDialog.FileName);
+                //Globals.AntPanel.dirTreePanel.projectButton.PerformClick();
+                this.OpenDocument(openFileDialog.FileName);
+                //this.AddPreviousProjects(openFileDialog.FileName);
+              }
+              break;
+            case "ImportProject": break;//<button label = "プロジェクトをインポート(&amp;I)..." tag="ImportProject" image="315" />
+            case "CloseProject":
+              break;//< button label = "プロジェクトを閉じる(&amp;C)" click = "OpenProject" tag = "CloseProject" image = "315" />
+            case "OpemResource": break; //<button label = "リソースを開く(&amp;R)..." click="OpenProject" shortcut="Control|R" tag="OpemResource" image="315" />
+            case "TestProject": break; //<button  = "プロジェクトをテスト" click="OpenProject" shortcut="F5" tag="TestProject" image="315" />
+            case "RunProject": break; //<button label = "プロジェクトを実行(&amp;R)" click="OpenProject" tag="RunProject" image="315" />
+            case "BuildProject": break; //<button label = "プロジェクトをビルド(&amp;N)" click="OpenProject" shortcut=F8" tag="BuildProject" image="315" />
+            case "CleanProject": break; //<button label = "プロジェクトのクリーニング(&amp;C)" click="OpenProject" shortcut="Shift|F8" tag="CleanProject" image="315" />
+            case "AirApplicationSetting": break; //<button label = "エアアプリケーションの設定" click="OpenProject" tag="AirApplicationSetting" image="315" />
+            case "ProjectSetting": break; //<button label = "プロジェクトの設定(&amp;P)..." click="OpenProject" tag="ProjectSetting" image="315" />
+          }
         }
       }
       catch (Exception ex)
@@ -3676,7 +4377,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         MessageBox.Show(errMsg, "CommandPromptHere(object sender, EventArgs e)");
       }
     }
-    
     public void Test(object sender, EventArgs e)
     {
       if (sender != null)
@@ -3687,7 +4387,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         MessageBox.Show(msg, "Testからの送信です");
       }
     }
-
     public void MoveTabPage(object sender, EventArgs e)
     {
       ToolStripMenuItem item = sender as ToolStripMenuItem;
@@ -3715,7 +4414,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       }
       TabPageManager.MoveTabPage(this.selectedTabControl.SelectedTab, tabControl);
     }
-
     public void CommandPromptHere(object sender, EventArgs e)
     {
       if(IsRunningWindows)
@@ -3747,7 +4445,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         }
       }
     }
-
     public void ExplorerHere(object sender, EventArgs e)
     {
       if (IsRunningWindows)
@@ -3786,7 +4483,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
         }
       }
     }
-
     public void RunSystemCommandHere(object sender, EventArgs e)
     {
       if (IsRunningWindows)
@@ -3821,13 +4517,11 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       }
 
     }
-
     public void InitializeTabPage(object sender, EventArgs e)
     {
       TabPageManager.CloseAllTabPages(this.documentTabControl);
       this.InitializeTabControls();
     }
-
     public void ToggleBar(object sender, EventArgs e)
     {
       ToolStripMenuItem button = (ToolStripMenuItem)sender;
@@ -3845,7 +4539,6 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       }
     }
     #endregion
-
 
     #region Previous Document
     public void AddPreviousDocuments(string data)
@@ -3913,12 +4606,16 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     {
       ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
       string text = toolStripMenuItem.Tag as string;
-        if (File.Exists(text))
-        {
-          this.OpenDocument(text);
-          //this.AddPreviousDocuments(text);
-          //this.UpdateStatusText(text);
-        }
+      string command = String.Empty;
+      string path = String.Empty;
+      string args = String.Empty;
+
+      if (File.Exists(text))
+      {
+        this.OpenDocument(text);
+        //this.AddPreviousDocuments(text);
+        //this.UpdateStatusText(text);
+      }
     }
 
     private void 最近開いたファイルをクリアCToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3952,9 +4649,87 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
     }
     #endregion
 
+    #region Previous Project
+    public void AddPreviousProjects(string data)
+    {
+      try
+      {
+        if (this.previousProjects.Contains(data))
+        {
+          this.previousProjects.Remove(data);
+        }
+        this.previousProjects.Insert(0, data);
+        this.PopulatePreviousProjectsMenu();
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message.ToString());
+      }
+    }
 
+    public void PopulatePreviousProjectsMenu()
+    {
+      try
+      {
+        ToolStripMenuItem toolStripMenuItem = this.FindMenuItem("ReopenProject") as ToolStripMenuItem;
+        toolStripMenuItem.DropDownItems.Clear();
+        for (int i = 0; i < this.previousProjects.Count; i++)
+        {
+          string text = this.previousProjects[i];
+          ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem();
+          toolStripMenuItem2.Click += new EventHandler(this.PreviousProjectsMenuItem_Click);
+          toolStripMenuItem2.Tag = text;
+          //string[] array = text.Split('!');
+          //string text2 = array[0];
+          toolStripMenuItem2.Text = text;
+          if (i < 15)
+          {
+            toolStripMenuItem.DropDownItems.Add(toolStripMenuItem2);
+          }
+          else
+          {
+            this.previousProjects.Remove(text);
+          }
+        }
+        if (this.previousDocuments.Count > 0)
+        {
+          ToolStripMenuItem 最近開いたプロジェクトをクリアCToolStripMenuItem = new ToolStripMenuItem();
+          最近開いたプロジェクトをクリアCToolStripMenuItem.Text = "最近開いたプロジェクトをクリアCToolStripMenuItem(C)";
+          最近開いたプロジェクトをクリアCToolStripMenuItem.Click += new EventHandler(this.最近開いたプロジェクトをクリアCToolStripMenuItem_Click);
+          toolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+          toolStripMenuItem.DropDownItems.Add(最近開いたプロジェクトをクリアCToolStripMenuItem);
+          toolStripMenuItem.Enabled = true;
+        }
+        else
+        {
+          toolStripMenuItem.Enabled = false;
+        }
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message.ToString());
+      }
+    }
 
+    private void PreviousProjectsMenuItem_Click(object sender, EventArgs e)
+    {
+      ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
+      string text = toolStripMenuItem.Tag as string;
+      if (File.Exists(text))
+      {
+        Globals.AntPanel.OpenProject(text);
+        //Globals.AntPanel.InitializeTreeView(text);
+        //Globals.AntPanel.dirTreePanel.projectButton.PerformClick();
+        //this.AddPreviousProjects(text);
+      }
+    }
 
+    private void 最近開いたプロジェクトをクリアCToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      this.previousProjects.Clear();
+      this.PopulatePreviousProjectsMenu();
+    }
+    #endregion
     public void ActivatePlayer()
     {
       //this.splitContainer1.Panel2Collapsed = false;
@@ -3962,8 +4737,40 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       //this.t.tabControl1.SelectedIndex = 3;
     }
 
+    public List<TextSelection> selectionStack = new List<TextSelection>();
+
+    int testtoggle = 0;
     public void Test1(object sender, EventArgs e)
     {
+      int index = testtoggle % 2;
+      if (IsEditable)
+      {
+        RichTextBox rtb = this.CurrentDocument.Tag as RichTextBox;
+        //TextSelection sel = StringHandler.GetInnerBlock(rtb.Text, rtb.SelectionStart);
+
+        if (index == 0)
+        {
+          TextSelection sel = StringHandler.GetOuterBlock(rtb.Text, rtb.SelectionStart);
+          selectionStack.Add(sel);
+          //rtb.SelectionStart = sel.range.start;
+          //rtb.SelectionLength = sel.text.Length;
+          rtb.Select(sel.range.start, sel.text.Length);
+          rtb.SelectedRtf = @"{\rtf1\ansi\v " + sel.text + @"\v0}";
+          //MessageBox.Show(rtb.Text);
+        }
+        else
+        {
+          rtb.Select(selectionStack[0].range.start, selectionStack[0].text.Length);
+          rtb.SelectedRtf = "";
+          rtb.SelectedText = selectionStack[0].text;
+          selectionStack.Clear();
+        }
+        testtoggle++;
+        //rtb.SelectionFont = new Font("メイリオ", 0.00001F, FontStyle.Bold);
+        //rtb.SelectedRtf = @"{\rtf1\ansi\v " + "aaaa" + @"\v0}";
+
+
+      }
       /*
       if (sender != null)
       {
@@ -3974,27 +4781,22 @@ public void OnFileSave(ITabbedDocument document, String oldFile)
       */
       //this.CallControlCommand("Test1", "MainForm Testからの送信です");
       //String word = String.Empty;
-      String text = "this is a beautiful sleeping lady.";
-      int pos = 12;
+      //String text = "this is a beautiful sleeping lady.";
+      //int pos = 12;
       //String word = StringHandler.GetCurrentWord(pos, text);
       //MessageBox.Show(this.CurrentDocument.Tag.GetType().FullName);
-      RichTextBox rtb = this.CurrentDocument.Tag as RichTextBox;
-      //rtb.SelectionFont = new Font("メイリオ", 0.00001F, FontStyle.Bold);
-      rtb.SelectedRtf = @"{\rtf1\ansi\v " + "aaaa" + @"\v0}";
     }
 
-    #region Icon Management
-    public void toggle_アイコン表示()
+    public Font toFont(Font font)
     {
-      this.showIcon = !this.showIcon;
-      if (this.showIcon == true)
-      {
-        //this.ImageList = this.imageList1;
-      }
-      //else this.ImageList = null;
+      //Meiryo UI, 12pt, style = Bold, Underline
+      //String fontFamily = setting.Split(',')[0].Trim();
+      //float asd = (float)Convert.ToDouble("41.00027357629127");
+      //float size = (float)Convert.ToDouble(setting.Split(',')[1].Replace("pt",""));
+      return new Font(font.FontFamily, font.Size, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
     }
-    #endregion
-    
+
+
   }
 
   #region Script Host

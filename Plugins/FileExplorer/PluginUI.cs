@@ -64,8 +64,11 @@ namespace FileExplorer
       ScrollBarEx.Attach(fileView);
 
       this.AccessibleName = "FileExplorer";
-      this.AccessibleDescription = System.Reflection.MethodBase.GetCurrentMethod().Name
-                                  + "@" + System.Reflection.Assembly.GetExecutingAssembly().Location;
+      //this.AccessibleDescription = System.Reflection.MethodBase.GetCurrentMethod().Name
+      //                            + "@" + System.Reflection.Assembly.GetExecutingAssembly().Location;
+      this.AccessibleDescription = this.GetType().FullName + "@" + Assembly.GetExecutingAssembly().Location;
+
+
     }
 
     #region Windows Forms Designer Generated Code
@@ -124,6 +127,7 @@ namespace FileExplorer
       this.fileView.Name = "fileView";
       this.fileView.Size = new System.Drawing.Size(278, 327);
       this.fileView.TabIndex = 5;
+      this.fileView.Font = new Font("Meiryo UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
       this.fileView.FullRowSelect = true;
       this.fileView.UseCompatibleStateImageBehavior = false;
       this.fileView.View = System.Windows.Forms.View.Details;
@@ -331,10 +335,12 @@ namespace FileExplorer
     {
       this.selectedPath.FlatStyle = FlatStyle.Standard; // PluginBase.Settings.ComboBoxFlatStyle;
       //this.toolStrip.Renderer = new DockPanelStripRenderer();
-      this.toolStrip.ImageScalingSize = ScaleHelper.Scale(new Size(16, 16));
+      //this.toolStrip.ImageScalingSize = ScaleHelper.Scale(new Size(16, 16));
+      this.toolStrip.ImageScalingSize = new Size(16, 16);
       foreach (ColumnHeader column in fileView.Columns)
       {
-        column.Width = ScaleHelper.Scale(column.Width);
+        //column.Width = ScaleHelper.Scale(column.Width);
+        column.Width = column.Width;
       }
     }
 
