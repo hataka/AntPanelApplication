@@ -59,25 +59,12 @@ namespace AntPlugin.XmlTreeMenu.Managers
         //arg = arg.Replace("$(CurControlFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
 
         //string[] PluginBase.CurrentProject.SourcePaths
-
-        arg = ApplyAntProperties(arg);
       }
       catch
       {
       }
       return arg;
     }
-
-    public static string ApplyAntProperties(string strVar)
-    {
-      foreach (KeyValuePair<string, string> item in XmlMenuTree.AntProperties)
-      {
-        //Console.WriteLine("[{0}:{1}]", item.Key, item.Value);
-        strVar = strVar.Replace("$(" + item.Key + ")", item.Value);
-      }
-      return strVar;
-    }
-
 
     public static void RunScript(NodeInfo ni)
     {
@@ -89,19 +76,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
       String executable = String.Empty;
       String output = String.Empty;
-      String code = innerText.Replace("<![CDATA[", "").Replace("]]>", "").Trim();
+      String code = innerText.Replace("<![CDATA[", "").Replace("]]>", "");
       string arguments = String.Empty;
-      code = code.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&amp;", "&");
-      //メッセージボックスを表示する
-      DialogResult result = MessageBox.Show(command + " : 実行しますか？",
-        ni.Title,
-      //DialogResult result = MessageBox.Show(code,
-      //    "以下のスクリプトを実行しますか？",
-          MessageBoxButtons.YesNoCancel,
-          MessageBoxIcon.Exclamation,
-          MessageBoxDefaultButton.Button1);
-      //何が選択されたか調べる
-      if (result == DialogResult.No || result == DialogResult.Cancel) return;
 
       if (command == String.Empty) command = path;
       else if (args == String.Empty) args = path;
@@ -110,8 +86,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
       switch (Path.GetExtension(command))
       {
         case ".php":
-          executable = @"C:\eclipse461\xampp\php\php.exe";//version 5.6.24
-          if (Path.GetFileNameWithoutExtension(command) == "embed") command = Create_F_TempFile("Main.php", code);
+          executable = @"C:\eclipse461\xampp\php\php.exe";
+          if (code != String.Empty) command = Create_F_TempFile("Main.php", code);
+          //else if (WebHandler.SiteExists(command))
           else if (Lib.IsWebSite(command))
           {
             //WebHandler.DownLoadfile(command, @"F:\temp\Main.php");
@@ -123,7 +100,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           break;
           case ".js":
           executable = @"C:\windows\system32\cscript.exe";
-          if (Path.GetFileNameWithoutExtension(command) == "embed") command = Create_F_TempFile("Main.js", code);
+          if (code != String.Empty) command = Create_F_TempFile("Main.js", code);
           //else if (WebHandler.SiteExists(command))
           else if (Lib.IsWebSite(command))
           {
@@ -136,7 +113,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           break;
           case ".vbs":
           executable = @"C:\windows\system32\cscript.exe";
-          if (Path.GetFileNameWithoutExtension(command) == "embed") command = Create_F_TempFile("Main.vbs", code);
+          if (code != String.Empty) command = Create_F_TempFile("Main.vbs", code);
           //else if (WebHandler.SiteExists(command))
           else if (Lib.IsWebSite(command))
           {
@@ -149,7 +126,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           break;
         case ".wsf":
           executable = @"C:\windows\system32\cscript.exe";
-          if (Path.GetFileNameWithoutExtension(command) == "embed") command = Create_F_TempFile("Main.wsf", code);
+          if (code != String.Empty) command = Create_F_TempFile("Main.wsf", code);
           //else if (WebHandler.SiteExists(command))
           else if (Lib.IsWebSite(command))
           {
@@ -162,7 +139,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
           break;
         case ".cs":
           executable = @"C:\HDD_F\Programs\cs-script\cscs.exe";
-          if (Path.GetFileNameWithoutExtension(command) == "embed") command = Create_F_TempFile("Main.cs", code);
+          if (code != String.Empty) command = Create_F_TempFile("Main.cs", code);
           //else if (WebHandler.SiteExists(command))
           else if (Lib.IsWebSite(command))
           {
@@ -173,34 +150,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
             command = Create_F_TempFile("Main.cs", code);
           }
           break;
-        case ".ant":
-          // TODO : test
-          executable = @"F:\ant\apache-ant-1.10.1\bin\ant.bat";//version 1.10.1
-          if (Path.GetFileNameWithoutExtension(command) == "embed") command = Create_F_TempFile("build.xml", code);
-          break;
-        case ".gradle":
-          // TODO : test
-          executable = @"F:\gradle-3.5\bin\gradle.bat";//version 3.5
-          if (Path.GetFileNameWithoutExtension(command) == "embed") command = Create_F_TempFile("build.gradle", code);
-          break;
-        case ".bat":
-        case ".cmd":
-          // TODO : test
-          if (Path.GetFileNameWithoutExtension(command) == "embed") executable = Create_F_TempFile("Main.bat", code);
-          command = String.Empty;
-          break;
-        default:
-          //TODO coding??
-          break;
-      }
-
-      // カレントディレクトリ設定
-      String dir = String.Empty;
-      if (!String.IsNullOrEmpty(path))
-      {
-        if (System.IO.Directory.Exists(path)) dir = path;
-        else if (System.IO.File.Exists(path)) dir = Path.GetDirectoryName(path);
-        if (dir != String.Empty) System.IO.Directory.SetCurrentDirectory(dir);
       }
 
       // 実行
@@ -230,8 +179,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
             break;
           case "document":
             if (Path.GetExtension(command) == ".php") arguments = "-f " + command + " " + args;
-            else if (Path.GetExtension(command) == ".gradle") arguments = "-b " + command + " " + args;
-            else if (Path.GetFileName(command) =="build.xml") arguments = "-buildfile " + command + " " + args;
             else arguments =command + " " + args;
             output = ProcessHandler.getStandardOutput(executable, arguments);
             StringHandler.ConvertEncoding(output, Encoding.UTF8);
@@ -256,15 +203,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
             break;
           case "console":
           default:
-            if (Path.GetExtension(command) == ".php")
+            if(Path.GetExtension(command)== ".php")
               Process.Start("cmd.exe", "/k " + executable + " -f " + command + " " + args);
-            else if (Path.GetExtension(command) == ".gradle")
-              Process.Start("cmd.exe", "/k " + executable + " -b " + command + " " + args);
-            else if (Path.GetFileName(command) == "build.xml")
-            {
-              //MessageBox.Show(executable + " -buildfile " + command + " " + args);
-              Process.Start("cmd.exe", "/k " + executable + " -buildfile " + command + " " + args);
-            }
             else
               Process.Start("cmd.exe", "/k " + executable + " " + command + " " + args);
             break;

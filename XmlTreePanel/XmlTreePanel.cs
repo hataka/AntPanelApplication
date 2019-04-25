@@ -26,7 +26,7 @@ namespace AntPlugin.Controls
     private PluginUI pluginUI;
 	  public XmlMenuTree menuTree = null;
     // TODO: AntPlugin Settings
-    public static string menuPath                = Path.Combine(PathHelper.BaseDir, @"SettingData\FDTreeMenu.xml");
+    public string menuPath                = Path.Combine(PathHelper.BaseDir, @"SettingData\FDTreeMenu.xml");
     public string currentTreeMenuFilepath = Path.Combine(PathHelper.BaseDir, @"SettingData\FDTreeMenu.xml");
 
     public MDIForm.ParentFormClass mainForm;
@@ -76,9 +76,9 @@ namespace AntPlugin.Controls
       targetMenu.Tag = this.treeView1;
     }
 
-    public void InitializeTreeView()
+    private void InitializeTreeView()
     {
-      XmlTreePanel.menuPath = this.pluginUI.settings.HomeMenuPath;
+      this.menuPath = this.pluginUI.settings.HomeMenuPath;
       this.currentTreeMenuFilepath = this.pluginUI.settings.HomeMenuPath;
 
       this.menuTree = this.pluginUI.menuTree;// new XmlMenuTree(ui);

@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
+using XMLTreeMenu.Managers;
 //using MDIForm;
 
 namespace AntPlugin
@@ -934,14 +935,6 @@ namespace AntPlugin
           {
             this.LoadIn(file);
           }
-          // kahata 2018-02-09
-          /*
-					else if(Path.GetFileName(file).ToLower()=="fdtreemenu.xml" 
-						|| Path.GetFileName(file).ToLower() == "xmltreemenu.xml")
-					{
-						treeView.Nodes.Add(this.menuTree.getXmlTreeNode(file));
-					}
-					*/
           else if (Path.GetExtension(file) == ".xml")
           {
             bool isMenu = (Path.GetFileNameWithoutExtension(file).ToLower() == "fdtreemenu"
@@ -998,7 +991,6 @@ namespace AntPlugin
 			return result;
 		}
 
-    // kokokoko
     public TreeNode GetBuildFileNode(string file)
 		{
 			XmlDocument xml = new XmlDocument();
@@ -1026,13 +1018,9 @@ namespace AntPlugin
 				description = elm.Item(0).InnerText.Trim();
 			}
 			else description = file;
-
-
       if (projectName.Length == 0) projectName = Path.GetFileName(file);
  
       AntTreeNode rootNode = new AntTreeNode(projectName, ICON_FILE);
-
-
       if (Path.GetExtension(file).ToLower()==".wsf") rootNode = new AntTreeNode(projectName, ICON_WSF_FILE);
 			if (Path.GetExtension(file).ToLower() == ".fdp") rootNode = new AntTreeNode(projectName, ICON_FDP_FILE);
 			rootNode.File = file;
@@ -1047,10 +1035,9 @@ namespace AntPlugin
       //MessageBox.Show(rootNode.File,"expand前");
       for (int i = 0; i < nodeCount; i++)
 			{
-      
         XmlNode child = nodes[i];
 				AntTreeNode antNode = null;
-				switch (child.Name)
+				switch (child.Name.ToLower())
 				{
 					case "target":
 						// skip private targets
@@ -1087,27 +1074,43 @@ namespace AntPlugin
 						if (this.内部ターゲット表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);
 						else if (antNode.ImageIndex != ICON_INTERNAL_TARGET) rootNode.Nodes.Add(antNode);
 						break;
-
-					case "property":
-					case "scriptdef":
+          // 追加 Time-stamp: <2019-03-09 12:21:14 kahata>
+          case "xmltreenode":
+          case "xmltreemenu":
+          case "treemenu":
+          case "treenode":
+            rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file));
+            break;
+          case "property":
+          case "scriptdef":
 					case "taskdef":
 					case "macrodef":
-						// skip private targets
-						XmlAttribute propertyNameAttr = child.Attributes["name"];
+            // skip private targets
+            XmlAttribute propertyNameAttr = child.Attributes["name"];
 						XmlAttribute propertyResourceAttr = child.Attributes["resource"];
-						if (propertyNameAttr != null)
+            String propertyName = String.Empty;
+            if (propertyNameAttr != null)
 						{
-							String propertyName = propertyNameAttr.InnerText;
+							propertyName = propertyNameAttr.InnerText;
 							if (!String.IsNullOrEmpty(propertyName) && (propertyName[0] == '-')) continue;
 						}
-						antNode = GetBuildTargetNode(child, defaultTarget);
-						antNode.File = file;
-						//Kahata TimeStamp: 2016-04-23
-						antNode.Tag = child;
-						if (子ノード表示ToolStripMenuItem.Checked == true) this.populateChildNodes(child, antNode);
-						if (プロパティ表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);
-						break;
-					default:
+            // 追加 Time-stamp: <2019-03-11 10:29:45 kahata>
+            if (propertyName.ToLower() == "xmltreemenu" && !String.IsNullOrEmpty(child.InnerText))
+            {
+              rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file));
+            }
+            else
+            {
+              antNode = GetBuildTargetNode(child, defaultTarget);
+              antNode.File = file;
+              //Kahata TimeStamp: 2016-04-23
+              antNode.Tag = child;
+              if (子ノード表示ToolStripMenuItem.Checked == true) this.populateChildNodes(child, antNode);
+              if (プロパティ表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);
+            }
+            break;
+
+          default:
 						//例外発生 外す
 						//antNode = GetBuildTargetNode(child, defaultTarget);
 						//antNode.File = file;
@@ -1685,8 +1688,8 @@ namespace AntPlugin
       treeView.Nodes.Add(dummy);
 
       // herehere
-      //treeView.Nodes.Add(this.menuTree.getXmlTreeNode(this.settings.HomeMenuPath, true));
-      treeView.Nodes.Add(this.menuTree.getXmlTreeNode(XmlTreePanel.menuPath, true));
+      //treeView.Nodes.Add(this.menuTree.getXmlTreeNode(XmlTreePanel.menuPath, true));
+      treeView.Nodes.Add(this.menuTree.getXmlTreeNode(this.settings.HomeMenuPath, true));
     }
 
     public TreeView outlineTreeView = new TreeView();
