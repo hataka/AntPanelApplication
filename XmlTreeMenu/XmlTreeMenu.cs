@@ -24,11 +24,13 @@ using ScintillaNet;
 using System.Text.RegularExpressions;
 using PluginCore.FRService;
 using MDIForm;
+using System.Text;
 
 namespace AntPlugin.XmlTreeMenu
 {
   public partial class XmlMenuTree : UserControl
   {
+    #region Variables
     public TreeView treeView = new TreeView();
     public ImageList imageList;
     public PluginMain pluginMain;
@@ -39,7 +41,9 @@ namespace AntPlugin.XmlTreeMenu
 
     private ContextMenuStrip buildFileMenu;
     private ContextMenuStrip targetMenu;
+    #endregion
 
+    #region Constructor
     public XmlMenuTree()
     {
       InitializeComponent();
@@ -86,11 +90,13 @@ namespace AntPlugin.XmlTreeMenu
       CreateMenus();
       InitializeXmlMenuTree();
     }
+    #endregion
 
+    #region Initialization
     private void InitializeXmlMenuTree()
     {
       ActionManager.menuTree = this;
-
+      TreeViewManager.menuTree = this;
       //this.treeView.ItemDrag += new ItemDragEventHandler(this.treeView_ItemDrag);
       //this.treeView.DragOver += new DragEventHandler(this.treeView_DragOver);
       //this.treeView.DragDrop += new DragEventHandler(this.treeView_DragDrop);
@@ -106,6 +112,7 @@ namespace AntPlugin.XmlTreeMenu
       this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
       this.treeView.DoubleClick += new EventHandler(this.treeView_DoubleClick);
     }
+    #endregion
 
     #region TreeView Ivent Handler
 
@@ -243,12 +250,12 @@ namespace AntPlugin.XmlTreeMenu
 
         if (GetTagType(this.treeView.SelectedNode) == "record" || GetTagType(this.treeView.SelectedNode) == null)
         {
-          this.ToolStripMenuItemAddrecord.Visible = false;
-          this.ToolStripMenuItemAddfolder.Visible = false;
+          this.新規項目MenuItem.Visible = false;
+          this.新規フォルダMenuItem.Visible = false;
           return;
         }
-        this.ToolStripMenuItemAddrecord.Visible = true;
-        this.ToolStripMenuItemAddfolder.Visible = true;
+        this.新規項目MenuItem.Visible = true;
+        this.新規フォルダMenuItem.Visible = true;
       }
     }
 
@@ -444,6 +451,26 @@ namespace AntPlugin.XmlTreeMenu
        return treeNode;
     }
 
+    /// <summary>
+    /// 追加 Time-stamp: <2019-05-18 07:32:22 kahata>
+    /// </summary>
+    /// <param name="xml"></param>
+    /// <param name="file"></param>
+    /// <returns></returns>
+    public TreeNode getXmlTreeNodeFromString(String xml, String file)
+    {
+      XmlNode xmlNode = null;
+      XmlDocument xmldoc = new XmlDocument();
+      xmldoc.LoadXml(xml);
+      xmlNode = xmldoc.DocumentElement;
+      NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file);
+      TreeNode treeNode = this.BuildTreeNode(nodeInfo, file);
+      this.RecursiveBuildToTreeNode(xmlNode, treeNode, false);
+      treeNode.Tag = nodeInfo;
+      treeNode.ToolTipText = file;
+      return treeNode;
+    }
+
     public TreeNode loadfile(String file)
     {
       TreeNode treeNode = null;
@@ -636,19 +663,78 @@ namespace AntPlugin.XmlTreeMenu
       return treeNode;
     }
 
-    public TreeNode getXmlTreeNodeFromString(String xml, String file)
+    /// <summary>
+    /// 追加 未完 Time-stamp: <2019-05-18 07:30:56 kahata>
+    /// </summary>
+    /// <param name="xmlTreeMenuPath"></param>
+    public void SaveFile(String xmlTreeMenuPath)
     {
-      XmlNode xmlNode = null;
-      XmlDocument xmldoc = new XmlDocument();
-      xmldoc.LoadXml(xml);
-      xmlNode = xmldoc.DocumentElement;
-      NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file);
-      TreeNode treeNode = this.BuildTreeNode(nodeInfo, file);
-      this.RecursiveBuildToTreeNode(xmlNode, treeNode, false);
-      treeNode.Tag = nodeInfo;
-      treeNode.ToolTipText = file;
-      return treeNode;
+      /*
+      // 出力用 XmlDocument インスタンスの初期化
+      exportXmlDocument = new XmlDocument();
+      // XMLヘッダ出力(バージョン 1.0, エンコード UTF-8)
+      XmlDeclaration xmlDeclaration = exportXmlDocument.CreateXmlDeclaration("1.0", "UTF-8", null);
+      exportXmlDocument.AppendChild(xmlDeclaration);
+
+      // ヘッダの後に1行改行(好みの問題です)
+      XmlWhitespace xmlWhitespace = exportXmlDocument.CreateWhitespace(System.Environment.NewLine);
+      exportXmlDocument.AppendChild(xmlWhitespace);
+
+      // ルートノードの情報を初期化
+      NodeInfo ni = new NodeInfo();
+
+      TreeNode baseNode = new TreeNode();
+      // BeseNodeの探索
+      foreach (TreeNode tn in this.treeView.Nodes)
+      {
+        if (TreeViewManager.IsChildNode(tn, this.treeView.SelectedNode)) baseNode = tn;
+      }
+      if (baseNode.Tag is NodeInfo) ni = (NodeInfo)baseNode.Tag;
+      else
+      {
+        ni.Type = "root";
+        ni.Title = baseNode.Text;
+        ni.expand = true;
+        baseNode.Tag = ni;
+      }
+      XmlElement xe = exportXmlDocument.CreateElement(ni.Type);
+      // 「title」属性書き出し
+      if (ni.Tooltip != String.Empty) xe.SetAttribute("tooltip", ni.Tooltip);
+      if (ni.ForeColor != String.Empty) xe.SetAttribute("forecolor", ni.ForeColor);
+      if (ni.NodeFont != String.Empty) xe.SetAttribute("nodefont", ni.NodeFont);
+      if (ni.NodeChecked != String.Empty) xe.SetAttribute("nodechecked", ni.NodeChecked);
+      if (ni.Title != String.Empty) xe.SetAttribute("title", ni.Title);
+      if (ni.PathBase != String.Empty) xe.SetAttribute("base", ni.PathBase);
+      if (ni.Action != String.Empty) xe.SetAttribute("action", ni.Action);
+      if (ni.Command != String.Empty) xe.SetAttribute("command", ni.Command);
+      if (ni.Path != String.Empty)
+      {
+        xe.SetAttribute("path", ni.Path);
+        if (File.Exists(Path.Combine(Globals.AntPanel.projectDir, ni.Path)))
+        {
+          xe.SetAttribute("path", Path.Combine(Globals.AntPanel.projectDir, ni.Path));
+        }
+      }
+      if (ni.Icon != String.Empty) xe.SetAttribute("icon", ni.Icon);
+      if (ni.Args != String.Empty) xe.SetAttribute("args", ni.Args);
+      if (ni.Option != String.Empty) xe.SetAttribute("option", ni.Option);
+      // 「expand」属性書き出し
+      // 「ni.Expand」プロパティを参照しても良いが、確実性は低い
+      if (baseNode.IsExpanded)
+      {
+        xe.SetAttribute("expand", "true");
+      }
+      // ルートノードをXmlDocumentに追加
+      exportXmlDocument.AppendChild(xe);
+      // 再帰的にツリーノードを読み込み、XmlDocument構築
+      RecursiveBuildToXml(baseNode, xe);
+      //MessageBox.Show(exportXmlDocument.OuterXml);
+      // ファイルに出力
+      exportXmlDocument.Save(xmlTreeMenuPath);
+      //this.filepath = path;
+      */
     }
+
 
     /// <summary>
     /// Option #1: Recursive approach:
@@ -994,11 +1080,13 @@ namespace AntPlugin.XmlTreeMenu
             try
             {
               TreeNode inctn = loadfile(ni, imageIndex);
-
-
-              if (!String.IsNullOrEmpty(ni.Title)) tn.Text = ni.Title;
-              if (!String.IsNullOrEmpty(ni.icon)) tn.ImageIndex = GetIconImageIndexFromIconPath(ni.icon);
-              if (!String.IsNullOrEmpty(ni.Tooltip)) tn.ToolTipText = ni.Tooltip;
+              if (!String.IsNullOrEmpty(ni.Title)) inctn.Text = ni.Title;
+              if (!String.IsNullOrEmpty(ni.icon))
+              {
+                inctn.ImageIndex = GetIconImageIndexFromIconPath(ni.icon);
+              }
+              else inctn.ImageIndex = 38;
+              if (!String.IsNullOrEmpty(ni.Tooltip)) inctn.ToolTipText = ni.Tooltip;
               if (ni.BackColor != string.Empty) inctn.BackColor = Color.FromName(ni.BackColor);
               if (ni.ForeColor != string.Empty) inctn.ForeColor = Color.FromName(ni.ForeColor);
               if (ni.NodeFont != string.Empty)
@@ -1279,6 +1367,39 @@ namespace AntPlugin.XmlTreeMenu
       }
     }
 
+    private void RecursiveBuildToXml2(TreeNode Parentnode, XmlNode ParentXmlNode, XmlDocument doc)
+    {
+      foreach (TreeNode childTreeNode in Parentnode.Nodes)
+      {
+        if (childTreeNode.Tag is NodeInfo)
+        {
+          NodeInfo ni = childTreeNode.Tag as NodeInfo;
+          XmlElement xe = doc.CreateElement(ni.Type);
+          TreeViewManager.SetAttributeByNodeInfo(xe, ni);
+          if (ni.Type == "record" && !String.IsNullOrEmpty(ni.InnerText)) xe.InnerText = ni.InnerText;
+          //public string Comment
+          if (ni.Type == "root" || ni.Type == "folder")
+          {
+            if (childTreeNode.IsExpanded == true) xe.SetAttribute("expand", "true");
+            ParentXmlNode.AppendChild(xe);
+            RecursiveBuildToXml2(childTreeNode, xe, doc);
+          }
+          else
+          {
+            ParentXmlNode.AppendChild(xe);
+          }
+        }
+        else
+        {
+          XmlElement xe = doc.CreateElement(childTreeNode.Text);
+          if (childTreeNode.Tag is String) xe.SetAttribute("path", childTreeNode.Tag as String);
+          else if (childTreeNode.Tag != null) xe.SetAttribute("object", childTreeNode.Tag.ToString());
+          ParentXmlNode.AppendChild(xe);
+          RecursiveBuildToXml2(childTreeNode, xe, doc);
+        }
+      }
+    }
+
     private void ProcessNode(XmlNode xmlNode)
     {
       String name = xmlNode.Name;
@@ -1309,7 +1430,7 @@ namespace AntPlugin.XmlTreeMenu
     public static List<String> ToolBarSettingsFiles = new List<string>();
     public static List<ToolStrip> toolStripList  = new List<ToolStrip>();
     public static ToolStrip dynamicToolStrip = new ToolStrip(); 
-
+    /*
     public void ToolBarSettings_try(XmlNode xmlNode)
     {
       //MessageBox.Show(this.currentTreeMenuFilepath);
@@ -1327,7 +1448,7 @@ namespace AntPlugin.XmlTreeMenu
         MessageBox.Show(ex1.Message.ToString(),"TreeMenu:ToolBarSettings_try:1164");
       }
     }
-
+    */
     public void ToolBarSettings(XmlNode xmlNode)
     {
       //MessageBox.Show(this.currentTreeMenuFilepath);
@@ -1474,20 +1595,7 @@ namespace AntPlugin.XmlTreeMenu
       }
     }
 
-
-
-
-
-
-
     /*
-     * 
-     * 
-     * 
-     * 
-     *
-
-
     public static List<String> ToolBarSettingsFiles = new List<string>();
     public void ToolBarSettings(XmlNode xmlNode)
     {
@@ -1567,23 +1675,7 @@ namespace AntPlugin.XmlTreeMenu
         }
       }
     }
-
-
-
-
-
-
-
-
-
-
-    
-     * 
-     * 
-     * 
-     * 
      */
-
 
     #region treeView Doulbe Click Handler and Functions
 
@@ -1756,33 +1848,32 @@ namespace AntPlugin.XmlTreeMenu
       }
     }
 
-    private void toolStripMenuItem2_Click(object sender, EventArgs e)
+    private void sakuraMenuItem_Click(object sender, EventArgs e)
     {
       NodeInfo nodeInfo = this.SelectedNodeInfo();
-      if (File.Exists(nodeInfo.Path)) Process.Start(@"C:\Program Files (x86)\sakura\sakura.exe", nodeInfo.Path);
+      if (File.Exists(nodeInfo.Path)) Process.Start(this.pluginUI.settings.SakuraPath, nodeInfo.Path);
     }
 
-    private void toolStripMenuItem3_Click(object sender, EventArgs e)
-    {
-      NodeInfo nodeInfo = this.SelectedNodeInfo();
-
-      if (File.Exists(nodeInfo.Path))
-      {
-        //Globals.MainForm.OpenEditableDocument(((NodeInfo)treeView.SelectedNode.Tag).Path, false);
-        PluginBase.MainForm.OpenEditableDocument(nodeInfo.Path, false);
-      }
-    }
-
-    private void toolStripMenuItem4_Click(object sender, EventArgs e)
+    private void OpenDocumentMenuItem_Click(object sender, EventArgs e)
     {
       NodeInfo nodeInfo = this.SelectedNodeInfo();
       if (File.Exists(nodeInfo.Path))
       {
-        Process.Start(@"C:\Program Files (x86)\PSPad editor\PSPad.exe", nodeInfo.Path);
+        //PluginBase.MainForm.OpenEditableDocument(nodeInfo.Path, false);
+        this.CallMenuCommand("OpenDocument", nodeInfo.Path);
       }
     }
 
-    private void toolStripMenuItem7_Click(object sender, EventArgs e)
+    private void psPadMenuItem_Click(object sender, EventArgs e)
+    {
+      NodeInfo nodeInfo = this.SelectedNodeInfo();
+      if (File.Exists(nodeInfo.Path))
+      {
+        Process.Start(this.pluginUI.settings.PspadPath, nodeInfo.Path);
+      }
+    }
+
+    private void explorerMenuItem_Click(object sender, EventArgs e)
     {
       NodeInfo nodeInfo = this.SelectedNodeInfo();
       if (File.Exists(nodeInfo.Path))
@@ -1791,7 +1882,7 @@ namespace AntPlugin.XmlTreeMenu
       }
     }
 
-    private void toolStripMenuItem8_Click(object sender, EventArgs e)
+    private void CmdPromptMenuItem_Click(object sender, EventArgs e)
     {
       NodeInfo nodeInfo = this.SelectedNodeInfo();
       if (Directory.Exists(nodeInfo.Path))
@@ -1835,12 +1926,12 @@ namespace AntPlugin.XmlTreeMenu
       }
     }
 
-    private void toolStripMenuItem9_Click(object sender, EventArgs e)
+    private void ファイル名を指定して実行_Click(object sender, EventArgs e)
     {
 
     }
 
-    private void toolStripMenuItem10_Click(object sender, EventArgs e)
+    private void リンクを開くMenuItem_Click(object sender, EventArgs e)
     {
 
     }
@@ -1856,7 +1947,6 @@ namespace AntPlugin.XmlTreeMenu
       {
         MessageBox.Show(nodeInfo.Type);
       }
-
     }
 
     private void runTargetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1900,10 +1990,317 @@ namespace AntPlugin.XmlTreeMenu
       search.SourceFile = sci.FileName;
       return search.Matches(sci.Text);
     }
+
+    private void 保存SToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void visualStudioToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void richTextEditorMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void azukiEditorMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void traverseNodeToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      String projectDir = Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
+      TreeNode treeNode = this.treeView.SelectedNode;
+      String savePath = Path.Combine(Path.Combine(projectDir, "obj"), treeNode.Text + "_xPathList.txt");
+      TraverseCallback cb = ShowTitle;
+
+      TreeViewManager.treexPathList.Clear();
+      TreeViewManager.treeNodeInfoList.Clear();
+      TreeViewManager.TraverseTree(treeNode.Nodes, cb, "");
+      //MessageBox.Show(String.Join("\n",TreeViewManager.xPathList.ToArray()));
+
+      if (Lib.confirmDestructionText("保存確認", String.Join("\n", TreeViewManager.treexPathList.ToArray())))
+      {
+        SaveFileDialog dialog = new SaveFileDialog();
+        dialog.Filter = "XPathListファイル (*.txt)|*.txt|" + "All files (*.*)|*.*";
+        dialog.FileName = treeNode.Text + "_XPathList.txt";
+        if (!String.IsNullOrEmpty(projectDir))
+        {
+          if (Directory.Exists(Path.Combine(projectDir, "obj")))
+            dialog.InitialDirectory = Path.Combine(projectDir, "obj");
+          else dialog.InitialDirectory = projectDir;
+        }
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+          File.WriteAllLines(savePath, TreeViewManager.treexPathList.ToArray(), Encoding.UTF8);
+        }
+      }
+    }
+
+    void ShowTitle(TreeNode tn)
+    {
+      //String title = tn.FullPath;
+      MessageBox.Show("FullPath = " + tn.FullPath.Replace("\\", "/") + "\nXPath    = " + tn.Name);
+    }
+
+    private void xML生成ToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      String projectDir = Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
+      TreeNode treeNode = this.treeView.SelectedNode;
+      NodeInfo ni = treeNode.Tag as NodeInfo;
+      XmlNode node = ni.XmlNode;
+      String output = String.Empty;
+      if (!String.IsNullOrEmpty(node.OuterXml))
+      {
+        output = TreeViewManager.GetFormattedXmlText(node.OuterXml);
+        if (output.Length > 1000) output = output.Substring(0, 1000) + "\n......";
+      }
+      else
+      {
+        XmlDocument doc = new XmlDocument();
+        System.Xml.XmlDeclaration xmlDecl = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+        //作成したXML宣言をDOMドキュメントに追加します
+        doc.AppendChild(xmlDecl);
+        XmlElement xe = doc.CreateElement("root");
+        RecursiveBuildToXml2(treeNode, xe, doc);
+        doc.AppendChild(xe);
+        output = TreeViewManager.GetFormattedXmlText(xe.OuterXml);
+        if (output.Length > 1000) output = output.Substring(0, 1000) + "\n......";
+        /*
+        // https://www.ipentec.com/document/csharp-xml-xmlnode-xmlelement-diff
+        XmlElementはXmlNodeクラスを継承している(XmlElementのほうが機能が多い)
+        XmlElementにはSetAttributes SetAttributeNodeの属性編集用メソッドが提供されている
+        XmlElementにはGetAttributes GetAttributeNodeの属性取得用メソッドが提供されている
+        XmlElementにはRemoveAllAttributes RemoveAttribute RemoveAttributeAt RemoveAttributeNode の属性削除メソッドが提供されている
+        XmlElementには要素のタグが短い形式(< tag />)である(要素の中が空である)ことを判定するIsEmptyプロパティが用意されている
+        */
+      }
+      if (Lib.confirmDestructionText("保存確認", output))
+      {
+        SaveFileDialog dialog = new SaveFileDialog();
+        dialog.Filter = "XmlTreeファイル (*.xml)|*.xml|" + "All files (*.*)|*.*";
+        dialog.FileName = treeNode.Text + "_TreeMenu.xml";
+        if (!String.IsNullOrEmpty(projectDir))
+        {
+          if (Directory.Exists(Path.Combine(projectDir, "obj")))
+            dialog.InitialDirectory = Path.Combine(projectDir, "obj");
+          else dialog.InitialDirectory = projectDir;
+        }
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+          StreamWriter sw = new StreamWriter(dialog.FileName, false, Encoding.UTF8);
+          sw.Write(TreeViewManager.GetFormattedXmlText(node.OuterXml));
+          sw.Close();
+        }
+      }
+    }
+
+    private void xPathList生成ToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      String projectDir = Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
+      TreeNode treeNode = this.treeView.SelectedNode;
+      NodeInfo ni = treeNode.Tag as NodeInfo;
+      XmlNode node = ni.XmlNode;
+      MessageBox.Show(TreeViewManager.GetFormattedXmlText(node.OuterXml), "変換するXML");
+
+      XmlDocument doc = new XmlDocument();
+      doc.LoadXml(node.OuterXml);
+
+      TreeViewManager.XPathList.Clear();
+      //node = doc.SelectSingleNode("/folder");
+      node = doc.DocumentElement;
+      TreeViewManager.TraverseNode(node);
+      String output = String.Join("\n", TreeViewManager.XPathList.ToArray());
+      if (output.Length > 1000) output = output.Substring(0, 1000) + "\n......";
+
+      if (Lib.confirmDestructionText("保存確認", output))
+      {
+        SaveFileDialog dialog = new SaveFileDialog();
+        dialog.Filter = "XPathList (*.txt)|*.txt|" + "All files (*.*)|*.*";
+        dialog.FileName = treeNode.Text + "_xPathList.txt";
+        if (!String.IsNullOrEmpty(projectDir))
+        {
+          if (Directory.Exists(Path.Combine(projectDir, "obj")))
+            dialog.InitialDirectory = Path.Combine(projectDir, "obj");
+          else dialog.InitialDirectory = projectDir;
+        }
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+          File.WriteAllLines(dialog.FileName, TreeViewManager.XPathList.ToArray(), Encoding.UTF8);
+        }
+      }
+    }
+
+    private void 挿入IToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      String projectDir = Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
+      OpenFileDialog dialog = new OpenFileDialog();
+      dialog.Filter = "BuildFiles (*.xml)|*.XML|" + "WshFiles (*.wsf)|*.wsf|"
+         + "XPathList (*.txt)|*.txt|" + "All files (*.*)|*.*";
+      dialog.Multiselect = true;
+      if (!String.IsNullOrEmpty(projectDir))
+      {
+        if (Directory.Exists(Path.Combine(projectDir, "obj")))
+          dialog.InitialDirectory = Path.Combine(projectDir, "obj");
+        else dialog.InitialDirectory = projectDir;
+      }
+      if (dialog.ShowDialog() == DialogResult.OK)
+      {
+        TreeViewManager.GetTreeNodeFromFiles(this.treeView.SelectedNode, dialog.FileNames);
+      }
+    }
+
+    private void 切り取りToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      TreeViewManager.RemoveNode(this.treeView.SelectedNode);
+    }
+
+    private void コピーCToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      TreeViewManager.CopyNode(this.treeView.SelectedNode);
+    }
+
+    private void 貼り付けPToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      TreeViewManager.PasteNode(this.treeView.SelectedNode);
+    }
+
+    /// <summary>
+    /// Addrecord
+    /// </summary>
+    ///https://www.atmarkit.co.jp/fdotnet/dotnettips/259treeviewadd/treeviewadd.html
+    private int counter = 1;
+    private void 新規項目MenuItem_Click(object sender, EventArgs e)
+    {
+      if (this.treeView.SelectedNode == null)
+      {
+        MessageBox.Show("ノードを選択してください");
+        return;
+      }
+      if (!(this.treeView.SelectedNode.Tag is NodeInfo) || ((NodeInfo)this.treeView.SelectedNode.Tag).Type == "record")//|| PluginUI.GetTagType(this.treeView1.SelectedNode) == null)
+      {
+        MessageBox.Show("グループを追加できるのはルート又はグループの下だけです。");
+        return;
+      }
+      TreeNode treeNodeNew = new TreeNode("新規項目" + counter.ToString());
+      treeNodeNew.ImageIndex = treeNodeNew.SelectedImageIndex = 10;
+      treeNodeNew.Tag = new NodeInfo
+      {
+        Type = "record",
+        Title = "新規項目" + counter.ToString(),
+        PathBase = string.Empty,
+        Action = string.Empty,
+        Command = string.Empty,
+        Path = string.Empty,
+        Icon = string.Empty,
+        Args = string.Empty,
+        Option = string.Empty,
+        InnerText = string.Empty,
+        Comment = string.Empty
+      };
+      this.treeView.SelectedNode.Nodes.Add(treeNodeNew);
+      this.treeView.SelectedNode = treeNodeNew;
+      this.treeView.LabelEdit = true;
+      this.treeView.SelectedNode.BeginEdit();
+      this.treeView.SelectedNode.EndEdit(true);
+      this.counter++;
+    }
+
+    /// <summary>
+    /// Addfolder
+    /// </summary>
+    private int counter2 = 1;
+    private void 新規フォルダMenuItem_Click(object sender, EventArgs e)
+    {
+      if (this.treeView.SelectedNode == null)
+      {
+        MessageBox.Show("ノードを選択してください");
+        return;
+      }
+      if (!(this.treeView.SelectedNode.Tag is NodeInfo) || ((NodeInfo)this.treeView.SelectedNode.Tag).Type == "record")
+      {
+        MessageBox.Show("グループを追加できるのはルート又はグループの下だけです。");
+        return;
+      }
+      TreeNode treeNode = new TreeNode("新規グループ" + counter2.ToString());
+      treeNode.ImageIndex = 11;
+      treeNode.SelectedImageIndex = 12;
+      treeNode.Tag = new NodeInfo
+      {
+        Type = "folder",
+        Title = "新規グループ",
+        PathBase = string.Empty,
+        Action = string.Empty,
+        Command = string.Empty,
+        Path = string.Empty,
+        Icon = string.Empty,
+        Args = string.Empty,
+        Option = string.Empty,
+        InnerText = string.Empty,
+        Comment = string.Empty
+      };
+      this.treeView.SelectedNode.Nodes.Add(treeNode);
+      this.treeView.SelectedNode = treeNode;
+      this.treeView.LabelEdit = true;
+      this.treeView.SelectedNode.BeginEdit();
+      this.treeView.SelectedNode.EndEdit(true);
+      this.counter2++;
+    }
+
+    /// <summary>
+    /// Renames current file or directory
+    /// </summary>
+    private void 名前の変更MToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      this.treeView.LabelEdit = true;
+      this.treeView.SelectedNode.BeginEdit();
+      this.pluginUI.propertyGrid1_PropertyValueChanged(null, null);
+      //this.treeView.LabelEdit = false;
+    }
+
+    private void 削除MenuItem_Click(object sender, EventArgs e)
+    {
+      if (this.treeView.SelectedNode != null)
+      {
+        if (this.treeView.SelectedNode.Parent == null)
+        {
+          MessageBox.Show("ルートノードを削除することはできません");
+          return;
+        }
+        if (MessageBox.Show("選択したノードを削除してもよろしいですか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        {
+          this.treeView.Nodes.Remove(this.treeView.SelectedNode);
+          return;
+        }
+      }
+      else
+      {
+        MessageBox.Show("ノードを選択してください");
+      }
+    }
+
+    private void 隠した項目を表示SToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void 隠すHToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      //this.treeView.SelectedNode.IsVisible = !this.treeView.SelectedNode.IsVisible;
+    }
+
+    private void targetToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
     #endregion
 
     #region Custom Document
-   
+
     public void InitializeCustomControlsInterface(IMDIForm control)
     {
       control.MainForm = new ParentFormClass
@@ -2056,6 +2453,11 @@ namespace AntPlugin.XmlTreeMenu
     public Control CreateCustomDockControl(string path, string file,string option="")
     {
       Control result;
+      Assembly assembly = null;
+      String dlldir = Path.Combine(PathHelper.BaseDir, "DockableControls");
+      String dllpath = Application.ExecutablePath;//String.Empty;
+      String classname = String.Empty;
+      Type type = null;
       try
       {
         Control control = null;
@@ -2070,15 +2472,12 @@ namespace AntPlugin.XmlTreeMenu
           //control = playerPanel as Control;
           //break;
           case "PicturePanel":
-            //control = new PicturePanel() as Control;
             PicturePanel picturePanel = new PicturePanel();
-
+            control = picturePanel as Control;
+            classname = control.GetType().FullName;
             //picturePanel.PreviousDocuments = this.settings.PreviousPicturePanelDocuments;
             //picturePanel.Instance.PreviousDocuments = this.settings.PreviousPicturePanelDocuments;
-
-            //koko
-            //picturePanel.XmlTreeMenu = this.pluginMain;
-            control = picturePanel as Control;
+            //control = picturePanel as Control;
             break;
           //case "OpenGLPanel":
           //control = new OpenGLPanel() as Control;
@@ -2095,8 +2494,12 @@ namespace AntPlugin.XmlTreeMenu
           //control = azukiEditor as Control;
           //break;
           case "RichTextEditor":
-            control = new RichTextEditor() as Control;
+            //control = new RichTextEditor() as Control;
             RichTextEditor richTextEditor = new RichTextEditor();
+            control = richTextEditor as Control;
+            classname = control.GetType().FullName;
+
+
             //richTextEditor.PreviousDocuments = this.settings.PreviousRichTextEditorDocuments;
             //richTextEditor.Instance.PreviousDocuments = this.settings.PreviousRichTextEditorDocuments;
             control = richTextEditor as Control;
@@ -2133,44 +2536,47 @@ namespace AntPlugin.XmlTreeMenu
           //control = jsonViewer as Control;
           //break;
           default:
-            //// 未完成
-            String dlldir = PathHelper.BaseDir + @"\DockableControls";
-            String dllpath = Path.Combine(dlldir, path + ".dll");
-            Assembly assembly = null;
-            Type type = null;
-            if (Path.GetExtension(path) == ".dll")
+            try
             {
-              if (File.Exists(path))
+              if (path.IndexOf("@") > -1)
               {
-                assembly = Assembly.LoadFrom(path);
-                type = assembly.GetType("XMLTreeMenu.Controls." + Path.GetFileNameWithoutExtension(path));
-                control = (UserControl)Activator.CreateInstance(type);
-              }
-              else if (File.Exists(Path.Combine(dlldir, path)))
-              {
-                assembly = Assembly.LoadFrom(Path.Combine(dlldir, path));
-                type = assembly.GetType("XMLTreeMenu.Controls." + Path.GetFileNameWithoutExtension(path));
-                control = (UserControl)Activator.CreateInstance(type);
+                classname = path.Split('@')[0];
+                dllpath = path.Split('@')[1];
               }
               else
               {
-                MessageBox.Show("dllのパスが存在しません");
-                return null;
+                dllpath = Path.Combine(dlldir, Path.GetFileNameWithoutExtension(path) + ".dll");
+                try
+                {
+                  if (path.IndexOf("@") > -1)
+                  {
+                    classname = path.Split('@')[0];
+                    dllpath = path.Split('@')[1];
+                  }
+                  else
+                  {
+                    dllpath = Path.Combine(dlldir, Path.GetFileNameWithoutExtension(path) + ".dll");
+                    //classname = "CommonControl." + Path.GetFileNameWithoutExtension(path);
+                    classname = "XMLTreeMenu.Controls." + Path.GetFileNameWithoutExtension(path);
+                  }
+                  assembly = Assembly.LoadFrom(dllpath);
+                  type = assembly.GetType(classname);
+                  control = (Control)Activator.CreateInstance(type);
+                }
+                catch (Exception exc)
+                {
+                  MessageBox.Show(Lib.OutputError(exc.Message.ToString()),
+                    MethodBase.GetCurrentMethod().Name);
+                }
               }
+              assembly = Assembly.LoadFrom(dllpath);
+              type = assembly.GetType(classname);
+              control = (Control)Activator.CreateInstance(type);
             }
-            else
+            catch (Exception exc)
             {
-              if (File.Exists(dllpath))
-              {
-                assembly = Assembly.LoadFrom(dllpath);
-                type = assembly.GetType("XMLTreeMenu.Controls." + Path.GetFileNameWithoutExtension(path));
-                control = (UserControl)Activator.CreateInstance(type);
-              }
-              else
-              {
-                MessageBox.Show("dllのパス [" + path + "] が存在しません");
-                return null;
-              }
+              MessageBox.Show(Lib.OutputError(exc.Message.ToString()),
+                MethodBase.GetCurrentMethod().Name);
             }
             break;
         }
@@ -2192,10 +2598,13 @@ namespace AntPlugin.XmlTreeMenu
           string errmsg = ex.Message.ToString();
           MessageBox.Show(errmsg, "InitializeCustomControlsInterface((IMDIForm)control)エラー");
         }
-
-        //control.AccessibleDescription = this.MakeQueryString(Path.GetFileNameWithoutExtension(path));
-        control.AccessibleDescription = option;
+        control.Name = classname + "@" + dllpath;
+        //control.AccessibleDescription = option;
+        control.AccessibleDescription = classname + "@" + dllpath;
+        control.AccessibleName = file;
+        control.AccessibleDefaultActionDescription = this.GetType().FullName + "@" + Application.ExecutablePath;
         ((Control)control.Tag).Tag = file;
+
         StatusStrip statusStrip = (StatusStrip)Lib.FindChildControlByType(control, "StatusStrip");
         if (statusStrip != null)
         {
@@ -2220,6 +2629,151 @@ namespace AntPlugin.XmlTreeMenu
       }
       return result;
     }
+
+
+    public Control CreateCustomControl(string path, string file, string option = "")
+    {
+      Control result;
+      Assembly assembly = null;
+      String dlldir = Path.Combine(PathHelper.BaseDir, "DockableControls");
+      String dllpath = Application.ExecutablePath;//String.Empty;
+      String classname = String.Empty;
+      Type type = null;
+      try
+      {
+        Control control = null;
+        //switch (Path.GetFileNameWithoutExtension(path).ToLower())
+        switch (path.ToLower())
+        {
+          case "picturepanel":
+            PicturePanel picturePanel = new PicturePanel();
+            control = picturePanel as Control;
+            classname = control.GetType().FullName;
+            break;
+          case "richtexteditor":
+            control = new RichTextEditor() as Control;
+            classname = control.GetType().FullName;
+            break;
+          //case "playerpanel":
+            //control = new PlayerPanel() as Control;
+            //classname = control.GetType().FullName;
+            //break;
+          case "browser":
+            //control = new Browser();
+            classname = control.GetType().FullName;
+            break;
+          case "browserex":
+            //control = new BrowserEx();
+            classname = control.GetType().FullName;
+            break;
+          case "simplepanel":
+            control = new SimplePanel();
+            classname = control.GetType().FullName;
+            break;
+          //case "reogridpanel":
+          //reoGridPanel.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+          //reoGridPanel.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+          //break;
+          //case "openglpanel":
+          //control = new XMLTreeMenu.Controls.OpenGLPanel() as Control;
+          //control = new OpenGLPanel() as Control;
+          //break;
+          //case "HTMLEditor":
+          //HTMLEditor htmlEditor = new HTMLEditor();
+          //htmlEditor.PreviousDocuments = this.settings.PreviousHTMLEditorDocuments;
+          //htmlEditor.Instance.PreviousDocuments = this.settings.PreviousHTMLEditorDocuments;
+          //control = htmlEditor as Control;
+          //MessageBox.Show(name);
+          //break;
+          //case "TreeGridView":
+          //TreeGridViewPanel treeGridView = new TreeGridViewPanel();
+          //treeGridViewPanel.PreviousDocuments = this.settings.PreviousTreeGridViewDocuments;
+          //treeGridView.Instance.PreviousDocuments = this.settings.PreviousTreeGridViewPanelDocuments;
+          //control = treeGridView as Control;
+          //break;
+          //case "JsonViewer":
+          //JsonView jsonViewer = new JsonView();
+          //treeGridViewPanel.PreviousDocuments = this.settings.PreviousTreeGridViewDocuments;
+          //treeGridView.Instance.PreviousDocuments = this.settings.PreviousTreeGridViewPanelDocuments;
+          //control = jsonViewer as Control;
+          //break;
+          //case "reogridpanel":
+          default:
+            // UVIXでは戻る 追加 Time-stamp: <2019-04-07 13:09:41 kahata>
+            try
+            {
+              if (path.IndexOf("@") > -1)
+              {
+                classname = path.Split('@')[0];
+                dllpath = path.Split('@')[1];
+              }
+              else
+              {
+                dllpath = Path.Combine(dlldir, Path.GetFileNameWithoutExtension(path) + ".dll");
+                classname = "CommonControl." + Path.GetFileNameWithoutExtension(path);
+              }
+              assembly = Assembly.LoadFrom(dllpath);
+              //foreach (Type pluginType in assembly.GetTypes()) MessageBox.Show(pluginType.FullName);
+              //MessageBox.Show(dllpath,classname);
+              type = assembly.GetType(classname);
+              control = (Control)Activator.CreateInstance(type);
+            }
+            catch (Exception exc)
+            {
+              MessageBox.Show(Lib.OutputError(exc.Message.ToString()),
+                MethodBase.GetCurrentMethod().Name);
+            }
+            break;
+        }
+        control.Name = Path.GetFileName(file);
+        control.Dock = DockStyle.Fill;
+        try
+        {
+          // 例外発生
+          if (control is IMDIForm)
+          {
+            //this.InitializeCustomControlsInterface((IMDIForm)control);
+            //Console.WriteLine("実装してる！");
+          }
+        }
+        catch (Exception ex)
+        {
+          string errmsg = Lib.OutputError(ex.Message.ToString());
+          MessageBox.Show(errmsg, MethodBase.GetCurrentMethod().Name);
+        }
+        control.Name = classname + "@" + dllpath;
+        //control.AccessibleDescription = option;
+        control.AccessibleDescription = classname + "@" + dllpath;
+        control.AccessibleName = file;
+        control.AccessibleDefaultActionDescription = this.GetType().FullName + "@" + Application.ExecutablePath;
+        ((Control)control.Tag).Tag = file;
+        StatusStrip statusStrip = (StatusStrip)Lib.FindChildControlByType(control, "StatusStrip");
+        if (statusStrip != null)
+        {
+          //statusStrip.Tag = this.StatusStrip;
+        }
+        MenuStrip menuStrip = (MenuStrip)Lib.FindChildControlByType(control, "MenuStrip");
+        if (menuStrip != null)
+        {
+         // menuStrip.Tag = this.MenuStrip;
+        }
+        ToolStrip toolStrip = (ToolStrip)Lib.FindChildControlByType(control, "ToolStrip");
+        if (toolStrip != null)
+        {
+          //toolStrip.Tag = this.ToolStrip;
+        }
+        result = control;
+      }
+      catch (Exception ex2)
+      {
+        String errMsg = Lib.OutputError(ex2.Message.ToString());
+        MessageBox.Show(errMsg, MethodBase.GetCurrentMethod().Name);
+        result = null;
+      }
+      return result;
+    }
+
+
 
     public string CurrentDocumentPath()
     {
@@ -2335,8 +2889,6 @@ namespace AntPlugin.XmlTreeMenu
       //MessageBox.Show(tag,name);
       try
       {
-        //Type mfType = this.GetType();
-
         ActionManager action = new ActionManager();
         Type mfType = action.GetType();
 
@@ -2364,7 +2916,6 @@ namespace AntPlugin.XmlTreeMenu
     {
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstr = (string)button.Tag;
-
       try
       {
         String[] args = argstr.Split('|');
@@ -2373,8 +2924,8 @@ namespace AntPlugin.XmlTreeMenu
       }
       catch(Exception exc)
       {
-        String errmsg = exc.Message.ToString();
-        MessageBox.Show(errmsg, "CallMenuCommand Handler");
+        String errmsg = Lib.OutputError(exc.Message.ToString());
+        MessageBox.Show(errmsg, MethodBase.GetCurrentMethod().Name);
         return false;
       }
     }
@@ -2671,5 +3222,8 @@ namespace AntPlugin.XmlTreeMenu
       //if (File.Exists(nodeInfo.Path)) Process.Start(@"C:\Program Files (x86)\sakura\sakura.exe", nodeInfo.Path);
       
     }
+
+
+
   }
 }

@@ -232,7 +232,7 @@ namespace AntPlugin
 			pluginUI.Text = "Ant";
 			pluginUI.StartDragHandling();
 			pluginPanel = PluginBase.MainForm.CreateDockablePanel(
-			  pluginUI, PLUGIN_GUID, pluginImage, DockState.DockRight);
+			  pluginUI, PLUGIN_GUID, pluginImage, DockState.DockLeft);
 		}
 
 		private void ShowAntWindow(object sender, EventArgs e)

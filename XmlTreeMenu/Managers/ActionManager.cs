@@ -491,7 +491,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
 
-
       String command = String.Empty;
       String args = String.Empty;
       String path = String.Empty;
@@ -527,6 +526,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
         return;
       }
       String file = command;
+      //MessageBox.Show(file);
       PluginBase.MainForm.WorkingDirectory = Path.GetDirectoryName(file);
       //実行出力
       try
@@ -542,14 +542,15 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.BrowseEx(file);
           return;
         }
-        //if (Lib.IsSoundFile(file) || Lib.IsVideoFile(file))
-        //{
-        //this.Player(file);
-        //return;
-        //}
+        if (Lib.IsSoundFile(file) || Lib.IsVideoFile(file))
+        {
+          //ActionManager.Player(file);
+          button.Tag  = "PlayerPanel" + "|" + file;
+          ActionManager.CustomDocument(button, null);
+          return;
+        }
         else if (!Lib.IsExecutableFile(file) && !Lib.IsSoundFile(file) && !Lib.IsVideoFile(file))
         {
-          //MessageBox.Show(file);
           PluginBase.MainForm.OpenEditableDocument(file);
           return;
         }

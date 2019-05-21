@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project name="AntPlugin" default="usage" basedir=".">
+	<property environment="env" />
+	<property name="name" value="AntPlugin"/>
+	<property name="target" value="AntPlugin"/>
+	<property name="dll" value="${target}.dll"/>
+	<!-- property name="source" value="${target}.cs"/ -->
+	<property name="compiler" value="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe" />
+	<property name="csproj" value="${target}.csproj" />
+  <property name="script" value="F:/Programs/csscript/csws.exe" />
+  
+  <target name="build">
+    <exec executable="cmd" spawn="false">
+      <arg value="/k" />
+      <arg value="${compiler}"/>
+      <arg value="${basedir}/${csproj}" />
+      <arg value="/rebuild" />
+    </exec>
+    <!--
+    <available file="${basedir}/bin/Release/${exe}" property="have.release" />
+    <copy file="${basedir}/bin/Release/${exe}" todir="${basedir}" failonerror="false" />
+    <copy file="${basedir}/bin/Debug/${exe}" todir="${basedir}" failonerror="false" />
+	-->
+  </target>
+
+  <target name="sslib211.exe">
+    <exec executable="F:\cpp\sslib\Debug\sslib211.exe" outputproperty="result">
+    </exec>
+	<echo message="${result}" encoding="utf-8"/>
+  </target>
+	<!-- =================================================================== -->
+  <!-- Help on usage													   -->
+  <!-- =================================================================== -->
+  <target name="usage">
+	<echo message="" />
+	<echo message="" />
+	<echo message="${name} Build file" />
+	<echo message="-------------------------------------------------------------" />
+	<echo message="" />
+	<echo message=" available targets are:" />
+	<echo message="" />
+	<echo message="   build	 - compiles the source code (default)" />
+	<echo message="   run	   - execute the exsample" />
+	<echo message="   runscript - run script of the exsample" />
+	<!--
+	<echo message="   package   - generates the ${name}.jar file" />
+	-->
+	<echo message="   doxygen   - generates the doxygen documentation" />
+	<echo message="   clean	 - cleans up the directory" />
+	<echo message="   clear	 - delete all build files" />
+	<echo message="" />
+	<echo message=" See the comments inside the build.xml file for more details." />
+	<echo message="-------------------------------------------------------------" />
+	<echo message="" />
+	<echo message="" />
+  </target>
+	<property name="XmlTreeMenu"><![CDATA[
+  <XmlTreeMenu name="AntPlugin TreeMenu" icon="imagelist:53">
+  <folder title="Links" expand="true">
+    <folder title="LocalSite">
+      <record title="PukiWki2016" action="Browse" path="http://192.168.0.13/pukiwiki2016/index.php" icon="F:\icons\pukiwiki.ico" />
+    </folder>
+    <folder title="WebSite">
+      <record title="Google" action="Browse" path="http://www.google.co.jp/" icon="http://www.google.co.jp/favicon.ico" />
+      <record title="yahoo" action="Browse" path="http://www.yahoo.co.jp/" icon="http://www.yahoo.co.jp/favicon.ico" />
+      <record title="Tour de Flex" action="Browse" path="http://www.adobe.com/devnet-archive/flex/tourdeflex/web/#" />
+    </folder>
+  </folder>
+</XmlTreeMenu>
+	]]></property>
+
+	<property name="wsf"><![CDATA[
+<package title="AntPlugin" basedir="." default="hello" name="AntPlugin"> 
+<job id="run" name="run">
+<script language="VBScript">
+	Option Explicit
+	Dim shell
+	Dim currentDir
+
+	'currentDir = Replace(WScript.ScriptFullName, WScript.ScriptName, "")
+	Set shell = CreateObject("WScript.Shell")
+	shell.CurrentDirectory = "F:\GitHub\Flasdevelop\flashdevelop.5.3.3\flashdevelop\FlashDevelop\Bin\Debug"
+
+	CreateObject("WScript.Shell").Run "F:\GitHub\Flasdevelop\flashdevelop.5.3.3\flashdevelop\FlashDevelop\Bin\Debug\FlashDevelop.exe"
+
+	Function FolderExists(strFilePath)
+		Dim objFileSys
+		Set objFileSys = CreateObject("Scripting.FileSystemObject")
+		FolderExists = objFileSys.FolderExists(strFilePath)
+	End Function
+
+	Function FileExists(strFilePath)
+		Dim objFileSys
+		Set objFileSys = CreateObject("Scripting.FileSystemObject")
+		FileExists = objFileSys.FileExists(strFilePath)
+	End Function
+</script>
+</job>
+<job id="hello" name="hello">
+		<script language="JScript" src="F:\WSH\wsf\common_lib.js"/>	
+		<script language="JScript">
+			WScript.Echo("こんにちわ");
+		</script>
+	</job>
+</package>
+]]></property>
+</project>

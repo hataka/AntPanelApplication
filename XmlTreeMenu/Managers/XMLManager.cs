@@ -1,15 +1,14 @@
-﻿// -*- mode: cs -*-  Time-stamp: <2017-04-08 20:06:26 kahata>
+﻿// -*- mode: cs -*-  Time-stamp: <2019-05-19 08:27:47 kahata>
 /*================================================================
  * title: 
- * file: xmlmanager.cs
- * path: f:\VCSharp\flashdevelop5.1.1-ll\External\Plugins\xmltreemenu\Managers\xmlmanager.cs
- * url:  f:/VCSharp/flashdevelop5.1.1-ll/External/Plugins/xmltreemenu/Managers/xmlmanager.cs
+ * file: XMLManager.cs
+ * path: F:\GitHub\Flasdevelop\flashdevelop.5.3.3\flashdevelop\External\Plugins\fd-ant-plugin-master\XmlTreeMenu\Managers\XMLManager.cs
  * created: Time-stamp: <2017-04-08 20:06:26 kahata>
- * revision: $Id$
+ * revised: Time-stamp: <2019-05-19 08:27:47 kahata>
  * Programmed By: kahata
  * To compile:
  * To run: 
- * link: http://stackoverflow.com/questions/5389525/converting-xelement-into-xmlnode
+ * link: 
  * description: 
  *================================================================*/
 

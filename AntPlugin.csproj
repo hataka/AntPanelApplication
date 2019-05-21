@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2871AC57-9191-487E-BE0E-39C81063DCE1}</ProjectGuid>
+    <ProjectGuid>{B0234A27-E9F1-489E-9CD4-B3616D0B0939}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AntPlugin</RootNamespace>
@@ -15,7 +15,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkProfile />
@@ -189,6 +189,7 @@
     </Compile>
     <Compile Include="XmlTreeMenu\Managers\ActionManager.cs" />
     <Compile Include="XmlTreeMenu\Managers\ScriptManager.cs" />
+    <Compile Include="XmlTreeMenu\Managers\TreeViewManager.cs" />
     <Compile Include="XmlTreeMenu\Managers\XMLManager.cs" />
     <Compile Include="XmlTreeMenu\MDIForm\ChildFormControlClass.cs" />
     <Compile Include="XmlTreeMenu\MDIForm\FDProject\CompileClass.cs" />

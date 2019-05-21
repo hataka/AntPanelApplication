@@ -1,3 +1,13 @@
+// -*- mode: cs -*-  Time-stamp: <2019-05-19 08:38:28 kahata>
+/*================================================================
+ * title: 
+ * file: StripBarManager.cs
+ * path: F:\GitHub\Flasdevelop\flashdevelop.5.3.3\flashdevelop\External\Plugins\fd-ant-plugin-master\XmlTreeMenu\Managers\StripBarManager.cs
+ * created: Time-stamp: <2018-05-13 05:40:28 kahata>
+ * Programmed By: kahata
+ * link: 
+ * description: 
+ *================================================================*/
 using PluginCore;
 using PluginCore.Helpers;
 using PluginCore.Localization;
@@ -790,15 +800,5 @@ namespace AntPlugin.XmlTreeMenu.Managers
 			return result;
 		}
     
-    /*
-		public static void AddIcon(string name)
-		{
-			string fileName = Path.Combine(PathHelper.BaseDir, "SettingData\\icons\\" + name);
-			Icon icon = new Icon(fileName, 16, 16);
-			Bitmap value = icon.ToBitmap();
-			icon.Dispose();
-			StripBarManager.imageList1.Images.Add(value);
-		}
-    */
   }
 }

@@ -16,8 +16,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
-using XMLTreeMenu.Managers;
-//using MDIForm;
 
 namespace AntPlugin
 {
@@ -66,10 +64,6 @@ namespace AntPlugin
 		public ASCompletion.PluginUI aSpluginUI;
 
 		public FixedTreeView outlineTree;
-
-		//public ImageListManager treeIcons;
-		//this.imageList1.Images.Add(Image.FromFile(file));
-
 		private int toggleIndex=1;
 
 		public BuildTree buildTree = new BuildTree();
@@ -89,9 +83,10 @@ namespace AntPlugin
 			this.pluginMain = pluginMain;
 			this.settings = pluginMain.Settings as Settings;
 			StripBarManager.pluginUI = this;
+      TreeViewManager.pluginUI = this;
+      InitializeComponent();
 
-			InitializeComponent();
-			InitializeGraphics();
+      InitializeGraphics();
       InitializeInterface();
 
       CreateMenus();
@@ -101,9 +96,11 @@ namespace AntPlugin
       IntializeDirTreePanel();
 			IntializeFTPClientPanel();
       InitializeXmlTreePanel();
+
       RefreshData();
 
-			// TODO: 実装
+      this.propertyGrid2.SelectedObject = this.settings;
+      // TODO: 実装
       //this.previousDocuments = this.settings.PreviousCustomDocuments;
 			//this.PopulatePreviousDocumentsMenu();
 			//this.AddPreviousDocuments(path);
@@ -212,7 +209,7 @@ namespace AntPlugin
 			}
 		}
 
-    public void InitializeXmlTreePanel()
+    private void InitializeXmlTreePanel()
     {
       try
       {
@@ -276,7 +273,7 @@ namespace AntPlugin
       //this.propertyGrid1.PropertyValueChanged += new PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged);
 			this.splitContainer1.Panel2Collapsed = true;
 			this.splitContainer1.Panel1Collapsed = false;
-			RefreshData();
+      RefreshData();
 		}
 
     public TreeNode currentNode=null;
@@ -580,7 +577,8 @@ namespace AntPlugin
 			{
 				pluginMain.AddBuildFiles(dialog.FileNames);
 			}
-		}
+      this.dirViewSelectedDir = String.Empty;
+    }
 
 		private void runButton_Click(object sender, EventArgs e)
 		{
@@ -608,7 +606,7 @@ namespace AntPlugin
 
     public void RunTarget(object sender, TreeNodeMouseClickEventArgs e)
 		{
-			try
+      try
 			{
         TreeView tree = sender as TreeView;
         //TreeNode treeNode = treeView.SelectedNode;
@@ -618,12 +616,20 @@ namespace AntPlugin
 				{
 					AntTreeNode antNode = treeView.SelectedNode as AntTreeNode;
 					if (antNode == null) return;
-          
-          if(antNode.Tag is String)
+          if (antNode.Tag is String)
           {
             String path = antNode.Tag as String;
+            //===========================================
+            // Fixed Time-stamp: <2019-05-21 08:27:41 kahata>
+            path = menuTree.ProcessVariable(path);
+            if (!File.Exists(path)
+              && File.Exists(Path.Combine(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), path)))
+            {
+              path = Path.Combine(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), path);
+            }
+            //===========================================
             //if (path == "GradleTargetNode") this.pluginMain.RunTarget(antNode.File, antNode.Target);
-            if(File.Exists(path))
+            if (File.Exists(path))
             {
               PluginBase.MainForm.OpenEditableDocument(path, false);
             }
@@ -838,14 +844,7 @@ namespace AntPlugin
 
 		private void refreshButton_Click(object sender, EventArgs e)
 		{
-      //Projectでロードされたツールボタンを外す試み
-      //XmlMenuTree.ToolBarSettingsFiles.Clear();
-      //XmlMenuTree.toolStripList.Clear();
-      //PluginBase.MainForm.MenuStrip は読み取り専用
-      //PluginBase.MainForm.MenuStrip = StripBarManager.GetMenuStrip(FileNameHelper.MainMenu);
-      //InitializeComponent();
       RefreshData();
-			//FillTree();
 		}
 		
 		public void RefreshData()
@@ -865,7 +864,6 @@ namespace AntPlugin
       InitializeComponent();
       */
       
-       
       if (XmlMenuTree.toolStripList.Count > 0)
       {
         foreach (ToolStrip toolStrip in XmlMenuTree.toolStripList)
@@ -926,15 +924,24 @@ namespace AntPlugin
 			TreeNode dummy = new TreeNode("dummy");
 			treeView.Nodes.Add(dummy);
 
-			foreach (String file in pluginMain.BuildFilesList)
+			foreach (String line in pluginMain.BuildFilesList)
 			{
-				if (File.Exists(file))
+        //Fixed Time-stamp: <2019-05-20 17:44:56 kahata>
+        //String file = line.Trim();
+        String file = menuTree.ProcessVariable(line);
+        if(!File.Exists(file) 
+          && File.Exists(Path.Combine(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath),file)))
+        {
+          file = Path.Combine(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), file);
+        }
+        if (File.Exists(file))
 				{
           //Fix 2017-01-09
           if (Path.GetExtension(file) == ".cs" || Path.GetExtension(file) == ".java")
           {
             this.LoadIn(file);
           }
+          // kahata 2018-02-09
           else if (Path.GetExtension(file) == ".xml")
           {
             bool isMenu = (Path.GetFileNameWithoutExtension(file).ToLower() == "fdtreemenu"
@@ -949,7 +956,6 @@ namespace AntPlugin
             treeView.Nodes.Add(GetBuildFileNode(file));
             // 追加 2017-01-12
             XmlDocument doc = new XmlDocument();
-            //doc.LoadXml("<xml a=\"b\"><c>d<e f=\"g\">h</e>i</c>j</xml>");
             doc.Load(file);
             this.propertyGrid1.SelectedObject = new XmlNodeWrapper(doc.DocumentElement);
           }
@@ -962,13 +968,19 @@ namespace AntPlugin
             //gradleNode.Target = "run";
             AntTreeNode gradleNode = this.gradleTree.GetGradleOutlineTreeNode(file);
             treeView.Nodes.Add(gradleNode);
-
-
           }
           else
           {
-            TreeNode linkNode = new TreeNode(Path.GetFileName(file), 1, 1);
-            linkNode.Tag = file;
+            // Fixed Time-stamp: <2019-05-20 17:48:45 kahata>
+            int imageindex = this.menuTree.GetIconImageIndex(file);
+            TreeNode linkNode = new TreeNode(Path.GetFileName(file), imageindex, imageindex);
+            NodeInfo ni = new NodeInfo();
+            ni.Type = "record";
+            ni.Title = Path.GetFileName(file);
+            ni.Command = ni.Path = file;
+            // Fixed Time-stamp: <2019-05-20 18:02:07 kahata>
+            //linkNode.Tag = file;
+            linkNode.Tag = ni;
             linkNode.ToolTipText = file;
             treeView.Nodes.Add(linkNode);
           }
@@ -991,9 +1003,19 @@ namespace AntPlugin
 			return result;
 		}
 
+    // kokokoko
     public TreeNode GetBuildFileNode(string file)
 		{
-			XmlDocument xml = new XmlDocument();
+      //===========================================
+      // Fixed Time-stamp: <2019-05-21 08:27:41 kahata>
+      file = menuTree.ProcessVariable(file);
+      if (!File.Exists(file)
+        && File.Exists(Path.Combine(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), file)))
+      {
+        file = Path.Combine(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), file);
+      }
+      //===========================================
+      XmlDocument xml = new XmlDocument();
 			xml.PreserveWhitespace = true;
 			xml.Load(file);
 
@@ -1018,26 +1040,40 @@ namespace AntPlugin
 				description = elm.Item(0).InnerText.Trim();
 			}
 			else description = file;
+
+
       if (projectName.Length == 0) projectName = Path.GetFileName(file);
  
       AntTreeNode rootNode = new AntTreeNode(projectName, ICON_FILE);
+
+
       if (Path.GetExtension(file).ToLower()==".wsf") rootNode = new AntTreeNode(projectName, ICON_WSF_FILE);
 			if (Path.GetExtension(file).ToLower() == ".fdp") rootNode = new AntTreeNode(projectName, ICON_FDP_FILE);
 			rootNode.File = file;
 			rootNode.Target = defaultTarget;
-			rootNode.Tag = xml.DocumentElement;
-			//rootNode.
+
+      //===========================================
+      // Fixed Time-stamp: <2019-05-21 08:27:41 kahata>
+      NodeInfo ni = new NodeInfo();
+      ni.Type = "record";
+      ni.Title = Path.GetFileName(file);
+      ni.Command = ni.Path = file;
+      rootNode.Tag = ni;
+      //rootNode.Tag = xml.DocumentElement;
+      //===========================================
+      //rootNode.
       //TimeStamp: 2017-01- 07 2016/04/22 14:03 //<2016-01-26 14:25:26 kahata>
-			rootNode.ToolTipText = description;
+      rootNode.ToolTipText = description;
 
 			XmlNodeList nodes = xml.DocumentElement.ChildNodes;
 			int nodeCount = nodes.Count;
       //MessageBox.Show(rootNode.File,"expand前");
       for (int i = 0; i < nodeCount; i++)
 			{
+      
         XmlNode child = nodes[i];
 				AntTreeNode antNode = null;
-				switch (child.Name.ToLower())
+				switch (child.Name)
 				{
 					case "target":
 						// skip private targets
@@ -1074,6 +1110,7 @@ namespace AntPlugin
 						if (this.内部ターゲット表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);
 						else if (antNode.ImageIndex != ICON_INTERNAL_TARGET) rootNode.Nodes.Add(antNode);
 						break;
+
           // 追加 Time-stamp: <2019-03-09 12:21:14 kahata>
           case "xmltreenode":
           case "xmltreemenu":
@@ -1082,22 +1119,31 @@ namespace AntPlugin
             rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file));
             break;
           case "property":
-          case "scriptdef":
+					case "scriptdef":
 					case "taskdef":
 					case "macrodef":
-            // skip private targets
-            XmlAttribute propertyNameAttr = child.Attributes["name"];
+						// skip private targets
+						XmlAttribute propertyNameAttr = child.Attributes["name"];
 						XmlAttribute propertyResourceAttr = child.Attributes["resource"];
             String propertyName = String.Empty;
             if (propertyNameAttr != null)
-						{
-							propertyName = propertyNameAttr.InnerText;
-							if (!String.IsNullOrEmpty(propertyName) && (propertyName[0] == '-')) continue;
-						}
+            {
+              propertyName = propertyNameAttr.InnerText;
+              if (!String.IsNullOrEmpty(propertyName) && (propertyName[0] == '-')) continue;
+            }
             // 追加 Time-stamp: <2019-03-11 10:29:45 kahata>
             if (propertyName.ToLower() == "xmltreemenu" && !String.IsNullOrEmpty(child.InnerText))
             {
               rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file));
+            }
+            // 追加 Time-stamp: <2019-05-18 08:08:09 kahata>
+            else if (propertyName.ToLower()=="wsf" && !String.IsNullOrEmpty(child.InnerText))
+            {
+              String tmpfile = Path.Combine(@"F:\temp", projectName+".wsf");
+              String xmlstr = this.GetFormattedXmlText(child.InnerText);
+              Lib.File_SaveEncode(tmpfile, xmlstr, "utf-8");
+              TreeNode wsfNode = this.GetBuildFileNode(tmpfile);
+              rootNode.Nodes.Add(wsfNode);
             }
             else
             {
@@ -1109,8 +1155,7 @@ namespace AntPlugin
               if (プロパティ表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);
             }
             break;
-
-          default:
+					default:
 						//例外発生 外す
 						//antNode = GetBuildTargetNode(child, defaultTarget);
 						//antNode.File = file;
@@ -1134,7 +1179,38 @@ namespace AntPlugin
       return rootNode;
 		}
 
-		private AntTreeNode GetBuildChild(XmlNode node, string defaultTarget)
+    /// <summary>
+    ///  XML 文字列にインデントつき整形を施す
+    /// </summary>
+    /// https://qiita.com/otagaisama-1/items/668e7c913b728b3218fc
+    /// <param name="s"></param>
+    /// <returns></returns>
+    private string GetFormattedXmlText(string s)
+    {
+      var v = new System.Xml.XmlDocument();
+      v.LoadXml(s);
+
+      var ws = new System.Xml.XmlWriterSettings();
+      ws.Indent = true;
+      ws.IndentChars = "  "; // <- インデントの空白数ではなくて、1つ分のインデントとして使う文字列を直接指定します。
+
+      using (var ms = new System.IO.MemoryStream())
+      {
+        using (var wr = System.Xml.XmlWriter.Create(ms, ws))
+        {
+          v.WriteContentTo(wr);
+          wr.Flush();
+          ms.Flush();
+        }
+        ms.Position = 0;
+        using (var rd = new System.IO.StreamReader(ms))
+        {
+          return rd.ReadToEnd();
+        }
+      }
+    }
+
+    private AntTreeNode GetBuildChild(XmlNode node, string defaultTarget)
 		{
 			int imageIndex = 0;
 			XmlAttribute nameAttr;// = node.Attributes["name"] ?? null;
@@ -1516,12 +1592,12 @@ namespace AntPlugin
 			this.RefreshData();
 		}
 
-		private void imageListStripButton_Click(object sender, EventArgs e)
-		{
+    private void ツールボタンToolStripMenuItem_Click(object sender, EventArgs e)
+    {
 
-		}
+    }
 
-		private void syncronizeButton_Click(object sender, EventArgs e)
+    private void syncronizeButton_Click(object sender, EventArgs e)
 		{
 			//String buildfileDir;
 			String path;
@@ -1686,9 +1762,6 @@ namespace AntPlugin
       // 間に合せのパッチ
       TreeNode dummy = new TreeNode("dummy");
       treeView.Nodes.Add(dummy);
-
-      // herehere
-      //treeView.Nodes.Add(this.menuTree.getXmlTreeNode(XmlTreePanel.menuPath, true));
       treeView.Nodes.Add(this.menuTree.getXmlTreeNode(this.settings.HomeMenuPath, true));
     }
 
@@ -2145,9 +2218,35 @@ namespace AntPlugin
 			this.settings.FileStates.Clear();
 			this.PopulateFileStateMenu();
 		}
-		#endregion
 
-	}
+    #endregion
+
+    public void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+    {
+      String projectDir = Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
+      this.treeView.SelectedNode.Tag = this.propertyGrid1.SelectedObject;
+      this.treeView.SelectedNode.Text = ((NodeInfo)treeView.SelectedNode.Tag).Title;
+      // BeseNodeの探索
+      TreeNode baseNode = new TreeNode();
+      foreach (TreeNode tn in this.treeView.Nodes) if (TreeViewManager.IsChildNode(tn, this.treeView.SelectedNode)) baseNode = tn;
+      NodeInfo ni = baseNode.Tag as NodeInfo;
+      String xmlPath = ni.Path;
+      if (!File.Exists(ni.Path) && File.Exists(Path.Combine(projectDir, ni.Path)))
+      {
+        xmlPath = Path.Combine(projectDir, ni.Path);
+      }
+      String msgboxTitle = treeView.SelectedNode.Text + " が変更されました";
+      String msgboxString = "メニューファイルを\n" + xmlPath + "\nに保存しますか?";
+      if (MessageBox.Show(msgboxString, msgboxTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+      {
+        Lib.File_BackUpCopy(xmlPath);
+        //TODO FIXME
+        //this.menuTree.SaveFile(@"F:\temp\test.xml");
+        this.menuTree.SaveFile(xmlPath);
+      }
+      //LoadFile(this.filepath);
+    }
+  }
 
   //internal class AntTreeNode : TreeNode
   public class AntTreeNode : TreeNode
