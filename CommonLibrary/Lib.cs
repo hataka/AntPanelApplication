@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -31,7 +32,11 @@ namespace AntPlugin.CommonLibrary
 
 		public static ArrayList databasefile = new ArrayList{".mdf",".mdb",".sqlit3",".sqlite"};
 
-		public static Form form;
+    public static ArrayList flashdevelopfile = new ArrayList { ".fdp", ".fdb", ".fdt", ".fdl", ".as3proj" };
+
+    public static ArrayList browsablefile = new ArrayList { ".html", ".htm", ".php", ".pdf" };
+
+    public static Form form;
 
 		public static Process extProcess = null;
 
@@ -242,7 +247,62 @@ namespace AntPlugin.CommonLibrary
 			return MessageBox.Show(msgboxString, msgboxTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
 		}
 
-		public static string GetTargetExt(string dir, string target)
+    // http://www.csharp-examples.net/inputbox/
+    public static DialogResult InputBox(string title, string promptText, ref string value)
+    {
+      Form form = new Form();
+      Label label = new Label();
+      TextBox textBox = new TextBox();
+      Button buttonOk = new Button();
+      Button buttonCancel = new Button();
+
+      form.Text = title;
+      label.Text = promptText;
+      textBox.Text = value;
+      form.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+
+      buttonOk.Text = "OK";
+      buttonCancel.Text = "Cancel";
+      buttonOk.DialogResult = DialogResult.OK;
+      buttonCancel.DialogResult = DialogResult.Cancel;
+
+      //label.SetBounds(9, 20, 372, 13);
+      //textBox.SetBounds(12, 36, 372, 20);
+      //buttonOk.SetBounds(228, 72, 75, 23);
+      //buttonCancel.SetBounds(309, 72, 75, 23);
+
+
+      label.SetBounds(9, 10, 372, 32);
+      textBox.SetBounds(12, 36, 372, 32);
+      buttonOk.SetBounds(228, 72, 75, 32);
+      buttonCancel.SetBounds(309, 72, 75, 32);
+
+      label.AutoSize = true;
+      textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
+      buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+      buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+      form.ClientSize = new Size(396, 107);
+      form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+      form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+      form.FormBorderStyle = FormBorderStyle.FixedDialog;
+      form.StartPosition = FormStartPosition.CenterScreen;
+      form.MinimizeBox = false;
+      form.MaximizeBox = false;
+      form.AcceptButton = buttonOk;
+      form.CancelButton = buttonCancel;
+
+      DialogResult dialogResult = form.ShowDialog();
+      value = textBox.Text;
+      return dialogResult;
+    }
+
+
+
+
+
+
+    public static string GetTargetExt(string dir, string target)
 		{
 			ArrayList arrayList = new ArrayList
 			{
@@ -485,7 +545,17 @@ namespace AntPlugin.CommonLibrary
 			return path.IndexOfAny(invalidFileNameChars) >= 0;
 		}
 
-		public static bool IsBinaryFile(string filePath)
+     public static bool IsFlashdevelopFile(string path)
+    {
+      return Lib.flashdevelopfile.Contains(Path.GetExtension(path.ToLower()));
+    }
+
+    public static bool Isbrowsable(string path)
+    {
+      return Lib.browsablefile.Contains(Path.GetExtension(path.ToLower()));
+    }
+
+    public static bool IsBinaryFile(string filePath)
 		{
 			FileStream fileStream = File.OpenRead(filePath);
 			int num = (int)fileStream.Length;

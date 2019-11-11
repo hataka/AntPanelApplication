@@ -40,20 +40,23 @@
       this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
       this.実行EToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-      this.sakuraMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.OpenDocumentMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.リンクを開くMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+      this.sakuraMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.visualStudioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.PSPadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.chromeCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+      this.vlcVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
       this.richTextEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.azukiEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
       this.explorerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.cmdPromptMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.chromeCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
       this.ファイル名を指定して実行MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.リンクを開くMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.ツールTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.traverseNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +83,7 @@
       this.showInEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.showOuterXmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.試験ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.検索FToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.contextMenuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -87,6 +91,7 @@
       // 
       this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.検索FToolStripMenuItem,
             this.再読み込みToolStripMenuItem,
             this.保存SToolStripMenuItem,
             this.toolStripSeparator2,
@@ -116,7 +121,7 @@
             this.targetToolStripMenuItem,
             this.試験ToolStripMenuItem});
       this.contextMenuStrip1.Name = "contextMenuStrip1";
-      this.contextMenuStrip1.Size = new System.Drawing.Size(225, 620);
+      this.contextMenuStrip1.Size = new System.Drawing.Size(225, 646);
       // 
       // 再読み込みToolStripMenuItem
       // 
@@ -175,31 +180,26 @@
       // toolStripMenuItem1
       // 
       this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sakuraMenuItem,
             this.OpenDocumentMenuItem,
+            this.リンクを開くMenuItem,
+            this.toolStripSeparator7,
+            this.sakuraMenuItem,
             this.visualStudioToolStripMenuItem,
             this.PSPadMenuItem,
+            this.chromeCToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.vlcVToolStripMenuItem,
             this.toolStripSeparator4,
             this.richTextEditorMenuItem,
             this.azukiEditorMenuItem,
             this.toolStripSeparator5,
             this.explorerMenuItem,
             this.cmdPromptMenuItem,
-            this.chromeCToolStripMenuItem,
             this.toolStripSeparator6,
-            this.ファイル名を指定して実行MenuItem,
-            this.リンクを開くMenuItem});
+            this.ファイル名を指定して実行MenuItem});
       this.toolStripMenuItem1.Name = "toolStripMenuItem1";
       this.toolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
       this.toolStripMenuItem1.Text = "開く(&O)";
-      // 
-      // sakuraMenuItem
-      // 
-      this.sakuraMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("sakuraMenuItem.Image")));
-      this.sakuraMenuItem.Name = "sakuraMenuItem";
-      this.sakuraMenuItem.Size = new System.Drawing.Size(260, 26);
-      this.sakuraMenuItem.Text = "サクラエディタ";
-      this.sakuraMenuItem.Click += new System.EventHandler(this.sakuraMenuItem_Click);
       // 
       // OpenDocumentMenuItem
       // 
@@ -208,6 +208,26 @@
       this.OpenDocumentMenuItem.Size = new System.Drawing.Size(260, 26);
       this.OpenDocumentMenuItem.Text = "Open Document(&O)";
       this.OpenDocumentMenuItem.Click += new System.EventHandler(this.OpenDocumentMenuItem_Click);
+      // 
+      // リンクを開くMenuItem
+      // 
+      this.リンクを開くMenuItem.Name = "リンクを開くMenuItem";
+      this.リンクを開くMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.リンクを開くMenuItem.Text = "Browse(B)";
+      this.リンクを開くMenuItem.Click += new System.EventHandler(this.browseMenuItem_Click);
+      // 
+      // toolStripSeparator7
+      // 
+      this.toolStripSeparator7.Name = "toolStripSeparator7";
+      this.toolStripSeparator7.Size = new System.Drawing.Size(257, 6);
+      // 
+      // sakuraMenuItem
+      // 
+      this.sakuraMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("sakuraMenuItem.Image")));
+      this.sakuraMenuItem.Name = "sakuraMenuItem";
+      this.sakuraMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.sakuraMenuItem.Text = "サクラエディタ";
+      this.sakuraMenuItem.Click += new System.EventHandler(this.sakuraMenuItem_Click);
       // 
       // visualStudioToolStripMenuItem
       // 
@@ -223,6 +243,27 @@
       this.PSPadMenuItem.Size = new System.Drawing.Size(260, 26);
       this.PSPadMenuItem.Text = "PSPad";
       this.PSPadMenuItem.Click += new System.EventHandler(this.psPadMenuItem_Click);
+      // 
+      // chromeCToolStripMenuItem
+      // 
+      this.chromeCToolStripMenuItem.Name = "chromeCToolStripMenuItem";
+      this.chromeCToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.chromeCToolStripMenuItem.Text = "chrome(&C)";
+      this.chromeCToolStripMenuItem.Click += new System.EventHandler(this.chromeCToolStripMenuItem_Click);
+      // 
+      // toolStripMenuItem2
+      // 
+      this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+      this.toolStripMenuItem2.Size = new System.Drawing.Size(260, 26);
+      this.toolStripMenuItem2.Text = "MediaPlayer(P)";
+      this.toolStripMenuItem2.Click += new System.EventHandler(this.mediaPlayerMenuItem_Click);
+      // 
+      // vlcVToolStripMenuItem
+      // 
+      this.vlcVToolStripMenuItem.Name = "vlcVToolStripMenuItem";
+      this.vlcVToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
+      this.vlcVToolStripMenuItem.Text = "Vlc(V)";
+      this.vlcVToolStripMenuItem.Click += new System.EventHandler(this.vlcVToolStripMenuItem_Click);
       // 
       // toolStripSeparator4
       // 
@@ -266,13 +307,6 @@
       this.cmdPromptMenuItem.Text = "コマンドプロンプト";
       this.cmdPromptMenuItem.Click += new System.EventHandler(this.CmdPromptMenuItem_Click);
       // 
-      // chromeCToolStripMenuItem
-      // 
-      this.chromeCToolStripMenuItem.Name = "chromeCToolStripMenuItem";
-      this.chromeCToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
-      this.chromeCToolStripMenuItem.Text = "chrome(&C)";
-      this.chromeCToolStripMenuItem.Click += new System.EventHandler(this.chromeCToolStripMenuItem_Click);
-      // 
       // toolStripSeparator6
       // 
       this.toolStripSeparator6.Name = "toolStripSeparator6";
@@ -284,13 +318,6 @@
       this.ファイル名を指定して実行MenuItem.Size = new System.Drawing.Size(260, 26);
       this.ファイル名を指定して実行MenuItem.Text = "ファイル名を指定して実行(&O)";
       this.ファイル名を指定して実行MenuItem.Click += new System.EventHandler(this.ファイル名を指定して実行_Click);
-      // 
-      // リンクを開くMenuItem
-      // 
-      this.リンクを開くMenuItem.Name = "リンクを開くMenuItem";
-      this.リンクを開くMenuItem.Size = new System.Drawing.Size(260, 26);
-      this.リンクを開くMenuItem.Text = "リンクを開く(&L)";
-      this.リンクを開くMenuItem.Click += new System.EventHandler(this.リンクを開くMenuItem_Click);
       // 
       // toolStripSeparator1
       // 
@@ -446,21 +473,21 @@
       // runTargetToolStripMenuItem
       // 
       this.runTargetToolStripMenuItem.Name = "runTargetToolStripMenuItem";
-      this.runTargetToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
+      this.runTargetToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.runTargetToolStripMenuItem.Text = "Run target";
       this.runTargetToolStripMenuItem.Click += new System.EventHandler(this.runTargetToolStripMenuItem_Click);
       // 
       // showInEditorToolStripMenuItem
       // 
       this.showInEditorToolStripMenuItem.Name = "showInEditorToolStripMenuItem";
-      this.showInEditorToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
+      this.showInEditorToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.showInEditorToolStripMenuItem.Text = "Show in Editor";
       this.showInEditorToolStripMenuItem.Click += new System.EventHandler(this.showInEditorToolStripMenuItem_Click);
       // 
       // showOuterXmlToolStripMenuItem
       // 
       this.showOuterXmlToolStripMenuItem.Name = "showOuterXmlToolStripMenuItem";
-      this.showOuterXmlToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
+      this.showOuterXmlToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.showOuterXmlToolStripMenuItem.Text = "Show OuterXml";
       // 
       // 試験ToolStripMenuItem
@@ -469,6 +496,13 @@
       this.試験ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
       this.試験ToolStripMenuItem.Text = "試験";
       this.試験ToolStripMenuItem.Click += new System.EventHandler(this.試験ToolStripMenuItem_Click);
+      // 
+      // 検索FToolStripMenuItem
+      // 
+      this.検索FToolStripMenuItem.Name = "検索FToolStripMenuItem";
+      this.検索FToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+      this.検索FToolStripMenuItem.Text = "検索(F)";
+      this.検索FToolStripMenuItem.Click += new System.EventHandler(this.検索FToolStripMenuItem_Click);
       // 
       // XmlMenuTree
       // 
@@ -532,5 +566,9 @@
     private System.Windows.Forms.ToolStripMenuItem xML生成ToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem xPathList生成ToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem 挿入IToolStripMenuItem;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+    private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+    private System.Windows.Forms.ToolStripMenuItem vlcVToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem 検索FToolStripMenuItem;
   }
 }

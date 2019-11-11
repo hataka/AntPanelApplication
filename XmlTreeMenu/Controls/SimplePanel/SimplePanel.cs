@@ -1015,22 +1015,19 @@ namespace AntPlugin.XMLTreeMenu.Controls
 
     private void SimplePanel_Load(object sender, EventArgs e)
 		{
+      String title = String.Empty;
       //this.OpenFile(command + "|" + args + "|" + path + "|" + option);
-      //string command = string.Empty;
-      //string args = string.Empty;
-			//string path = string.Empty;
-      //string option = string.Empty;
-			//string argstring = string.Empty;
-			try
+      //MessageBox.Show(String.Format("width={0}  Height={1}", this.panel1.Width, this.panel1.Height));
+      try
 			{
 				argstring = this.panel1.Tag.ToString();
-				string[] array = argstring.Split(new char[]{'|'});
+        string[] array = argstring.Split(new char[]{'|'});
 				command = this.pluginUI.ProcessVariable(array[0]);
 				args = ((array.Length > 1) ? this.pluginUI.ProcessVariable(array[1]) : string.Empty);
 				path = ((array.Length > 2) ? this.pluginUI.ProcessVariable(array[2]) : string.Empty);
         option = ((array.Length > 3) ? this.pluginUI.ProcessVariable(array[3]) : string.Empty);
       }
-			catch (Exception ex)
+      catch (Exception ex)
 			{
 				MessageBox.Show(Lib.OutputError(ex.Message.ToString()));
 			}
@@ -1041,7 +1038,25 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				ProcessStartInfo processStartInfo = new ProcessStartInfo();
 				processStartInfo.FileName = command;
 				processStartInfo.Arguments = args;
-				if (File.Exists(args))
+        processStartInfo.UseShellExecute = false;
+        processStartInfo.RedirectStandardInput = true;
+        processStartInfo.RedirectStandardOutput = true;
+        //processStartInfo.CreateNoWindow = true,
+
+        /*
+         * https://github.com/OldFox1/CompositeSWTInWinform.git
+        var startInfo = new ProcessStartInfo(@"C:\Program Files\Java\jdk1.8.0_102\jre\bin\javaw.exe")
+        {
+          UseShellExecute = false,
+          RedirectStandardInput = true,
+          RedirectStandardOutput = true,
+          //CreateNoWindow = true,
+          Arguments = " -jar SimpleStdWriter.jar"
+
+        };
+        */
+
+        if (File.Exists(args))
 				{
 					processStartInfo.WorkingDirectory = Path.GetDirectoryName(args);
 				}
@@ -1049,13 +1064,26 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				{
 					processStartInfo.WorkingDirectory = Path.GetDirectoryName(command);
 				}
-				Process process = AntPlugin.CommonLibrary.Win32.MdiUtil.LoadProcessInControl(processStartInfo, this.panel1);
-				AntPlugin.CommonLibrary.Win32.ShowMaximized(process.MainWindowHandle);
-				this.processList.Insert(0, process);
-			}
+        //MessageBox.Show(option);
+        Process process = AntPlugin.CommonLibrary.Win32.MdiUtil.LoadProcessInControl(processStartInfo, this.panel1);
+        title = process.MainWindowTitle;
+
+        if (option.ToLower().IndexOf("nocaption") >=0)
+        {
+          AntPlugin.CommonLibrary.Win32.SetWindowStyleNoCaption(process.MainWindowHandle);
+        }
+        AntPlugin.CommonLibrary.Win32.ShowMaximized(process.MainWindowHandle);
+        this.processList.Insert(0, process);
+      }
 			this.IntializeSettings();
 			this.AddPreviousDocuments(argstring);
-			((Form)base.Parent).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
+      if (option.ToLower().IndexOf("windowtitle") >= 0)
+      {
+        //MessageBox.Show(title);
+        ((DockContent)base.Parent).TabText = title;
+      }
+      else if (!String.IsNullOrEmpty(path)) ((DockContent)base.Parent).TabText = Path.GetFileName(path);
+      ((Form)base.Parent).FormClosing += new FormClosingEventHandler(this.parentForm_Closing);
     }
 
 		public void IntializeSettings()

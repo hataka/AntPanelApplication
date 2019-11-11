@@ -143,15 +143,6 @@
         AAAASUVORK5CYII=
 </value>
   </data>
-  <data name="sakuraMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAfklEQVQ4T6WQAQ7AIAgDfb3v8meOTpt1
-        RoRllxDIgMOsLPRk3tJBrfWYMTfGBW1ms8UDBR39MePSWnMEXA4kaQEGATJr4AsABQfOAoMX1yCobcUX
-        RIQCvapBUNvKtxforwkFevUetm8aoWDltwBwGbgCPjkTtvIWTNjIxKSUC/wZUzMS8ePEAAAAAElFTkSu
-        QmCC
-</value>
-  </data>
   <data name="OpenDocumentMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
@@ -171,6 +162,15 @@
         Z5OYIFzMaQKEcmqO63ixaubqxZz/JM9qVtgaI/Juag7cWT4BEc26hCya701hIgD0LSNxTiHVJt6ZkClo
         wf/MAgkw4glcrPg8qzlp8mM7Jouwex5p9/ryBff/NoUc35FOsibmq/13LZKv/HTS3e4v+47DaeryRLAA
         AAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="sakuraMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAfklEQVQ4T6WQAQ7AIAgDfb3v8meOTpt1
+        RoRllxDIgMOsLPRk3tJBrfWYMTfGBW1ms8UDBR39MePSWnMEXA4kaQEGATJr4AsABQfOAoMX1yCobcUX
+        RIQCvapBUNvKtxforwkFevUetm8aoWDltwBwGbgCPjkTtvIWTNjIxKSUC/wZUzMS8ePEAAAAAElFTkSu
+        QmCC
 </value>
   </data>
   <data name="PSPadMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

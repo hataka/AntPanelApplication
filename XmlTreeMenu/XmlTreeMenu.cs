@@ -1,30 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
-using System.Xml;
-using System.Net;
-using System.Diagnostics;
-using System.Reflection;
-using System.Collections;
-
-using PluginCore;
-using PluginCore.Helpers;
-using PluginCore.Managers;
-using WeifenLuo.WinFormsUI.Docking;
-
-using PluginCore.Utilities;
-using AntPlugin.CommonLibrary;
+﻿using AntPlugin.CommonLibrary;
 using AntPlugin.XmlTreeMenu.Managers;
 using AntPlugin.XMLTreeMenu.Controls;
 using AntPlugin.XMLTreeMenu.Dialogs;
-using PluginCore.Controls;
-using ScintillaNet;
-using System.Text.RegularExpressions;
-using PluginCore.FRService;
 using MDIForm;
+using PluginCore;
+using PluginCore.Controls;
+using PluginCore.FRService;
+using PluginCore.Helpers;
+using PluginCore.Managers;
+using PluginCore.Utilities;
+using ScintillaNet;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace AntPlugin.XmlTreeMenu
 {
@@ -431,7 +430,12 @@ namespace AntPlugin.XmlTreeMenu
       XmlNode xmlNode = null;
       XmlDocument xmldoc = new XmlDocument();
 
+
+
       xmldoc.Load(file);
+
+
+
       xmlNode = xmldoc.DocumentElement;
       //MessageBox.Show(xmlNode.Name);
       if (xmlNode.Name == "project" && fullNode==false)
@@ -442,6 +446,7 @@ namespace AntPlugin.XmlTreeMenu
       NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file);
 
       TreeNode treeNode = this.BuildTreeNode(nodeInfo, file);
+      treeNode.Name = nodeInfo.Title;
       this.RecursiveBuildToTreeNode(xmlNode, treeNode, fullNode);
 
       if (nodeInfo.Expand)
@@ -452,18 +457,189 @@ namespace AntPlugin.XmlTreeMenu
     }
 
     /// <summary>
-    /// 追加 Time-stamp: <2019-05-18 07:32:22 kahata>
+    /// 新規 NodeInfo ni_arg の継承を可能にする Time-stamp: 2019-10-23 10:12:12 kahata
     /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="file"></param>
+    /// <param name="ni_arg"></param>
+    /// <param name="fullNode"></param>
     /// <returns></returns>
-    public TreeNode getXmlTreeNodeFromString(String xml, String file)
+    public TreeNode getXmlTreeNode(NodeInfo ni_arg, Boolean fullNode = false)
     {
       XmlNode xmlNode = null;
       XmlDocument xmldoc = new XmlDocument();
-      xmldoc.LoadXml(xml);
+      String file = ni_arg.Path;
+
+      String xmlStr = TreeViewManager.File_ReadToEnd(file);
+      //// Include処理
+      //xmlStr = ProcessXmlString(xmlStr, ni);
+      xmlStr = xmlStr.Replace("$(IncludePath)", file);
+      xmlStr = xmlStr.Replace("$(IncludeFileName)", Path.GetFileName(file));
+      xmlStr = xmlStr.Replace("$(IncludeDir)", Path.GetDirectoryName(file));
+      //MessageBox.Show(xmlStr);
+      if (ni_arg != null)
+      {
+        if (!String.IsNullOrEmpty(ni_arg.PathBase))
+        {
+          if (Directory.Exists(ni_arg.PathBase))
+          {
+            //MessageBox.Show()
+            xmlStr = xmlStr.Replace("$(PathBase)", ni_arg.PathBase);
+            //xmlStr = xmlStr.Replace("$(TargetDir)", ni_arg.PathBase);
+            xmlStr = xmlStr.Replace("$(Target)", Path.GetFileName(ni_arg.PathBase));
+          }
+          else if (File.Exists(ni_arg.PathBase))
+          {
+            xmlStr = xmlStr.Replace("$(PathBase)", Path.GetDirectoryName(ni_arg.PathBase));
+            xmlStr = xmlStr.Replace("$(Target)",Path.GetFileName(Path.GetDirectoryName(ni_arg.PathBase)));
+          }
+        }
+      }
+
+      // <import file="aaa"/> の処理 Time-stamp: <2019-10-20 20:29:23 kahata>
+      foreach (KeyValuePair<string, string> item in TreeViewManager.GetImportFileFromXmlString(xmlStr))
+      {
+        if (File.Exists(item.Value))
+        {
+          string content = TreeViewManager.File_ReadToEnd(item.Value);
+          if (Path.GetExtension(item.Value).ToLower() == ".xml")
+          {
+            XmlNode tmpXmlNode = null;
+            XmlDocument tmpXmldoc = new XmlDocument();
+            tmpXmldoc.PreserveWhitespace = true;
+            tmpXmldoc.LoadXml(content);
+            tmpXmlNode = xmldoc.DocumentElement;
+            content = xmlNode.InnerXml;
+          }
+          xmlStr = xmlStr.Replace(item.Key, content);
+        }
+        //  Console.WriteLine("[{0}:{1}]", item.Key, item.Value);
+      }
+
+      // <property name="aaa" value="bbb"/> → ${aaa} の bbb置換 Time-stamp: <2019-10-20 20:17:04 kahata>
+      //MessageBox.Show(xmlStr);
+      foreach (KeyValuePair<string, string> item in TreeViewManager.GetPropertiesFromXmlString(xmlStr))
+      {
+        //MessageBox.Show(item.Key + " " + item.Value);
+        if(!String.IsNullOrEmpty(item.Value)) xmlStr = xmlStr.Replace("$(" + item.Key + ")", item.Value);
+      }
+      //MessageBox.Show(xmlStr);
+      // Hack   追加 Time-stamp: <2019-10-22 11:11:18 kahata>
+      // 継承したnodeInfo からの$(プロパティ)をプロパティでハード置換する
+      if (ni_arg != null)
+      {
+        foreach (KeyValuePair<string, string> item in TreeViewManager.GetNodeInfoProperties(ni_arg))
+        {
+          if (!String.IsNullOrEmpty(item.Value)) xmlStr = xmlStr.Replace("$(" + item.Key + ")", item.Value);
+        }
+        if (!String.IsNullOrEmpty(ni_arg.PathBase))// && Directory.Exists(nodeInfo.PathBase))
+        {
+          //MessageBox.Show(ni_arg.PathBase);
+          xmlStr = xmlStr.Replace("$(PathBase)", ni_arg.PathBase);
+        }
+      }
+      //MessageBox.Show(xmlStr);
+      //xmldoc.Load(file);
+      xmldoc.LoadXml(xmlStr);
       xmlNode = xmldoc.DocumentElement;
+      //MessageBox.Show(xmlNode.Name);
+      if (xmlNode.Name == "project" && fullNode == false)
+      {
+        return pluginUI.GetBuildFileNode(file);
+      }
+
       NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file);
+
+      TreeNode treeNode = this.BuildTreeNode(nodeInfo, file);
+      treeNode.Name = nodeInfo.Title;
+      this.RecursiveBuildToTreeNode(xmlNode, treeNode, fullNode);
+
+      if (nodeInfo.Expand)
+      {
+        treeNode.Expand();
+      }
+      return treeNode;
+    }
+
+    /// <summary>
+    /// 追加 Time-stamp: 2019-05-18 07:32:22 kahata
+    /// 変更 ni_arg追加 (NodeInfoを継承可能にする Time-stamp: 2019-10-22 11:52:47 kahata
+    /// </summary>
+    /// <param name="xmlStr"></param>
+    /// <param name="file"></param>
+    /// <returns></returns>
+    //public TreeNode getXmlTreeNodeFromString(String xml, String file,NodeInfo ni_arg=null)
+    public TreeNode getXmlTreeNodeFromString(String xmlStr, String file, NodeInfo ni_arg = null)
+    {
+      XmlNode xmlNode = null;
+      XmlDocument xmldoc = new XmlDocument();
+
+      xmlStr = xmlStr.Replace("$(IncludePath)", file);
+      xmlStr = xmlStr.Replace("$(IncludeFileName)", Path.GetFileName(file));
+      xmlStr = xmlStr.Replace("$(IncludeDir)", Path.GetDirectoryName(file));
+
+      if (ni_arg != null)
+      {
+        if (!String.IsNullOrEmpty(ni_arg.PathBase))
+        {
+          if (Directory.Exists(ni_arg.PathBase))
+          {
+            //MessageBox.Show(Path.GetFileName(ni_arg.PathBase));
+            xmlStr = xmlStr.Replace("$(PathBase)", ni_arg.PathBase);
+            xmlStr = xmlStr.Replace("$(Target)", Path.GetFileName(ni_arg.PathBase));
+          }
+          else if (File.Exists(ni_arg.PathBase))
+          {
+            xmlStr = xmlStr.Replace("$(PathBase)", Path.GetDirectoryName(ni_arg.PathBase));
+            xmlStr = xmlStr.Replace("$(Target)", Path.GetFileName(Path.GetDirectoryName(ni_arg.PathBase)));
+          }
+        }
+      }
+
+      // <import file="aaa"/> の処理 Time-stamp: <2019-10-20 20:29:23 kahata>
+      foreach (KeyValuePair<string, string> item in TreeViewManager.GetImportFileFromXmlString(xmlStr))
+      {
+        if (File.Exists(item.Value))
+        {
+          string content = TreeViewManager.File_ReadToEnd(item.Value);
+          if (Path.GetExtension(item.Value).ToLower() == ".xml")
+          {
+            XmlNode tmpXmlNode = null;
+            XmlDocument tmpXmldoc = new XmlDocument();
+            xmldoc.PreserveWhitespace = true;
+            xmldoc.LoadXml(content);
+            xmlNode = tmpXmldoc.DocumentElement;
+            content = tmpXmlNode.InnerXml;
+          }
+          xmlStr = xmlStr.Replace(item.Key, content);
+        }
+        //  Console.WriteLine("[{0}:{1}]", item.Key, item.Value);
+      }
+
+      // <property name="aaa" value="bbb"/> → ${aaa} の bbb置換 Time-stamp: <2019-10-20 20:17:04 kahata>
+      foreach (KeyValuePair<string, string> item in TreeViewManager.GetPropertiesFromXmlString(xmlStr))
+      {
+        xmlStr = xmlStr.Replace("$(" + item.Key + ")", item.Value);
+      }
+
+      // Hack   追加 Time-stamp: <2019-10-22 11:11:18 kahata>
+      if (ni_arg != null)
+      {
+        foreach (KeyValuePair<string, string> item in TreeViewManager.GetNodeInfoProperties(ni_arg))
+        {
+          if (!String.IsNullOrEmpty(item.Value)) xmlStr = xmlStr.Replace("$(" + item.Key + ")", item.Value);
+        }
+        if (!String.IsNullOrEmpty(ni_arg.PathBase))// && Directory.Exists(nodeInfo.PathBase))
+        {
+          //MessageBox.Show(ni_arg.PathBase);
+          xmlStr = xmlStr.Replace("$(PathBase)", ni_arg.PathBase);
+        }
+      }
+
+      xmldoc.LoadXml(xmlStr);
+      xmlNode = xmldoc.DocumentElement;
+
+      //変更 Time-stamp: <2019-10-22 12:52:27 kahata>
+      //NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file);
+      NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file, ni_arg);
       TreeNode treeNode = this.BuildTreeNode(nodeInfo, file);
       this.RecursiveBuildToTreeNode(xmlNode, treeNode, false);
       treeNode.Tag = nodeInfo;
@@ -474,7 +650,8 @@ namespace AntPlugin.XmlTreeMenu
     public TreeNode loadfile(String file)
     {
       TreeNode treeNode = null;
-      NodeInfo nodeInfo = this.SetNodeinfo(file);
+      //NodeInfo nodeInfo = this.SetNodeinfo(file);
+      NodeInfo nodeInfo = TreeViewManager.SetNodeinfo(file);
 
       if (Lib.IsWebSite(file))
       {
@@ -525,7 +702,8 @@ namespace AntPlugin.XmlTreeMenu
     public TreeNode loadfile(String file, Int32 imageIndex)
     {
       TreeNode treeNode = null;
-      NodeInfo nodeInfo = this.SetNodeinfo(file);
+      //NodeInfo nodeInfo = this.SetNodeinfo(file);
+      NodeInfo nodeInfo = TreeViewManager.SetNodeinfo(file);
 
       if (Lib.IsWebSite(file))
       {
@@ -588,6 +766,7 @@ namespace AntPlugin.XmlTreeMenu
         else ni.Title = urlDec;
         ni.Type = "uri";
         TreeNode tn = new TreeNode(ni.Title, imageIndex, imageIndex);
+        tn.Name = ni.Title;
         tn.Tag = ni;
         return tn;
       }
@@ -608,6 +787,7 @@ namespace AntPlugin.XmlTreeMenu
         if (!String.IsNullOrEmpty(nodeInfo.Tooltip)) tn.ToolTipText = nodeInfo.Tooltip;
         //tn.Tag = rootDirectoryInfo;
         */
+        tn.Name = nodeInfo.Title;
         tn.Tag = nodeInfo;
         return tn;
       }
@@ -619,15 +799,18 @@ namespace AntPlugin.XmlTreeMenu
         case ".wax":
           if (nodeInfo.Option.ToLower() == "fullnode")
           {
-            //MessageBox.Show(nodeInfo.Option);
-            treeNode = this.getXmlTreeNode(nodeInfo.Path, true);
+            //変更 Time-stamp: <2019-10-23 11:57:11 kahata>
+            //treeNode = this.getXmlTreeNode(nodeInfo.Path, true);
+            treeNode = this.getXmlTreeNode(nodeInfo, true);
+            treeNode.Name = nodeInfo.Title;
           }
           else
           {
-            //MessageBox.Show(nodeInfo.Path);
-            treeNode = this.getXmlTreeNode(nodeInfo.Path);
+            //変更 Time-stamp: <2019-10-23 11:57:11 kahata>
+            //treeNode = this.getXmlTreeNode(nodeInfo.Path);
+            treeNode = this.getXmlTreeNode(nodeInfo);
           }
-          if(String.IsNullOrEmpty(treeNode.ToolTipText))treeNode.ToolTipText = nodeInfo.Path;
+          if (String.IsNullOrEmpty(treeNode.ToolTipText))treeNode.ToolTipText = nodeInfo.Path;
           break;
         case ".cs":
         case ".java":
@@ -641,7 +824,9 @@ namespace AntPlugin.XmlTreeMenu
           break;
         case ".fdp":
         case ".wsf":
-          treeNode = pluginUI.GetBuildFileNode(nodeInfo.Path);
+          // 変更 nodeInfo 追加 Time-stamp: <2019-10-22 12:02:46 kahata>
+          //treeNode = pluginUI.GetBuildFileNode(nodeInfo.Path);
+          treeNode = pluginUI.GetBuildFileNode(nodeInfo.Path, nodeInfo);
           break;
         case ".gradle":
           treeNode = pluginUI.gradleTree.GetGradleOutlineTreeNode(nodeInfo.Path);
@@ -660,6 +845,7 @@ namespace AntPlugin.XmlTreeMenu
       //if (!String.IsNullOrEmpty(nodeInfo.Title)) treeNode.Text = nodeInfo.Title;
       //if (!String.IsNullOrEmpty(nodeInfo.icon)) treeNode.ImageIndex = GetIconImageIndexFromIconPath(nodeInfo.icon);
       //if (!String.IsNullOrEmpty(nodeInfo.Tooltip)) treeNode.ToolTipText = nodeInfo.Tooltip;
+      treeNode.Name = nodeInfo.Title;
       return treeNode;
     }
 
@@ -669,7 +855,7 @@ namespace AntPlugin.XmlTreeMenu
     /// <param name="xmlTreeMenuPath"></param>
     public void SaveFile(String xmlTreeMenuPath)
     {
-      /*
+      String projectDir = Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath);
       // 出力用 XmlDocument インスタンスの初期化
       exportXmlDocument = new XmlDocument();
       // XMLヘッダ出力(バージョン 1.0, エンコード UTF-8)
@@ -710,9 +896,9 @@ namespace AntPlugin.XmlTreeMenu
       if (ni.Path != String.Empty)
       {
         xe.SetAttribute("path", ni.Path);
-        if (File.Exists(Path.Combine(Globals.AntPanel.projectDir, ni.Path)))
+        if (File.Exists(Path.Combine(projectDir, ni.Path)))
         {
-          xe.SetAttribute("path", Path.Combine(Globals.AntPanel.projectDir, ni.Path));
+          xe.SetAttribute("path", Path.Combine(projectDir, ni.Path));
         }
       }
       if (ni.Icon != String.Empty) xe.SetAttribute("icon", ni.Icon);
@@ -732,9 +918,7 @@ namespace AntPlugin.XmlTreeMenu
       // ファイルに出力
       exportXmlDocument.Save(xmlTreeMenuPath);
       //this.filepath = path;
-      */
     }
-
 
     /// <summary>
     /// Option #1: Recursive approach:
@@ -752,7 +936,7 @@ namespace AntPlugin.XmlTreeMenu
       int imageIndex = this.GetIconImageIndex(@"C:\windows"); //this.getImageIndexFromNodeInfo_safe(ni);
       //MessageBox.Show(imageIndex.ToString());
       TreeNode directoryNode = new TreeNode(ni.Title, imageIndex, imageIndex);
-
+      directoryNode.Name = ni.Title;
       // ノードに属性を設定
       directoryNode.Tag = ni;
       directoryNode.ToolTipText = ni.Path;
@@ -768,7 +952,7 @@ namespace AntPlugin.XmlTreeMenu
         //MessageBox.Show(ni.Path);
         imageIndex = this.GetIconImageIndex(ni.Path); //this.getImageIndexFromNodeInfo_safe(ni);
         TreeNode fileNode = new TreeNode(ni.Title, imageIndex, imageIndex);
-
+        fileNode.Name = ni.Title;
         fileNode.Tag = ni;
         fileNode.ToolTipText = ni.Path;
 
@@ -778,64 +962,9 @@ namespace AntPlugin.XmlTreeMenu
       return directoryNode;
     }
 
-    /// <summary>
-    /// Option #2: Non-recursive approach:
-    /// </summary>
-    /// https://stackoverflow.com/questions/6239544/populate-treeview-with-file-system-directory-structure
-    /// <param name="treeView"></param>
-    /// <param name="path"></param>
-    private void ListDirectory(TreeView treeView, string path)
-    {
-      treeView.Nodes.Clear();
-
-      var stack = new Stack<TreeNode>();
-      var rootDirectory = new DirectoryInfo(path);
-      var node = new TreeNode(rootDirectory.Name) { Tag = rootDirectory };
-      stack.Push(node);
-
-      while (stack.Count > 0)
-      {
-        var currentNode = stack.Pop();
-        var directoryInfo = (DirectoryInfo)currentNode.Tag;
-        foreach (var directory in directoryInfo.GetDirectories())
-        {
-          var childDirectoryNode = new TreeNode(directory.Name) { Tag = directory };
-          currentNode.Nodes.Add(childDirectoryNode);
-          stack.Push(childDirectoryNode);
-        }
-        foreach (var file in directoryInfo.GetFiles())
-          currentNode.Nodes.Add(new TreeNode(file.Name));
-      }
-
-      treeView.Nodes.Add(node);
-    }
-
-    public NodeInfo SetNodeinfo(String path)
-    {
-      NodeInfo nodeInfo = new NodeInfo();
-
-      nodeInfo.Title = Path.GetFileName(path);
-      nodeInfo.Type = "file";
-      nodeInfo.Path = path;
-      /*
-      nodeInfo.PathBase = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("base"));
-      nodeInfo.Action = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("action"));
-      nodeInfo.Command = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("command"));
-      //nodeInfo.Path = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("path"));
-      nodeInfo.Path = path;
-      nodeInfo.Args = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("args"));
-      nodeInfo.Option = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("option"));
-      nodeInfo.XmlNode = xmlNode;
-      nodeInfo.Icon = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("icon"));
-      if (((XmlElement)xmlNode).GetAttribute("expand") == "true")
-      {
-        nodeInfo.Expand = true;
-      }
-      */
-      return nodeInfo;
-    }
-
-    public NodeInfo SetNodeinfo(XmlNode xmlNode, String path)
+    //追加変更 ni_arg Time-stamp: <2019-10-22 12:49:25 kahata>
+    //public NodeInfo SetNodeinfo(XmlNode xmlNode, String path)
+    public NodeInfo SetNodeinfo(XmlNode xmlNode, String path, NodeInfo ni_arg = null)
     {
       NodeInfo nodeInfo = new NodeInfo();
       nodeInfo.Type = ((XmlElement)xmlNode).Name;
@@ -857,18 +986,38 @@ namespace AntPlugin.XmlTreeMenu
       nodeInfo.Action = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("action"));
       nodeInfo.Command = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("command"));
       //nodeInfo.Path = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("path"));
-      nodeInfo.Path = path;
+      //nodeInfo.Path = path;
       nodeInfo.Args = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("args"));
       nodeInfo.Option = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("option"));
-      nodeInfo.XmlNode = xmlNode;
+      //nodeInfo.XmlNode = xmlNode;
       nodeInfo.Icon = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("icon"));
+
+      // 追加 Time-stamp: <2019-10-22 13:12:51 kahata>
+      if (ni_arg != null)
+      {
+        try
+        {
+          //if (!String.IsNullOrEmpty(ni_arg.Title)) nodeInfo.Title = ni_arg.Title;
+          if (!String.IsNullOrEmpty(ni_arg.PathBase)) nodeInfo.pathbase = ni_arg.PathBase;
+          if (!String.IsNullOrEmpty(ni_arg.Action)) nodeInfo.Action = ni_arg.Action;
+          if (!String.IsNullOrEmpty(ni_arg.Command)) nodeInfo.Command = ni_arg.Command;
+          //if (!String.IsNullOrEmpty(ni_arg.Path)) nodeInfo.Path = ni_arg.Path;
+          if (!String.IsNullOrEmpty(ni_arg.Args)) nodeInfo.Args = ni_arg.Args;
+          if (!String.IsNullOrEmpty(ni_arg.Option)) nodeInfo.Option = ni_arg.Option;
+          if (!String.IsNullOrEmpty(ni_arg.Icon)) nodeInfo.Icon = ni_arg.Icon;
+        }
+        catch { }
+      }
+      nodeInfo.XmlNode = xmlNode;
+      nodeInfo.Path = path;
+
       if (((XmlElement)xmlNode).GetAttribute("expand") == "true")
       {
         nodeInfo.Expand = true;
       }
       return nodeInfo;
     }
-
+ 
     public TreeNode BuildTreeNode(NodeInfo nodeInfo, String path)
     {
       this.currentTreeMenuFilepath = path;
@@ -879,10 +1028,12 @@ namespace AntPlugin.XmlTreeMenu
       if (!String.IsNullOrEmpty(nodeInfo.Title))
       {
         treeNode = new TreeNode(this.ProcessVariable(nodeInfo.Title), imageIndex, imageIndex);
+        treeNode.Name = this.ProcessVariable(nodeInfo.Title);
       }
       else
       {
         treeNode = new TreeNode(nodeInfo.xmlNode.Name, imageIndex, imageIndex);
+        treeNode.Name = nodeInfo.xmlNode.Name;
       }
       treeNode.ToolTipText = path;
       treeNode.Tag = nodeInfo;
@@ -942,6 +1093,12 @@ namespace AntPlugin.XmlTreeMenu
         NodeInfo ni = new NodeInfo();
         if (childXmlNode.Name != "#text" && childXmlNode.Name != "#comment" && childXmlNode.Name != "#cdata-section")    // テキストノードへの処理
         {
+          //for test やはりおかしい
+          //ni = TreeViewManager.SetNodeInfoFromXmlNode(childXmlNode, fullNode);
+          ni = this.SetNodeInfoFromXmlNode(childXmlNode, fullNode);
+
+          #region backup
+          /* 
           // ツリーノードの追加 タグ名を取得
           switch (childXmlNode.Name)
           {
@@ -958,7 +1115,7 @@ namespace AntPlugin.XmlTreeMenu
             case "settings":
             case "property":
               ni.Type = "null";
-              this.ProcessNode(childXmlNode);
+              //this.ProcessNode(childXmlNode);
               break;
             // kahata FIX 2018-02-14
             case "load":
@@ -972,36 +1129,20 @@ namespace AntPlugin.XmlTreeMenu
               else ni.Type = "null";
               break;
           }
-
           // 属性を取得
-          //ProcessVariable(((XmlElement)childXmlNode.ParentNode).GetAttribute("base"));
-
-          String nodeName = String.Empty;
-
           ni.Title = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("title"));
-          if (!String.IsNullOrEmpty(ni.Title)) nodeName = ni.Title;
-          if (String.IsNullOrEmpty(nodeName)) nodeName = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("name"));
-          if (String.IsNullOrEmpty(nodeName)) nodeName = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("id"));
-          if (String.IsNullOrEmpty(nodeName)) nodeName = ((XmlElement)childXmlNode).Name;
+          //if (!String.IsNullOrEmpty(ni.Title)) nodeName = ni.Title;
+          //if (String.IsNullOrEmpty(nodeName)) nodeName = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("name"));
+          //if (String.IsNullOrEmpty(nodeName)) nodeName = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("id"));
+          //if (String.IsNullOrEmpty(nodeName)) nodeName = ((XmlElement)childXmlNode).Name;
 
-          if (((XmlElement)childXmlNode.ParentNode).GetAttribute("base") != String.Empty
-            && ((XmlElement)childXmlNode).GetAttribute("base") == String.Empty)
-          {
-            ni.PathBase = ProcessVariable(((XmlElement)childXmlNode.ParentNode).GetAttribute("base"));
-          }
-          else
-          {
-            ni.PathBase = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("base"));
-          }
+          ni.PathBase = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("base"));
           ni.Action = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("action"));
-
           if (childXmlNode.Name == "target") ni.Action = "Ant";
           if (childXmlNode.Name == "job") ni.Action = "Wsf";
 
           ni.Command = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("command"));
           ni.Path = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("path"));
-
-          //if (childXmlNode.Name == "target" || childXmlNode.Name == "job") ni.Path = this.currentTreeMenuFilepath;
 
           ni.Icon = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("icon"));
           ni.Args = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("args"));
@@ -1011,12 +1152,7 @@ namespace AntPlugin.XmlTreeMenu
           ni.ForeColor = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("forecolor"));
           ni.NodeFont = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("nodefont"));
           ni.NodeChecked = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("nodechecked"));
-
-
           ni.Option = ProcessVariable(((XmlElement)childXmlNode).GetAttribute("option"));
-
-          //if (fullNode == true) ni.Tooltip = GetTitleFromXmlNode(childXmlNode);
-
           if (fullNode == true && childXmlNode.InnerText != String.Empty)
           {
             ni.InnerText = childXmlNode.InnerText;
@@ -1027,10 +1163,27 @@ namespace AntPlugin.XmlTreeMenu
             ni.Expand = true;
           }
           ni.XmlNode = childXmlNode;
+          */
+          #endregion
+
+          if (childXmlNode.Name == "toolbar" || childXmlNode.Name == "menubar" 
+            || childXmlNode.Name == "launch" || childXmlNode.Name == "launch"
+            || childXmlNode.Name == "toolbar" || childXmlNode.Name == "settings"
+            || childXmlNode.Name == "property")
+          {
+            this.ProcessNode(childXmlNode);
+          }
+
+          String nodeName = String.Empty;
+          if (!String.IsNullOrEmpty(ni.Title)) nodeName = ni.Title;
+          if (String.IsNullOrEmpty(nodeName)) nodeName = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("name"));
+          if (String.IsNullOrEmpty(nodeName)) nodeName = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("id"));
+          if (String.IsNullOrEmpty(nodeName)) nodeName = ((XmlElement)childXmlNode).Name;
+
           // TreeNodeを新規作成
           //TreeNode tn = new TreeNode(ni.Title);
           TreeNode tn = new TreeNode(nodeName);
-
+          tn.Name = nodeName;
           if (fullNode == true) tn.ToolTipText = GetHeadTagFromXmlNode(childXmlNode);
 
           if (ni.Tooltip != string.Empty) tn.ToolTipText = ni.Tooltip;
@@ -1124,6 +1277,71 @@ namespace AntPlugin.XmlTreeMenu
           RecursiveBuildToTreeNode(childXmlNode, tn, fullNode);
         }
       }
+    }
+
+    public NodeInfo SetNodeInfoFromXmlNode(XmlNode xmlNode, Boolean fullNode = false)
+    {
+      NodeInfo ni = new NodeInfo();
+      // ツリーノードの追加 タグ名を取得
+      switch (xmlNode.Name)
+      {
+        case "folder":
+          ni.Type = "folder";
+          break;
+        case "record":
+          ni.Type = "record";
+          break;
+        // kahata FIX 2018-02-10
+        case "toolbar":
+        case "menubar":
+        case "launch":
+        case "settings":
+        case "property":
+          ni.Type = "null";
+          //this.ProcessNode(childXmlNode);
+          break;
+        // kahata FIX 2018-02-14
+        case "load":
+        case "loadfile":
+        case "include":
+        case "includefile":
+          ni.Type = "include";
+          break;
+        default:
+          if (fullNode == true) ni.Type = xmlNode.Name;// "node";
+          else ni.Type = "null";
+          break;
+      }
+      // 属性を取得
+      ni.Title = ProcessVariable(((XmlElement)xmlNode).GetAttribute("title"));
+      ni.PathBase = ProcessVariable(((XmlElement)xmlNode).GetAttribute("base"));
+      ni.Action = ProcessVariable(((XmlElement)xmlNode).GetAttribute("action"));
+      if (xmlNode.Name == "target") ni.Action = "Ant";
+      if (xmlNode.Name == "job") ni.Action = "Wsf";
+
+      ni.Command = ProcessVariable(((XmlElement)xmlNode).GetAttribute("command"));
+      ni.Path = ProcessVariable(((XmlElement)xmlNode).GetAttribute("path"));
+
+      ni.Icon = ProcessVariable(((XmlElement)xmlNode).GetAttribute("icon"));
+      ni.Args = ProcessVariable(((XmlElement)xmlNode).GetAttribute("args"));
+      ni.Tooltip = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("tooltip"));
+
+      ni.BackColor = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("backcolor"));
+      ni.ForeColor = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("forecolor"));
+      ni.NodeFont = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("nodefont"));
+      ni.NodeChecked = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("nodechecked"));
+      ni.Option = ProcessVariable(((XmlElement)xmlNode).GetAttribute("option"));
+      if (fullNode == true && xmlNode.InnerText != String.Empty)
+      {
+        ni.InnerText = xmlNode.InnerText;
+      }
+      // 「Expand」属性を取得
+      if (((XmlElement)xmlNode).GetAttribute("expand") == "true")
+      {
+        ni.Expand = true;
+      }
+      ni.XmlNode = xmlNode;
+      return ni;
     }
 
     /// <summary>
@@ -1429,26 +1647,8 @@ namespace AntPlugin.XmlTreeMenu
 
     public static List<String> ToolBarSettingsFiles = new List<string>();
     public static List<ToolStrip> toolStripList  = new List<ToolStrip>();
-    public static ToolStrip dynamicToolStrip = new ToolStrip(); 
-    /*
-    public void ToolBarSettings_try(XmlNode xmlNode)
-    {
-      //MessageBox.Show(this.currentTreeMenuFilepath);
-      try
-      {
-        dynamicToolStrip = StripBarManager.GetToolStripFromString(xmlNode.OuterXml);
-        if (!toolStripList.Contains(dynamicToolStrip))
-        {
-          ToolStripManager.Merge(dynamicToolStrip, PluginBase.MainForm.ToolStrip);
-          toolStripList.Add(dynamicToolStrip);
-        }
-      }
-      catch (Exception ex1)
-      {
-        MessageBox.Show(ex1.Message.ToString(),"TreeMenu:ToolBarSettings_try:1164");
-      }
-    }
-    */
+    public static ToolStrip dynamicToolStrip = new ToolStrip();
+
     public void ToolBarSettings(XmlNode xmlNode)
     {
       //MessageBox.Show(this.currentTreeMenuFilepath);
@@ -1595,88 +1795,6 @@ namespace AntPlugin.XmlTreeMenu
       }
     }
 
-    /*
-    public static List<String> ToolBarSettingsFiles = new List<string>();
-    public void ToolBarSettings(XmlNode xmlNode)
-    {
-      //MessageBox.Show(this.currentTreeMenuFilepath);
-      try
-      {
-        if (!ToolBarSettingsFiles.Contains(this.currentTreeMenuFilepath))
-        {
-          ToolStrip toolStrip = StripBarManager.GetToolStripFromString(xmlNode.OuterXml);
-          ToolStripManager.Merge(toolStrip, PluginBase.MainForm.ToolStrip);
-          ToolBarSettingsFiles.Add(this.currentTreeMenuFilepath);
-        }
-      }
-      catch (Exception ex1)
-      {
-        MessageBox.Show(ex1.Message.ToString());
-      }
-    }
-
-    public static List<String> ProjectSettingsFiles = new List<string>();
-    public void ProjectSettings(XmlNode parentNode)
-    {
-      try
-      {
-        if (!ProjectSettingsFiles.Contains(this.currentTreeMenuFilepath))
-        {
-          ProjectSettingsFiles.Add(this.currentTreeMenuFilepath);
-          for (int i = 0; i < parentNode.ChildNodes.Count; i++)
-          {
-            switch (parentNode.ChildNodes[i].Name)
-            {
-              case "documentroot": this.settings.DocumentRoot = parentNode.ChildNodes[i].InnerXml; break;
-              case "serverroot": this.settings.ServerRoot = parentNode.ChildNodes[i].InnerXml; break;
-            }
-          }
-          DialogResult result = MessageBox.Show("DocumentRoot: " + this.settings.DocumentRoot
-            + "\nServerRoot: " + this.settings.ServerRoot,
-              "設定変更",
-              MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-        }
-      }
-      catch (Exception ex1)
-      {
-        MessageBox.Show(ex1.Message.ToString());
-        this.settings.DocumentRoot = @"C:\Apache2.2\htdocs";
-        this.settings.ServerRoot = "http://localhost";
-      }
-    }
-
-    public Dictionary<String, String> AntProperties = new Dictionary<string, string>();
-    public static List<String> AntPropertiesFiles = new List<string>();
-
-    public void AntPropertySettings(XmlNode parentNode)
-    {
-      if (Path.GetFileName(this.currentTreeMenuFilepath) != "FDTreeMenu.xml") return;
-      //MessageBox.Show(Path.GetFileName(this.currentTreeMenuFilepath));
-      //MessageBox.Show(string.Format("Key : {0} / Value : {1}",
-      //  ((XmlElement)parentNode).GetAttribute("name"), ((XmlElement)parentNode).GetAttribute("value")));
-      if (!AntPropertiesFiles.Contains(this.currentTreeMenuFilepath))
-      {
-        AntPropertiesFiles.Add(this.currentTreeMenuFilepath);
-        try
-        {
-          if (parentNode.HasChildNodes)
-          {
-            AntProperties[this.ProcessVariable(((XmlElement)parentNode).GetAttribute("name"))] = parentNode.InnerText;
-          }
-          else
-          {
-            AntProperties[this.ProcessVariable(((XmlElement)parentNode).GetAttribute("name"))]
-              = this.ProcessVariable(((XmlElement)parentNode).GetAttribute("value"));
-          }
-        }
-        catch (Exception ex1)
-        {
-          MessageBox.Show(ex1.Message.ToString());
-        }
-      }
-    }
-     */
-
     #region treeView Doulbe Click Handler and Functions
 
     public void treeView_DoubleClick(object sender, EventArgs e)
@@ -1788,6 +1906,34 @@ namespace AntPlugin.XmlTreeMenu
     #endregion
 
     #region XmlTreeMenu コンテキストメニュー Click Handler
+    private void 検索FToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      String msg = String.Empty;
+      //NodeInfo nodeInfo = this.SelectedNodeInfo();
+      TreeNode treeNode = this.treeView.SelectedNode;
+
+      string value = "zipfile";
+      if (Lib.InputBox("Node 検索", "検索するノード名:", ref value) == DialogResult.OK)
+      {
+        TreeNode[] nodes = treeNode.Nodes.Find(value, true);
+        if (nodes.Length > 0)
+        {
+          this.pluginUI.treeView.CheckBoxes = true;
+          this.treeView.SelectedNode = nodes[0];
+          for (int i = 0; i < nodes.Length; i++)
+          {
+            msg += nodes[i].FullPath + "\n";
+            nodes[i].Checked = true;
+          }
+          //msg = nodes.Length.ToString() + " 件が検索されました\n" + msg;
+          MessageBox.Show(msg, "zipfile 検索結果 ; " + nodes.Length.ToString() + " 件");
+
+        }
+        else this.pluginUI.treeView.CheckBoxes = false;
+      }
+      else this.pluginUI.treeView.CheckBoxes = false;
+    }
+
     private void 再読み込みToolStripMenuItem_Click(object sender, EventArgs e)
     {
       this.pluginUI.RefreshData();
@@ -1931,9 +2077,11 @@ namespace AntPlugin.XmlTreeMenu
 
     }
 
-    private void リンクを開くMenuItem_Click(object sender, EventArgs e)
+    private void browseMenuItem_Click(object sender, EventArgs e)
     {
-
+      NodeInfo nodeInfo = this.SelectedNodeInfo();
+      String url = Lib.Path2Url(nodeInfo.Path);
+      PluginBase.MainForm.CallCommand("Browse", url);
     }
 
     private void removeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1957,17 +2105,30 @@ namespace AntPlugin.XmlTreeMenu
     private void showInEditorToolStripMenuItem_Click(object sender, EventArgs e)
     {
       TreeNode node = treeView.SelectedNode;
-      PluginBase.MainForm.OpenEditableDocument(((NodeInfo)node.Tag).Path, false);
-      ScintillaControl sci = PluginBase.MainForm.CurrentDocument.SciControl;
-      XmlNode xmlNode = ((NodeInfo)node.Tag).xmlNode;
-      String outerXml = xmlNode.OuterXml;
-      String text = sci.Text;
-      Regex regexp = new Regex("<job[^>]+id\\s*=\\s*\"" + ((NodeInfo)node.Tag).Title + "\".*>", RegexOptions.CultureInvariant);
-      Match match = regexp.Match(text);
-      MessageBox.Show(match.Value);
-      if (match != null)
+      String headTag = GetHeadTagFromXmlNode(((NodeInfo)node.Tag).XmlNode);
+      string[] del = { "\n" };
+      String keyWord = headTag.Replace("\n","|").Split('|')[0].Trim();
+      MessageBox.Show(headTag, "検索に成功しました");
+      MessageBox.Show(keyWord, "検索に成功しました");
+
+
+      while (node.Parent != null)
       {
-        this.FindNext(match.Value, false);
+        if (((NodeInfo)node.Tag).Type == "root" || ((NodeInfo)node.Tag).Type == "include") break;
+        node = node.Parent;
+      }
+      NodeInfo ni = node.Tag as NodeInfo;
+      if(File.Exists(ni.Path))
+      {
+        PluginBase.MainForm.OpenEditableDocument(((NodeInfo)node.Tag).Path, false);
+        ScintillaControl sci = PluginBase.MainForm.CurrentDocument.SciControl;
+        String text = sci.Text;
+        MessageBox.Show(keyWord, "検索に成功しました");
+        sci.GotoPos(0);
+        if (text.IndexOf(keyWord) > -1)
+        {
+           sci.SetSel(text.IndexOf(keyWord), keyWord.Length);
+        }
       }
     }
 
@@ -1998,7 +2159,26 @@ namespace AntPlugin.XmlTreeMenu
 
     private void visualStudioToolStripMenuItem_Click(object sender, EventArgs e)
     {
+      NodeInfo nodeInfo = this.SelectedNodeInfo();
+      if (File.Exists(nodeInfo.Path)) Process.Start(this.pluginUI.settings.Devenv17Path, "/edit " + "\"" + nodeInfo.Path + "\"");
+    }
 
+    private void mediaPlayerMenuItem_Click(object sender, EventArgs e)
+    {
+      NodeInfo nodeInfo = this.SelectedNodeInfo();
+      if (File.Exists(nodeInfo.Path))
+      {
+        Process.Start(this.pluginUI.settings.MediaPlayerPath, "\"" + nodeInfo.Path + "\"");
+      }
+    }
+
+    private void vlcVToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      NodeInfo nodeInfo = this.SelectedNodeInfo();
+      if (File.Exists(nodeInfo.Path))
+      {
+        Process.Start(this.pluginUI.settings.VlcPath, "\"" + nodeInfo.Path + "\"");
+      }
     }
 
     private void richTextEditorMenuItem_Click(object sender, EventArgs e)
@@ -3201,13 +3381,20 @@ namespace AntPlugin.XmlTreeMenu
 
     #endregion
 
+
+
+    /// <summary>
+    /// AntPanel treeNode 右クリック コンテキストメニューの試験 EventHandler
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+
     private void 試験ToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      NodeInfo nodeInfo = this.SelectedNodeInfo();
-      String outerXML = nodeInfo.XmlNode.OuterXml;
-      String innerXML = nodeInfo.XmlNode.InnerXml;
-      if (!String.IsNullOrEmpty(innerXML)) outerXML = outerXML.Replace(innerXML, "");
-
+      //NodeInfo nodeInfo = this.SelectedNodeInfo();
+      //String outerXML = nodeInfo.XmlNode.OuterXml;
+      //String innerXML = nodeInfo.XmlNode.InnerXml;
+      //if (!String.IsNullOrEmpty(innerXML)) outerXML = outerXML.Replace(innerXML, "");
       /*
       string input = "This is   text with   far  too   much   " +
                      "whitespace.";
@@ -3216,12 +3403,132 @@ namespace AntPlugin.XmlTreeMenu
       Regex rgx = new Regex(pattern);
       string result = rgx.Replace(input, replacement);
       */
-
-      MessageBox.Show(outerXML);
-      MessageBox.Show(nodeInfo.XmlNode.InnerText);
+      //MessageBox.Show(outerXML,"ContextMenu 試験");
+      //MessageBox.Show(GetHeadTagFromXmlNode(nodeInfo.XmlNode));
+      //MessageBox.Show(nodeInfo.XmlNode.InnerText);
       //if (File.Exists(nodeInfo.Path)) Process.Start(@"C:\Program Files (x86)\sakura\sakura.exe", nodeInfo.Path);
-      
+
+      //XmlElement elm; // initiate it to the node you want the path of.
+      //string s = "";
+      //XmlNode xmlNode = nodeInfo.XmlNode;
+
+      TreeNode treeNode = this.treeView.SelectedNode;
+      treeNode = GetTopTreeNode(treeNode);
+      #region coment out      
+      /*
+      while (treeNode.Parent != null)
+      {
+        NodeInfo ni;
+        if (treeNode.Tag is NodeInfo)
+        {
+          try
+          {
+            ni = treeNode.Tag as NodeInfo;
+            XmlNode xmlNode = ni.XmlNode;
+            if (xmlNode.Name == "root" || xmlNode.Name == "project") break;
+          }
+          catch
+          {
+            break;
+          }
+        }
+        else
+        {
+          if (treeNode.Tag == null) break;
+          if (treeNode.TreeView.Name == "outlineTreeView")
+          {
+            if (treeNode.Tag is NodeInfo)
+            {
+              ni = treeNode.Tag as NodeInfo;
+              XmlNode xmlNode = ni.XmlNode;
+              if (xmlNode.Name == "root" || xmlNode.Name == "project") break;
+            }
+          }
+          else
+          {
+            AntTreeNode antNode = treeNode as AntTreeNode;
+            if (antNode == null) break;
+            XmlNode xmlNode = null;
+            if (antNode.Tag is XmlNode)
+            {
+              xmlNode = antNode.Tag as XmlNode;
+              if (xmlNode.Name == "project" || xmlNode.Name == "package") break;
+            }
+            // FIXME
+            //else if (antNode.Tag is TaskInfo)
+            //{
+            //if (((TaskInfo)antNode.Tag).Name == "GradleBuildNode") break:
+            //}
+            else if (antNode.Tag is String) break;
+          }
+        }
+        treeNode = treeNode.Parent;
+      }
+      */
+      #endregion
+      MessageBox.Show(treeNode.Name);
     }
+
+
+    /// <summary>
+    ///  treeNode の トップノードを取得する (Includeされた場合特に有効
+    /// </summary>
+    /// <param name="treeNode"></param>
+    /// <returns></returns>
+    public TreeNode GetTopTreeNode(TreeNode treeNode)
+    {
+      while (treeNode.Parent != null)
+      {
+        NodeInfo ni;
+        if (treeNode.Tag is NodeInfo)
+        {
+          try
+          {
+            ni = treeNode.Tag as NodeInfo;
+            XmlNode xmlNode = ni.XmlNode;
+            if (xmlNode.Name == "root" || xmlNode.Name == "project") break;
+          }
+          catch { break; }
+        }
+        else
+        {
+          if (treeNode.Tag == null) break;
+          if (treeNode.TreeView.Name == "outlineTreeView")
+          {
+            if (treeNode.Tag is NodeInfo)
+            {
+              try
+              {
+                ni = treeNode.Tag as NodeInfo;
+                XmlNode xmlNode = ni.XmlNode;
+                if (xmlNode.Name == "root" || xmlNode.Name == "project") break;
+              } catch { break; }
+            }
+          }
+          else
+          {
+            AntTreeNode antNode = treeNode as AntTreeNode;
+            if (antNode == null) break;
+            XmlNode xmlNode = null;
+            if (antNode.Tag is XmlNode)
+            {
+              xmlNode = antNode.Tag as XmlNode;
+              if (xmlNode.Name == "project" || xmlNode.Name == "package") break;
+            }
+            // FIXME
+            //else if (antNode.Tag is TaskInfo)
+            //{
+            //if (((TaskInfo)antNode.Tag).Name == "GradleBuildNode") break:
+            //}
+            else if (antNode.Tag is String) break;
+          }
+        }
+        treeNode = treeNode.Parent;
+      }
+      return treeNode;
+    }
+
+
 
 
 

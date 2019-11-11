@@ -1349,7 +1349,9 @@ namespace AntPlugin.XMLTreeMenu.Controls
 		this.scribbleToolStripMenuItem.Checked = (this.rubberBandToolStripMenuItem.Checked = false);
 		this.pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
 		this.pictureBox1.Image = new Bitmap(640, 480);
-		Graphics graphics = Graphics.FromImage(this.pictureBox1.Image);
+    //this.pictureBox1.Image = new Bitmap(800, 600);
+
+      Graphics graphics = Graphics.FromImage(this.pictureBox1.Image);
 		switch (theme)
 		{
 			case "直線1":
@@ -1452,7 +1454,17 @@ namespace AntPlugin.XMLTreeMenu.Controls
 				glibSample.ex72(graphics);
 				break;
 		}
-		this.pictureBox1.Refresh();
+
+
+      pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+
+      // 幅0.5倍、高さ0.5倍のイメージを作成する
+      //Bitmap bmp = new Bitmap(
+      //    pictureBox1.Image,
+      //    (int)(pictureBox1.Image.Width * 1.5),
+      //    (int)(pictureBox1.Image.Height * 1.5));
+      //pictureBox1.Image = bmp;
+      this.pictureBox1.Refresh();
 		this.pictureBox1.Tag = theme;
 		this.AddPreviousDocuments("qcgraph!" + theme);
 		((Form)base.Parent).Text = Path.GetFileNameWithoutExtension(theme);
@@ -1742,8 +1754,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.メニューバーMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.ステータスバーSToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-      this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.imageListButton = new System.Windows.Forms.ToolStripButton();
+      this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.statusStrip1.SuspendLayout();
       this.menuStrip1.SuspendLayout();
       this.toolStrip1.SuspendLayout();
@@ -1752,22 +1764,25 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 
       // statusStrip1
       // 
+      this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-      this.statusStrip1.Location = new System.Drawing.Point(0, 369);
+      this.statusStrip1.Location = new System.Drawing.Point(0, 465);
       this.statusStrip1.Name = "statusStrip1";
-      this.statusStrip1.Size = new System.Drawing.Size(766, 22);
+      this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+      this.statusStrip1.Size = new System.Drawing.Size(1021, 24);
       this.statusStrip1.TabIndex = 5;
       this.statusStrip1.Text = "statusStrip1";
       // 
       // toolStripStatusLabel1
       // 
       this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-      this.toolStripStatusLabel1.Size = new System.Drawing.Size(127, 17);
+      this.toolStripStatusLabel1.Size = new System.Drawing.Size(170, 19);
       this.toolStripStatusLabel1.Text = "こんにちわPictureBoxです";
       // 
       // menuStrip1
       // 
+      this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ファイルFToolStripMenuItem,
             this.編集EToolStripMenuItem,
@@ -1780,7 +1795,8 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.ヘルプHToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
-      this.menuStrip1.Size = new System.Drawing.Size(766, 24);
+      this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
+      this.menuStrip1.Size = new System.Drawing.Size(1021, 28);
       this.menuStrip1.TabIndex = 6;
       this.menuStrip1.Text = "menuStrip1";
       // 
@@ -1800,7 +1816,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator2,
             this.終了XToolStripMenuItem});
       this.ファイルFToolStripMenuItem.Name = "ファイルFToolStripMenuItem";
-      this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+      this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(86, 24);
       this.ファイルFToolStripMenuItem.Text = "ファイル(&F)";
       // 
       // 新規作成NToolStripMenuItem
@@ -1809,7 +1825,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.新規作成NToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("新規作成NToolStripMenuItem.Image")));
       this.新規作成NToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.新規作成NToolStripMenuItem.Name = "新規作成NToolStripMenuItem";
-      this.新規作成NToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+      this.新規作成NToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
       this.新規作成NToolStripMenuItem.Text = "新規作成(&N)";
       this.新規作成NToolStripMenuItem.Click += new System.EventHandler(this.新規作成NToolStripMenuItem_Click);
       // 
@@ -1818,41 +1834,41 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.開くOToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("開くOToolStripMenuItem.Image")));
       this.開くOToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.開くOToolStripMenuItem.Name = "開くOToolStripMenuItem";
-      this.開くOToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+      this.開くOToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
       this.開くOToolStripMenuItem.Text = "開く(&O)";
       this.開くOToolStripMenuItem.Click += new System.EventHandler(this.開くOToolStripMenuItem_Click);
       // 
       // toolStripSeparator
       // 
       this.toolStripSeparator.Name = "toolStripSeparator";
-      this.toolStripSeparator.Size = new System.Drawing.Size(172, 6);
+      this.toolStripSeparator.Size = new System.Drawing.Size(216, 6);
       // 
       // 最近開いたファイルToolStripMenuItem
       // 
       this.最近開いたファイルToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.最近開いたファイルをクリアToolStripMenuItem});
       this.最近開いたファイルToolStripMenuItem.Name = "最近開いたファイルToolStripMenuItem";
-      this.最近開いたファイルToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+      this.最近開いたファイルToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
       this.最近開いたファイルToolStripMenuItem.Text = "最近開いたファイル(&R)";
       // 
       // 最近開いたファイルをクリアToolStripMenuItem
       // 
       this.最近開いたファイルをクリアToolStripMenuItem.Name = "最近開いたファイルをクリアToolStripMenuItem";
-      this.最近開いたファイルをクリアToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+      this.最近開いたファイルをクリアToolStripMenuItem.Size = new System.Drawing.Size(260, 26);
       this.最近開いたファイルをクリアToolStripMenuItem.Text = "最近開いたファイルをクリア(&C)";
       this.最近開いたファイルをクリアToolStripMenuItem.Click += new System.EventHandler(this.最近開いたファイルをクリアToolStripMenuItem_Click);
       // 
       // toolStripSeparator13
       // 
       this.toolStripSeparator13.Name = "toolStripSeparator13";
-      this.toolStripSeparator13.Size = new System.Drawing.Size(172, 6);
+      this.toolStripSeparator13.Size = new System.Drawing.Size(216, 6);
       // 
       // 上書き保存SToolStripMenuItem
       // 
       this.上書き保存SToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("上書き保存SToolStripMenuItem.Image")));
       this.上書き保存SToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.上書き保存SToolStripMenuItem.Name = "上書き保存SToolStripMenuItem";
-      this.上書き保存SToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+      this.上書き保存SToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
       this.上書き保存SToolStripMenuItem.Text = "上書き保存(&S)";
       this.上書き保存SToolStripMenuItem.Click += new System.EventHandler(this.上書き保存SToolStripMenuItem_Click);
       // 
@@ -1861,21 +1877,21 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.名前を付けて保存AToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("名前を付けて保存AToolStripMenuItem.Image")));
       this.名前を付けて保存AToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.名前を付けて保存AToolStripMenuItem.Name = "名前を付けて保存AToolStripMenuItem";
-      this.名前を付けて保存AToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+      this.名前を付けて保存AToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
       this.名前を付けて保存AToolStripMenuItem.Text = "名前を付けて保存(&A)";
       this.名前を付けて保存AToolStripMenuItem.Click += new System.EventHandler(this.名前を付けて保存AToolStripMenuItem_Click);
       // 
       // toolStripSeparator1
       // 
       this.toolStripSeparator1.Name = "toolStripSeparator1";
-      this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
+      this.toolStripSeparator1.Size = new System.Drawing.Size(216, 6);
       // 
       // 印刷PToolStripMenuItem
       // 
       this.印刷PToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("印刷PToolStripMenuItem.Image")));
       this.印刷PToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.印刷PToolStripMenuItem.Name = "印刷PToolStripMenuItem";
-      this.印刷PToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+      this.印刷PToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
       this.印刷PToolStripMenuItem.Text = "印刷(&P)";
       this.印刷PToolStripMenuItem.Click += new System.EventHandler(this.印刷PToolStripMenuItem_Click);
       // 
@@ -1884,19 +1900,19 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.印刷プレビューVToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("印刷プレビューVToolStripMenuItem.Image")));
       this.印刷プレビューVToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.印刷プレビューVToolStripMenuItem.Name = "印刷プレビューVToolStripMenuItem";
-      this.印刷プレビューVToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+      this.印刷プレビューVToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
       this.印刷プレビューVToolStripMenuItem.Text = "印刷プレビュー(&V)";
       this.印刷プレビューVToolStripMenuItem.Click += new System.EventHandler(this.印刷プレビューVToolStripMenuItem_Click);
       // 
       // toolStripSeparator2
       // 
       this.toolStripSeparator2.Name = "toolStripSeparator2";
-      this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
+      this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
       // 
       // 終了XToolStripMenuItem
       // 
       this.終了XToolStripMenuItem.Name = "終了XToolStripMenuItem";
-      this.終了XToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+      this.終了XToolStripMenuItem.Size = new System.Drawing.Size(219, 26);
       this.終了XToolStripMenuItem.Text = "終了(&X)";
       this.終了XToolStripMenuItem.Click += new System.EventHandler(this.終了XToolStripMenuItem_Click);
       // 
@@ -1915,34 +1931,34 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator10});
       this.編集EToolStripMenuItem.Enabled = false;
       this.編集EToolStripMenuItem.Name = "編集EToolStripMenuItem";
-      this.編集EToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+      this.編集EToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
       this.編集EToolStripMenuItem.Text = "編集(&E)";
       // 
       // 元に戻すUToolStripMenuItem
       // 
       this.元に戻すUToolStripMenuItem.Name = "元に戻すUToolStripMenuItem";
-      this.元に戻すUToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.元に戻すUToolStripMenuItem.Size = new System.Drawing.Size(175, 26);
       this.元に戻すUToolStripMenuItem.Text = "元に戻す(&U)";
       this.元に戻すUToolStripMenuItem.Click += new System.EventHandler(this.元に戻すUToolStripMenuItem_Click);
       // 
       // やり直しRToolStripMenuItem
       // 
       this.やり直しRToolStripMenuItem.Name = "やり直しRToolStripMenuItem";
-      this.やり直しRToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.やり直しRToolStripMenuItem.Size = new System.Drawing.Size(175, 26);
       this.やり直しRToolStripMenuItem.Text = "やり直し(&R)";
       this.やり直しRToolStripMenuItem.Click += new System.EventHandler(this.やり直しRToolStripMenuItem_Click);
       // 
       // toolStripSeparator3
       // 
       this.toolStripSeparator3.Name = "toolStripSeparator3";
-      this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator3.Size = new System.Drawing.Size(172, 6);
       // 
       // 切り取りTToolStripMenuItem
       // 
       this.切り取りTToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("切り取りTToolStripMenuItem.Image")));
       this.切り取りTToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.切り取りTToolStripMenuItem.Name = "切り取りTToolStripMenuItem";
-      this.切り取りTToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.切り取りTToolStripMenuItem.Size = new System.Drawing.Size(175, 26);
       this.切り取りTToolStripMenuItem.Text = "切り取り(&T)";
       this.切り取りTToolStripMenuItem.Click += new System.EventHandler(this.切り取りTToolStripMenuItem_Click);
       // 
@@ -1951,7 +1967,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.コピーCToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("コピーCToolStripMenuItem.Image")));
       this.コピーCToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.コピーCToolStripMenuItem.Name = "コピーCToolStripMenuItem";
-      this.コピーCToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.コピーCToolStripMenuItem.Size = new System.Drawing.Size(175, 26);
       this.コピーCToolStripMenuItem.Text = "コピー(&C)";
       this.コピーCToolStripMenuItem.Click += new System.EventHandler(this.コピーCToolStripMenuItem_Click);
       // 
@@ -1960,33 +1976,33 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.貼り付けPToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("貼り付けPToolStripMenuItem.Image")));
       this.貼り付けPToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
       this.貼り付けPToolStripMenuItem.Name = "貼り付けPToolStripMenuItem";
-      this.貼り付けPToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.貼り付けPToolStripMenuItem.Size = new System.Drawing.Size(175, 26);
       this.貼り付けPToolStripMenuItem.Text = "貼り付け(&P)";
       this.貼り付けPToolStripMenuItem.Click += new System.EventHandler(this.貼り付けPToolStripMenuItem_Click);
       // 
       // toolStripSeparator4
       // 
       this.toolStripSeparator4.Name = "toolStripSeparator4";
-      this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator4.Size = new System.Drawing.Size(172, 6);
       // 
       // 再描画ToolStripMenuItem
       // 
       this.再描画ToolStripMenuItem.Name = "再描画ToolStripMenuItem";
-      this.再描画ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.再描画ToolStripMenuItem.Size = new System.Drawing.Size(175, 26);
       this.再描画ToolStripMenuItem.Text = "再描画";
       this.再描画ToolStripMenuItem.Click += new System.EventHandler(this.再描画ToolStripMenuItem_Click);
       // 
       // すべて選択AToolStripMenuItem
       // 
       this.すべて選択AToolStripMenuItem.Name = "すべて選択AToolStripMenuItem";
-      this.すべて選択AToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.すべて選択AToolStripMenuItem.Size = new System.Drawing.Size(175, 26);
       this.すべて選択AToolStripMenuItem.Text = "すべて選択(&A)";
       this.すべて選択AToolStripMenuItem.Click += new System.EventHandler(this.すべて選択AToolStripMenuItem_Click);
       // 
       // toolStripSeparator10
       // 
       this.toolStripSeparator10.Name = "toolStripSeparator10";
-      this.toolStripSeparator10.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator10.Size = new System.Drawing.Size(172, 6);
       // 
       // 表示ToolStripMenuItem
       // 
@@ -1997,14 +2013,14 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.tabPageModeToolStripMenuItem,
             this.updateUIToolStripMenuItem});
       this.表示ToolStripMenuItem.Name = "表示ToolStripMenuItem";
-      this.表示ToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+      this.表示ToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
       this.表示ToolStripMenuItem.Text = "表示(&V)";
       // 
       // ツールバーTToolStripMenuItem
       // 
       this.ツールバーTToolStripMenuItem.CheckOnClick = true;
       this.ツールバーTToolStripMenuItem.Name = "ツールバーTToolStripMenuItem";
-      this.ツールバーTToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+      this.ツールバーTToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
       this.ツールバーTToolStripMenuItem.Text = "ツールバー(&T)";
       this.ツールバーTToolStripMenuItem.Click += new System.EventHandler(this.ツールバーTToolStripMenuItem_Click);
       // 
@@ -2012,28 +2028,28 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 
       this.ステータスバーSToolStripMenuItem.CheckOnClick = true;
       this.ステータスバーSToolStripMenuItem.Name = "ステータスバーSToolStripMenuItem";
-      this.ステータスバーSToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+      this.ステータスバーSToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
       this.ステータスバーSToolStripMenuItem.Text = "ステータスバー(&S)";
       this.ステータスバーSToolStripMenuItem.Click += new System.EventHandler(this.ステータスバーSToolStripMenuItem_Click);
       // 
       // toolStripSeparator8
       // 
       this.toolStripSeparator8.Name = "toolStripSeparator8";
-      this.toolStripSeparator8.Size = new System.Drawing.Size(147, 6);
+      this.toolStripSeparator8.Size = new System.Drawing.Size(187, 6);
       // 
       // tabPageModeToolStripMenuItem
       // 
       this.tabPageModeToolStripMenuItem.CheckOnClick = true;
       this.tabPageModeToolStripMenuItem.Enabled = false;
       this.tabPageModeToolStripMenuItem.Name = "tabPageModeToolStripMenuItem";
-      this.tabPageModeToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+      this.tabPageModeToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
       this.tabPageModeToolStripMenuItem.Text = "TabPage Mode";
       // 
       // updateUIToolStripMenuItem
       // 
       this.updateUIToolStripMenuItem.Enabled = false;
       this.updateUIToolStripMenuItem.Name = "updateUIToolStripMenuItem";
-      this.updateUIToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+      this.updateUIToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
       this.updateUIToolStripMenuItem.Text = "UpdateUI";
       // 
       // 画像GToolStripMenuItem
@@ -2049,7 +2065,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.背景色変更ToolStripMenuItem});
       this.画像GToolStripMenuItem.Enabled = false;
       this.画像GToolStripMenuItem.Name = "画像GToolStripMenuItem";
-      this.画像GToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+      this.画像GToolStripMenuItem.Size = new System.Drawing.Size(76, 24);
       this.画像GToolStripMenuItem.Text = "画像(&G)";
       // 
       // 挿入IToolStripMenuItem
@@ -2059,39 +2075,39 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.選択範囲に挿入ToolStripMenuItem,
             this.選択範囲縦横比保持ToolStripMenuItem});
       this.挿入IToolStripMenuItem.Name = "挿入IToolStripMenuItem";
-      this.挿入IToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.挿入IToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
       this.挿入IToolStripMenuItem.Text = "挿入...(&I)";
       // 
       // 選択位置に挿入ToolStripMenuItem
       // 
       this.選択位置に挿入ToolStripMenuItem.Name = "選択位置に挿入ToolStripMenuItem";
-      this.選択位置に挿入ToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.選択位置に挿入ToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
       this.選択位置に挿入ToolStripMenuItem.Text = "選択位置に挿入";
       this.選択位置に挿入ToolStripMenuItem.Click += new System.EventHandler(this.選択位置に挿入ToolStripMenuItem_Click);
       // 
       // 選択範囲に挿入ToolStripMenuItem
       // 
       this.選択範囲に挿入ToolStripMenuItem.Name = "選択範囲に挿入ToolStripMenuItem";
-      this.選択範囲に挿入ToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.選択範囲に挿入ToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
       this.選択範囲に挿入ToolStripMenuItem.Text = "選択範囲に挿入";
       this.選択範囲に挿入ToolStripMenuItem.Click += new System.EventHandler(this.選択範囲に挿入ToolStripMenuItem_Click);
       // 
       // 選択範囲縦横比保持ToolStripMenuItem
       // 
       this.選択範囲縦横比保持ToolStripMenuItem.Name = "選択範囲縦横比保持ToolStripMenuItem";
-      this.選択範囲縦横比保持ToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.選択範囲縦横比保持ToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
       this.選択範囲縦横比保持ToolStripMenuItem.Text = "選択範囲(縦横比保持)";
       this.選択範囲縦横比保持ToolStripMenuItem.Click += new System.EventHandler(this.選択範囲縦横比保持ToolStripMenuItem_Click);
       // 
       // toolStripSeparator11
       // 
       this.toolStripSeparator11.Name = "toolStripSeparator11";
-      this.toolStripSeparator11.Size = new System.Drawing.Size(133, 6);
+      this.toolStripSeparator11.Size = new System.Drawing.Size(162, 6);
       // 
       // 変形貼り付けToolStripMenuItem
       // 
       this.変形貼り付けToolStripMenuItem.Name = "変形貼り付けToolStripMenuItem";
-      this.変形貼り付けToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.変形貼り付けToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
       this.変形貼り付けToolStripMenuItem.Text = "変形貼り付け";
       this.変形貼り付けToolStripMenuItem.Click += new System.EventHandler(this.変形貼り付けToolStripMenuItem_Click);
       // 
@@ -2101,46 +2117,46 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.回転ToolStripMenuItem,
             this.角度を指定ToolStripMenuItem});
       this.回転貼り付けToolStripMenuItem.Name = "回転貼り付けToolStripMenuItem";
-      this.回転貼り付けToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.回転貼り付けToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
       this.回転貼り付けToolStripMenuItem.Text = "回転貼り付け";
       // 
       // 回転ToolStripMenuItem
       // 
       this.回転ToolStripMenuItem.Name = "回転ToolStripMenuItem";
-      this.回転ToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+      this.回転ToolStripMenuItem.Size = new System.Drawing.Size(155, 26);
       this.回転ToolStripMenuItem.Text = "90°";
       this.回転ToolStripMenuItem.Click += new System.EventHandler(this.回転ToolStripMenuItem_Click);
       // 
       // 角度を指定ToolStripMenuItem
       // 
       this.角度を指定ToolStripMenuItem.Name = "角度を指定ToolStripMenuItem";
-      this.角度を指定ToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+      this.角度を指定ToolStripMenuItem.Size = new System.Drawing.Size(155, 26);
       this.角度を指定ToolStripMenuItem.Text = "角度を指定";
       this.角度を指定ToolStripMenuItem.Click += new System.EventHandler(this.角度を指定ToolStripMenuItem_Click);
       // 
       // 反転貼り付けToolStripMenuItem
       // 
       this.反転貼り付けToolStripMenuItem.Name = "反転貼り付けToolStripMenuItem";
-      this.反転貼り付けToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.反転貼り付けToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
       this.反転貼り付けToolStripMenuItem.Text = "反転貼り付け";
       this.反転貼り付けToolStripMenuItem.Click += new System.EventHandler(this.反転貼り付けToolStripMenuItem_Click);
       // 
       // toolStripSeparator12
       // 
       this.toolStripSeparator12.Name = "toolStripSeparator12";
-      this.toolStripSeparator12.Size = new System.Drawing.Size(133, 6);
+      this.toolStripSeparator12.Size = new System.Drawing.Size(162, 6);
       // 
       // 全クリアToolStripMenuItem
       // 
       this.全クリアToolStripMenuItem.Name = "全クリアToolStripMenuItem";
-      this.全クリアToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.全クリアToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
       this.全クリアToolStripMenuItem.Text = "全クリア";
       this.全クリアToolStripMenuItem.Click += new System.EventHandler(this.全クリアToolStripMenuItem_Click);
       // 
       // 背景色変更ToolStripMenuItem
       // 
       this.背景色変更ToolStripMenuItem.Name = "背景色変更ToolStripMenuItem";
-      this.背景色変更ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.背景色変更ToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
       this.背景色変更ToolStripMenuItem.Text = "背景色変更";
       this.背景色変更ToolStripMenuItem.Click += new System.EventHandler(this.背景色変更ToolStripMenuItem_Click);
       // 
@@ -2153,13 +2169,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator28});
       this.スクリプトCToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Replace;
       this.スクリプトCToolStripMenuItem.Name = "スクリプトCToolStripMenuItem";
-      this.スクリプトCToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+      this.スクリプトCToolStripMenuItem.Size = new System.Drawing.Size(97, 24);
       this.スクリプトCToolStripMenuItem.Text = "スクリプト(&C)";
       // 
       // スクリプトを編集EToolStripMenuItem
       // 
       this.スクリプトを編集EToolStripMenuItem.Name = "スクリプトを編集EToolStripMenuItem";
-      this.スクリプトを編集EToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.スクリプトを編集EToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
       this.スクリプトを編集EToolStripMenuItem.Text = "スクリプトを編集(&E)";
       this.スクリプトを編集EToolStripMenuItem.Click += new System.EventHandler(this.スクリプトを編集EToolStripMenuItem_Click);
       // 
@@ -2167,20 +2183,20 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 
       this.スクリプトを実行XToolStripMenuItem.Enabled = false;
       this.スクリプトを実行XToolStripMenuItem.Name = "スクリプトを実行XToolStripMenuItem";
-      this.スクリプトを実行XToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.スクリプトを実行XToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
       this.スクリプトを実行XToolStripMenuItem.Text = "スクリプトを実行(&X)";
       // 
       // スクリプトメニュー更新RToolStripMenuItem
       // 
       this.スクリプトメニュー更新RToolStripMenuItem.Name = "スクリプトメニュー更新RToolStripMenuItem";
-      this.スクリプトメニュー更新RToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+      this.スクリプトメニュー更新RToolStripMenuItem.Size = new System.Drawing.Size(233, 26);
       this.スクリプトメニュー更新RToolStripMenuItem.Text = "スクリプトメニュー更新(&R)";
       this.スクリプトメニュー更新RToolStripMenuItem.Click += new System.EventHandler(this.スクリプトメニュー更新RToolStripMenuItem_Click);
       // 
       // toolStripSeparator28
       // 
       this.toolStripSeparator28.Name = "toolStripSeparator28";
-      this.toolStripSeparator28.Size = new System.Drawing.Size(183, 6);
+      this.toolStripSeparator28.Size = new System.Drawing.Size(230, 6);
       // 
       // ツールTToolStripMenuItem
       // 
@@ -2190,7 +2206,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator14,
             this.試験ToolStripMenuItem});
       this.ツールTToolStripMenuItem.Name = "ツールTToolStripMenuItem";
-      this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+      this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(80, 24);
       this.ツールTToolStripMenuItem.Text = "ツール(&T)";
       // 
       // オプションOToolStripMenuItem
@@ -2199,38 +2215,38 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.scribbleToolStripMenuItem,
             this.rubberBandToolStripMenuItem});
       this.オプションOToolStripMenuItem.Name = "オプションOToolStripMenuItem";
-      this.オプションOToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+      this.オプションOToolStripMenuItem.Size = new System.Drawing.Size(174, 26);
       this.オプションOToolStripMenuItem.Text = "オプション(&O)";
       // 
       // scribbleToolStripMenuItem
       // 
       this.scribbleToolStripMenuItem.Name = "scribbleToolStripMenuItem";
-      this.scribbleToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+      this.scribbleToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
       this.scribbleToolStripMenuItem.Text = "Scribble";
       this.scribbleToolStripMenuItem.Click += new System.EventHandler(this.scribbleToolStripMenuItem_Click_1);
       // 
       // rubberBandToolStripMenuItem
       // 
       this.rubberBandToolStripMenuItem.Name = "rubberBandToolStripMenuItem";
-      this.rubberBandToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+      this.rubberBandToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
       this.rubberBandToolStripMenuItem.Text = "RubberBand";
       this.rubberBandToolStripMenuItem.Click += new System.EventHandler(this.rubberBandToolStripMenuItem_Click);
       // 
       // カスタマイズCToolStripMenuItem
       // 
       this.カスタマイズCToolStripMenuItem.Name = "カスタマイズCToolStripMenuItem";
-      this.カスタマイズCToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+      this.カスタマイズCToolStripMenuItem.Size = new System.Drawing.Size(174, 26);
       this.カスタマイズCToolStripMenuItem.Text = "カスタマイズ(&C)";
       // 
       // toolStripSeparator14
       // 
       this.toolStripSeparator14.Name = "toolStripSeparator14";
-      this.toolStripSeparator14.Size = new System.Drawing.Size(137, 6);
+      this.toolStripSeparator14.Size = new System.Drawing.Size(171, 6);
       // 
       // 試験ToolStripMenuItem
       // 
       this.試験ToolStripMenuItem.Name = "試験ToolStripMenuItem";
-      this.試験ToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+      this.試験ToolStripMenuItem.Size = new System.Drawing.Size(174, 26);
       this.試験ToolStripMenuItem.Text = "試験";
       this.試験ToolStripMenuItem.Click += new System.EventHandler(this.試験ToolStripMenuItem_Click);
       // 
@@ -2248,7 +2264,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.その他ToolStripMenuItem});
       this.qcgraphToolStripMenuItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
       this.qcgraphToolStripMenuItem.Name = "qcgraphToolStripMenuItem";
-      this.qcgraphToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
+      this.qcgraphToolStripMenuItem.Size = new System.Drawing.Size(73, 24);
       this.qcgraphToolStripMenuItem.Text = "qcgraph";
       // 
       // 直線と三角形ToolStripMenuItem
@@ -2260,13 +2276,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.三角形1ToolStripMenuItem,
             this.三角形2ToolStripMenuItem});
       this.直線と三角形ToolStripMenuItem.Name = "直線と三角形ToolStripMenuItem";
-      this.直線と三角形ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.直線と三角形ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.直線と三角形ToolStripMenuItem.Text = "直線と三角形";
       // 
       // 直線1ToolStripMenuItem
       // 
       this.直線1ToolStripMenuItem.Name = "直線1ToolStripMenuItem";
-      this.直線1ToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+      this.直線1ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.直線1ToolStripMenuItem.Tag = "直線1";
       this.直線1ToolStripMenuItem.Text = "直線1";
       this.直線1ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2274,7 +2290,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 直線2ToolStripMenuItem
       // 
       this.直線2ToolStripMenuItem.Name = "直線2ToolStripMenuItem";
-      this.直線2ToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+      this.直線2ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.直線2ToolStripMenuItem.Tag = "直線2";
       this.直線2ToolStripMenuItem.Text = "直線2";
       this.直線2ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2282,7 +2298,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 直線3ToolStripMenuItem
       // 
       this.直線3ToolStripMenuItem.Name = "直線3ToolStripMenuItem";
-      this.直線3ToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+      this.直線3ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.直線3ToolStripMenuItem.Tag = "直線3";
       this.直線3ToolStripMenuItem.Text = "直線3";
       this.直線3ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2290,7 +2306,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 三角形1ToolStripMenuItem
       // 
       this.三角形1ToolStripMenuItem.Name = "三角形1ToolStripMenuItem";
-      this.三角形1ToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+      this.三角形1ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.三角形1ToolStripMenuItem.Tag = "三角形1";
       this.三角形1ToolStripMenuItem.Text = "三角形1";
       this.三角形1ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2298,7 +2314,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 三角形2ToolStripMenuItem
       // 
       this.三角形2ToolStripMenuItem.Name = "三角形2ToolStripMenuItem";
-      this.三角形2ToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+      this.三角形2ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.三角形2ToolStripMenuItem.Tag = "三角形2";
       this.三角形2ToolStripMenuItem.Text = "三角形2";
       this.三角形2ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2312,13 +2328,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.星の形ToolStripMenuItem,
             this.楕円の変換ToolStripMenuItem});
       this.図形の基礎ToolStripMenuItem.Name = "図形の基礎ToolStripMenuItem";
-      this.図形の基礎ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.図形の基礎ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.図形の基礎ToolStripMenuItem.Text = "図形の基礎";
       // 
       // 直線の型ToolStripMenuItem
       // 
       this.直線の型ToolStripMenuItem.Name = "直線の型ToolStripMenuItem";
-      this.直線の型ToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+      this.直線の型ToolStripMenuItem.Size = new System.Drawing.Size(154, 26);
       this.直線の型ToolStripMenuItem.Tag = "直線の型";
       this.直線の型ToolStripMenuItem.Text = "直線の型";
       this.直線の型ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2326,14 +2342,14 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 濃淡の表示ToolStripMenuItem
       // 
       this.濃淡の表示ToolStripMenuItem.Name = "濃淡の表示ToolStripMenuItem";
-      this.濃淡の表示ToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+      this.濃淡の表示ToolStripMenuItem.Size = new System.Drawing.Size(154, 26);
       this.濃淡の表示ToolStripMenuItem.Tag = "濃淡の表示";
       this.濃淡の表示ToolStripMenuItem.Text = "濃淡の表示";
       // 
       // 放射状の線ToolStripMenuItem
       // 
       this.放射状の線ToolStripMenuItem.Name = "放射状の線ToolStripMenuItem";
-      this.放射状の線ToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+      this.放射状の線ToolStripMenuItem.Size = new System.Drawing.Size(154, 26);
       this.放射状の線ToolStripMenuItem.Tag = "放射状の線";
       this.放射状の線ToolStripMenuItem.Text = "放射状の線";
       this.放射状の線ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2341,7 +2357,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 星の形ToolStripMenuItem
       // 
       this.星の形ToolStripMenuItem.Name = "星の形ToolStripMenuItem";
-      this.星の形ToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+      this.星の形ToolStripMenuItem.Size = new System.Drawing.Size(154, 26);
       this.星の形ToolStripMenuItem.Tag = "星の形";
       this.星の形ToolStripMenuItem.Text = "星の形";
       this.星の形ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2349,7 +2365,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 楕円の変換ToolStripMenuItem
       // 
       this.楕円の変換ToolStripMenuItem.Name = "楕円の変換ToolStripMenuItem";
-      this.楕円の変換ToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+      this.楕円の変換ToolStripMenuItem.Size = new System.Drawing.Size(154, 26);
       this.楕円の変換ToolStripMenuItem.Tag = "楕円の変換";
       this.楕円の変換ToolStripMenuItem.Text = "楕円の変換";
       this.楕円の変換ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2362,13 +2378,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.四葉形ToolStripMenuItem,
             this.正六角形による図ToolStripMenuItem});
       this.軌跡ToolStripMenuItem.Name = "軌跡ToolStripMenuItem";
-      this.軌跡ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.軌跡ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.軌跡ToolStripMenuItem.Text = "軌跡";
       // 
       // サイクロイドToolStripMenuItem
       // 
       this.サイクロイドToolStripMenuItem.Name = "サイクロイドToolStripMenuItem";
-      this.サイクロイドToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+      this.サイクロイドToolStripMenuItem.Size = new System.Drawing.Size(206, 26);
       this.サイクロイドToolStripMenuItem.Tag = "サイクロイド";
       this.サイクロイドToolStripMenuItem.Text = "サイクロイド";
       this.サイクロイドToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2376,7 +2392,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // サイクロイド星型ToolStripMenuItem
       // 
       this.サイクロイド星型ToolStripMenuItem.Name = "サイクロイド星型ToolStripMenuItem";
-      this.サイクロイド星型ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+      this.サイクロイド星型ToolStripMenuItem.Size = new System.Drawing.Size(206, 26);
       this.サイクロイド星型ToolStripMenuItem.Tag = "サイクロイド(星型)";
       this.サイクロイド星型ToolStripMenuItem.Text = "サイクロイド(星型)";
       this.サイクロイド星型ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2384,7 +2400,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 四葉形ToolStripMenuItem
       // 
       this.四葉形ToolStripMenuItem.Name = "四葉形ToolStripMenuItem";
-      this.四葉形ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+      this.四葉形ToolStripMenuItem.Size = new System.Drawing.Size(206, 26);
       this.四葉形ToolStripMenuItem.Tag = "四葉形";
       this.四葉形ToolStripMenuItem.Text = "四葉形";
       this.四葉形ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2392,7 +2408,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 正六角形による図ToolStripMenuItem
       // 
       this.正六角形による図ToolStripMenuItem.Name = "正六角形による図ToolStripMenuItem";
-      this.正六角形による図ToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+      this.正六角形による図ToolStripMenuItem.Size = new System.Drawing.Size(206, 26);
       this.正六角形による図ToolStripMenuItem.Tag = "正六角形による図形";
       this.正六角形による図ToolStripMenuItem.Text = "正六角形による図形";
       this.正六角形による図ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2405,13 +2421,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.三葉形の回転ToolStripMenuItem,
             this.アステロイドの合成ToolStripMenuItem});
       this.曲線ToolStripMenuItem.Name = "曲線ToolStripMenuItem";
-      this.曲線ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.曲線ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.曲線ToolStripMenuItem.Text = "曲線";
       // 
       // 正弦曲線ToolStripMenuItem
       // 
       this.正弦曲線ToolStripMenuItem.Name = "正弦曲線ToolStripMenuItem";
-      this.正弦曲線ToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+      this.正弦曲線ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.正弦曲線ToolStripMenuItem.Tag = "正弦曲線";
       this.正弦曲線ToolStripMenuItem.Text = "正弦曲線";
       this.正弦曲線ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2419,7 +2435,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 扇ToolStripMenuItem
       // 
       this.扇ToolStripMenuItem.Name = "扇ToolStripMenuItem";
-      this.扇ToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+      this.扇ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.扇ToolStripMenuItem.Tag = "扇";
       this.扇ToolStripMenuItem.Text = "扇";
       this.扇ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2427,7 +2443,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 三葉形の回転ToolStripMenuItem
       // 
       this.三葉形の回転ToolStripMenuItem.Name = "三葉形の回転ToolStripMenuItem";
-      this.三葉形の回転ToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+      this.三葉形の回転ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.三葉形の回転ToolStripMenuItem.Tag = "三葉形の回転";
       this.三葉形の回転ToolStripMenuItem.Text = "三葉形の回転";
       this.三葉形の回転ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2435,7 +2451,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // アステロイドの合成ToolStripMenuItem
       // 
       this.アステロイドの合成ToolStripMenuItem.Name = "アステロイドの合成ToolStripMenuItem";
-      this.アステロイドの合成ToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+      this.アステロイドの合成ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.アステロイドの合成ToolStripMenuItem.Tag = "アステロイドの合成";
       this.アステロイドの合成ToolStripMenuItem.Text = "アステロイドの合成";
       this.アステロイドの合成ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2448,13 +2464,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.花の動画ToolStripMenuItem,
             this.カージオイド上の正方形の運動ToolStripMenuItem});
       this.動画ToolStripMenuItem.Name = "動画ToolStripMenuItem";
-      this.動画ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.動画ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.動画ToolStripMenuItem.Text = "動画";
       // 
       // 放射状の線の回転運動ToolStripMenuItem
       // 
       this.放射状の線の回転運動ToolStripMenuItem.Name = "放射状の線の回転運動ToolStripMenuItem";
-      this.放射状の線の回転運動ToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+      this.放射状の線の回転運動ToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
       this.放射状の線の回転運動ToolStripMenuItem.Tag = "放射状の線の回転運動";
       this.放射状の線の回転運動ToolStripMenuItem.Text = "放射状の線の回転運動";
       this.放射状の線の回転運動ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2462,7 +2478,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 外転サイクロイドToolStripMenuItem
       // 
       this.外転サイクロイドToolStripMenuItem.Name = "外転サイクロイドToolStripMenuItem";
-      this.外転サイクロイドToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+      this.外転サイクロイドToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
       this.外転サイクロイドToolStripMenuItem.Tag = "外転サイクロイド";
       this.外転サイクロイドToolStripMenuItem.Text = "外転サイクロイド";
       this.外転サイクロイドToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2470,7 +2486,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 花の動画ToolStripMenuItem
       // 
       this.花の動画ToolStripMenuItem.Name = "花の動画ToolStripMenuItem";
-      this.花の動画ToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+      this.花の動画ToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
       this.花の動画ToolStripMenuItem.Tag = "花の動画";
       this.花の動画ToolStripMenuItem.Text = "花の動画";
       this.花の動画ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2478,7 +2494,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // カージオイド上の正方形の運動ToolStripMenuItem
       // 
       this.カージオイド上の正方形の運動ToolStripMenuItem.Name = "カージオイド上の正方形の運動ToolStripMenuItem";
-      this.カージオイド上の正方形の運動ToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+      this.カージオイド上の正方形の運動ToolStripMenuItem.Size = new System.Drawing.Size(264, 26);
       this.カージオイド上の正方形の運動ToolStripMenuItem.Tag = "カージオイド上の正方形の運動";
       this.カージオイド上の正方形の運動ToolStripMenuItem.Text = "カージオイド上の正方形の運動";
       this.カージオイド上の正方形の運動ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2490,13 +2506,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.流線ToolStripMenuItem,
             this.wzczの写像ToolStripMenuItem});
       this.写像ToolStripMenuItem.Name = "写像ToolStripMenuItem";
-      this.写像ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.写像ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.写像ToolStripMenuItem.Text = "写像";
       // 
       // ジューコフスキーの扇形ToolStripMenuItem
       // 
       this.ジューコフスキーの扇形ToolStripMenuItem.Name = "ジューコフスキーの扇形ToolStripMenuItem";
-      this.ジューコフスキーの扇形ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+      this.ジューコフスキーの扇形ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.ジューコフスキーの扇形ToolStripMenuItem.Tag = "ジューコフスキーの扇形";
       this.ジューコフスキーの扇形ToolStripMenuItem.Text = "ジューコフスキーの扇形";
       this.ジューコフスキーの扇形ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2504,7 +2520,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 流線ToolStripMenuItem
       // 
       this.流線ToolStripMenuItem.Name = "流線ToolStripMenuItem";
-      this.流線ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+      this.流線ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.流線ToolStripMenuItem.Tag = "流線";
       this.流線ToolStripMenuItem.Text = "流線";
       this.流線ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2512,7 +2528,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // wzczの写像ToolStripMenuItem
       // 
       this.wzczの写像ToolStripMenuItem.Name = "wzczの写像ToolStripMenuItem";
-      this.wzczの写像ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+      this.wzczの写像ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.wzczの写像ToolStripMenuItem.Tag = "wzczの写像";
       this.wzczの写像ToolStripMenuItem.Text = "wzczの写像";
       this.wzczの写像ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2525,13 +2541,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.盆栽ToolStripMenuItem,
             this.雲ToolStripMenuItem});
       this.フラクタルToolStripMenuItem.Name = "フラクタルToolStripMenuItem";
-      this.フラクタルToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.フラクタルToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.フラクタルToolStripMenuItem.Text = "フラクタル";
       // 
       // コッホ曲線による図形ToolStripMenuItem
       // 
       this.コッホ曲線による図形ToolStripMenuItem.Name = "コッホ曲線による図形ToolStripMenuItem";
-      this.コッホ曲線による図形ToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+      this.コッホ曲線による図形ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.コッホ曲線による図形ToolStripMenuItem.Tag = "コッホ曲線による図形";
       this.コッホ曲線による図形ToolStripMenuItem.Text = "コッホ曲線による図形";
       this.コッホ曲線による図形ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2539,7 +2555,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 雪の結晶ToolStripMenuItem
       // 
       this.雪の結晶ToolStripMenuItem.Name = "雪の結晶ToolStripMenuItem";
-      this.雪の結晶ToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+      this.雪の結晶ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.雪の結晶ToolStripMenuItem.Tag = "雪の結晶";
       this.雪の結晶ToolStripMenuItem.Text = "雪の結晶";
       this.雪の結晶ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2547,7 +2563,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 盆栽ToolStripMenuItem
       // 
       this.盆栽ToolStripMenuItem.Name = "盆栽ToolStripMenuItem";
-      this.盆栽ToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+      this.盆栽ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.盆栽ToolStripMenuItem.Tag = "盆栽";
       this.盆栽ToolStripMenuItem.Text = "盆栽";
       this.盆栽ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2555,7 +2571,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 雲ToolStripMenuItem
       // 
       this.雲ToolStripMenuItem.Name = "雲ToolStripMenuItem";
-      this.雲ToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+      this.雲ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.雲ToolStripMenuItem.Tag = "雲";
       this.雲ToolStripMenuItem.Text = "雲";
       this.雲ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2567,13 +2583,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.手毬ToolStripMenuItem,
             this.球の回転ToolStripMenuItem});
       this.球の描画ToolStripMenuItem.Name = "球の描画ToolStripMenuItem";
-      this.球の描画ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.球の描画ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.球の描画ToolStripMenuItem.Text = "球の描画";
       // 
       // 球ToolStripMenuItem
       // 
       this.球ToolStripMenuItem.Name = "球ToolStripMenuItem";
-      this.球ToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+      this.球ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.球ToolStripMenuItem.Tag = "球";
       this.球ToolStripMenuItem.Text = "球";
       this.球ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2581,7 +2597,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 手毬ToolStripMenuItem
       // 
       this.手毬ToolStripMenuItem.Name = "手毬ToolStripMenuItem";
-      this.手毬ToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+      this.手毬ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.手毬ToolStripMenuItem.Tag = "手毬";
       this.手毬ToolStripMenuItem.Text = "手毬";
       this.手毬ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2589,7 +2605,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 球の回転ToolStripMenuItem
       // 
       this.球の回転ToolStripMenuItem.Name = "球の回転ToolStripMenuItem";
-      this.球の回転ToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+      this.球の回転ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.球の回転ToolStripMenuItem.Tag = "球の回転";
       this.球の回転ToolStripMenuItem.Text = "球の回転";
       this.球の回転ToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2599,13 +2615,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.その他ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.マンデグローブToolStripMenuItem});
       this.その他ToolStripMenuItem.Name = "その他ToolStripMenuItem";
-      this.その他ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+      this.その他ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.その他ToolStripMenuItem.Text = "その他";
       // 
       // マンデグローブToolStripMenuItem
       // 
       this.マンデグローブToolStripMenuItem.Name = "マンデグローブToolStripMenuItem";
-      this.マンデグローブToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+      this.マンデグローブToolStripMenuItem.Size = new System.Drawing.Size(162, 26);
       this.マンデグローブToolStripMenuItem.Tag = "マンデグローブ";
       this.マンデグローブToolStripMenuItem.Text = "マンデグローブ";
       this.マンデグローブToolStripMenuItem.Click += new System.EventHandler(this.qcGraphMenuItem_Click);
@@ -2615,13 +2631,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.お気に入りToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.お気に入りに追加ToolStripMenuItem});
       this.お気に入りToolStripMenuItem.Name = "お気に入りToolStripMenuItem";
-      this.お気に入りToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+      this.お気に入りToolStripMenuItem.Size = new System.Drawing.Size(84, 24);
       this.お気に入りToolStripMenuItem.Text = "お気に入り";
       // 
       // お気に入りに追加ToolStripMenuItem
       // 
       this.お気に入りに追加ToolStripMenuItem.Name = "お気に入りに追加ToolStripMenuItem";
-      this.お気に入りに追加ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+      this.お気に入りに追加ToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
       this.お気に入りに追加ToolStripMenuItem.Text = "お気に入りに追加";
       // 
       // ヘルプHToolStripMenuItem
@@ -2633,40 +2649,41 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripSeparator5,
             this.バージョン情報AToolStripMenuItem});
       this.ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
-      this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+      this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(81, 24);
       this.ヘルプHToolStripMenuItem.Text = "ヘルプ(&H)";
       // 
       // 内容CToolStripMenuItem
       // 
       this.内容CToolStripMenuItem.Name = "内容CToolStripMenuItem";
-      this.内容CToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.内容CToolStripMenuItem.Size = new System.Drawing.Size(209, 26);
       this.内容CToolStripMenuItem.Text = "内容(&C)";
       // 
       // インデックスIToolStripMenuItem
       // 
       this.インデックスIToolStripMenuItem.Name = "インデックスIToolStripMenuItem";
-      this.インデックスIToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.インデックスIToolStripMenuItem.Size = new System.Drawing.Size(209, 26);
       this.インデックスIToolStripMenuItem.Text = "インデックス(&I)";
       // 
       // 検索SToolStripMenuItem
       // 
       this.検索SToolStripMenuItem.Name = "検索SToolStripMenuItem";
-      this.検索SToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.検索SToolStripMenuItem.Size = new System.Drawing.Size(209, 26);
       this.検索SToolStripMenuItem.Text = "検索(&S)";
       // 
       // toolStripSeparator5
       // 
       this.toolStripSeparator5.Name = "toolStripSeparator5";
-      this.toolStripSeparator5.Size = new System.Drawing.Size(158, 6);
+      this.toolStripSeparator5.Size = new System.Drawing.Size(206, 6);
       // 
       // バージョン情報AToolStripMenuItem
       // 
       this.バージョン情報AToolStripMenuItem.Name = "バージョン情報AToolStripMenuItem";
-      this.バージョン情報AToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.バージョン情報AToolStripMenuItem.Size = new System.Drawing.Size(209, 26);
       this.バージョン情報AToolStripMenuItem.Text = "バージョン情報(&A)...";
       // 
       // toolStrip1
       // 
+      this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.新規作成NToolStripButton,
             this.開くOToolStripButton,
@@ -2681,9 +2698,9 @@ namespace AntPlugin.XMLTreeMenu.Controls
             this.toolStripDropDownButton1,
             this.toolStripSeparator9,
             this.imageListButton});
-      this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+      this.toolStrip1.Location = new System.Drawing.Point(0, 28);
       this.toolStrip1.Name = "toolStrip1";
-      this.toolStrip1.Size = new System.Drawing.Size(766, 25);
+      this.toolStrip1.Size = new System.Drawing.Size(1021, 27);
       this.toolStrip1.TabIndex = 7;
       this.toolStrip1.Text = "toolStrip1";
       // 
@@ -2694,7 +2711,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.新規作成NToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("新規作成NToolStripButton.Image")));
       this.新規作成NToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
       this.新規作成NToolStripButton.Name = "新規作成NToolStripButton";
-      this.新規作成NToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.新規作成NToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.新規作成NToolStripButton.Text = "新規作成(&N)";
       // 
       // 開くOToolStripButton
@@ -2703,7 +2720,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.開くOToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("開くOToolStripButton.Image")));
       this.開くOToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
       this.開くOToolStripButton.Name = "開くOToolStripButton";
-      this.開くOToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.開くOToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.開くOToolStripButton.Text = "開く(&O)";
       this.開くOToolStripButton.Click += new System.EventHandler(this.開くOToolStripButton_Click);
       // 
@@ -2713,7 +2730,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.上書き保存SToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("上書き保存SToolStripButton.Image")));
       this.上書き保存SToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
       this.上書き保存SToolStripButton.Name = "上書き保存SToolStripButton";
-      this.上書き保存SToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.上書き保存SToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.上書き保存SToolStripButton.Text = "上書き保存(&S)";
       // 
       // 印刷PToolStripButton
@@ -2722,13 +2739,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.印刷PToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("印刷PToolStripButton.Image")));
       this.印刷PToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
       this.印刷PToolStripButton.Name = "印刷PToolStripButton";
-      this.印刷PToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.印刷PToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.印刷PToolStripButton.Text = "印刷(&P)";
       // 
       // toolStripSeparator6
       // 
       this.toolStripSeparator6.Name = "toolStripSeparator6";
-      this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+      this.toolStripSeparator6.Size = new System.Drawing.Size(6, 27);
       // 
       // 切り取りUToolStripButton
       // 
@@ -2737,7 +2754,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.切り取りUToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("切り取りUToolStripButton.Image")));
       this.切り取りUToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
       this.切り取りUToolStripButton.Name = "切り取りUToolStripButton";
-      this.切り取りUToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.切り取りUToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.切り取りUToolStripButton.Text = "切り取り(&U)";
       // 
       // コピーCToolStripButton
@@ -2747,7 +2764,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.コピーCToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("コピーCToolStripButton.Image")));
       this.コピーCToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
       this.コピーCToolStripButton.Name = "コピーCToolStripButton";
-      this.コピーCToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.コピーCToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.コピーCToolStripButton.Text = "コピー(&C)";
       // 
       // 貼り付けPToolStripButton
@@ -2757,7 +2774,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.貼り付けPToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("貼り付けPToolStripButton.Image")));
       this.貼り付けPToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
       this.貼り付けPToolStripButton.Name = "貼り付けPToolStripButton";
-      this.貼り付けPToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.貼り付けPToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.貼り付けPToolStripButton.Text = "貼り付け(&P)";
       // 
       // ヘルプLToolStripButton
@@ -2766,13 +2783,13 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.ヘルプLToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ヘルプLToolStripButton.Image")));
       this.ヘルプLToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
       this.ヘルプLToolStripButton.Name = "ヘルプLToolStripButton";
-      this.ヘルプLToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.ヘルプLToolStripButton.Size = new System.Drawing.Size(24, 24);
       this.ヘルプLToolStripButton.Text = "ヘルプ(&L)";
       // 
       // toolStripSeparator7
       // 
       this.toolStripSeparator7.Name = "toolStripSeparator7";
-      this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+      this.toolStripSeparator7.Size = new System.Drawing.Size(6, 27);
       // 
       // toolStripDropDownButton1
       // 
@@ -2783,7 +2800,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
       this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Transparent;
       this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-      this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 22);
+      this.toolStripDropDownButton1.Size = new System.Drawing.Size(34, 24);
       this.toolStripDropDownButton1.Text = "toolStripDropDownButton1";
       // 
       // メニューバーMToolStripMenuItem
@@ -2792,7 +2809,7 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.メニューバーMToolStripMenuItem.CheckOnClick = true;
       this.メニューバーMToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
       this.メニューバーMToolStripMenuItem.Name = "メニューバーMToolStripMenuItem";
-      this.メニューバーMToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.メニューバーMToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
       this.メニューバーMToolStripMenuItem.Text = "メニューバー(&M)";
       this.メニューバーMToolStripMenuItem.Click += new System.EventHandler(this.メニューバーMToolStripMenuItem_Click);
       // 
@@ -2800,22 +2817,33 @@ namespace AntPlugin.XMLTreeMenu.Controls
       // 
       this.ステータスバーSToolStripMenuItem1.CheckOnClick = true;
       this.ステータスバーSToolStripMenuItem1.Name = "ステータスバーSToolStripMenuItem1";
-      this.ステータスバーSToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.ステータスバーSToolStripMenuItem1.Size = new System.Drawing.Size(188, 26);
       this.ステータスバーSToolStripMenuItem1.Text = "ステータスバー(&S)";
       this.ステータスバーSToolStripMenuItem1.Click += new System.EventHandler(this.ステータスバーSToolStripMenuItem1_Click);
       // 
       // toolStripSeparator9
       // 
       this.toolStripSeparator9.Name = "toolStripSeparator9";
-      this.toolStripSeparator9.Size = new System.Drawing.Size(6, 25);
+      this.toolStripSeparator9.Size = new System.Drawing.Size(6, 27);
+      // 
+      // imageListButton
+      // 
+      this.imageListButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.imageListButton.Image = ((System.Drawing.Image)(resources.GetObject("imageListButton.Image")));
+      this.imageListButton.ImageTransparentColor = System.Drawing.Color.Transparent;
+      this.imageListButton.Name = "imageListButton";
+      this.imageListButton.Size = new System.Drawing.Size(24, 24);
+      this.imageListButton.Text = "toolStripButton1";
+      this.imageListButton.Visible = false;
       // 
       // pictureBox1
       // 
       this.pictureBox1.BackColor = System.Drawing.Color.White;
       this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.pictureBox1.Location = new System.Drawing.Point(0, 49);
+      this.pictureBox1.Location = new System.Drawing.Point(0, 55);
+      this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(766, 320);
+      this.pictureBox1.Size = new System.Drawing.Size(1021, 410);
       this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.pictureBox1.TabIndex = 8;
       this.pictureBox1.TabStop = false;
@@ -2826,26 +2854,17 @@ namespace AntPlugin.XMLTreeMenu.Controls
       this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
       this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
       // 
-      // imageListButton
-      // 
-      this.imageListButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.imageListButton.Image = ((System.Drawing.Image)(resources.GetObject("imageListButton.Image")));
-      this.imageListButton.ImageTransparentColor = System.Drawing.Color.Transparent;
-      this.imageListButton.Name = "imageListButton";
-      this.imageListButton.Size = new System.Drawing.Size(23, 22);
-      this.imageListButton.Text = "toolStripButton1";
-      this.imageListButton.Visible = false;
-      // 
       // PicturePanel
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.pictureBox1);
       this.Controls.Add(this.toolStrip1);
       this.Controls.Add(this.menuStrip1);
       this.Controls.Add(this.statusStrip1);
+      this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
       this.Name = "PicturePanel";
-      this.Size = new System.Drawing.Size(766, 391);
+      this.Size = new System.Drawing.Size(1021, 489);
       this.Tag = this.pictureBox1;
       this.Load += new System.EventHandler(this.PicturePanel_Load);
       this.Enter += new System.EventHandler(this.PicturePanel_Enter);

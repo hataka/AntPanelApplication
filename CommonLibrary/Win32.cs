@@ -116,7 +116,7 @@ namespace AntPlugin.CommonLibrary
 				process.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename);
 				process.StartInfo.Arguments = args;
 				process.Start();
-				process.WaitForInputIdle();
+        try { process.WaitForInputIdle(); } catch { }
 				int num = 0;
 				while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
 				{
@@ -136,7 +136,7 @@ namespace AntPlugin.CommonLibrary
 				Process process = Process.Start(hPsInfo);
 				process.WaitForInputIdle();
 				int num = 0;
-				while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
+        while (process.MainWindowHandle == IntPtr.Zero && num < 1000)
 				{
 					Thread.Sleep(100);
 					num++;

@@ -946,7 +946,15 @@ namespace AntPlugin
           {
             bool isMenu = (Path.GetFileNameWithoutExtension(file).ToLower() == "fdtreemenu"
               || Path.GetFileNameWithoutExtension(file).ToLower() == "xmltreemenu") ? true : false;
-            treeView.Nodes.Add(this.menuTree.getXmlTreeNode(file, isMenu));
+
+
+            //-----------------------------------------------------------
+            // 変更 Time-stamp: <2019-10-24 14:41:51 kahata>
+            //treeView.Nodes.Add(this.menuTree.getXmlTreeNode(file, isMenu));
+            NodeInfo ni_arg = new NodeInfo();
+            ni_arg.Path = file;
+            treeView.Nodes.Add(this.menuTree.getXmlTreeNode(ni_arg, isMenu));
+            //-----------------------------------------------------------
           }
           else if (Path.GetExtension(file) == ".fdp"
             //|| Path.GetExtension(file) == ".asx"
@@ -986,12 +994,34 @@ namespace AntPlugin
           }
 					this.AddPreviousCustomDocuments(file);
 				}
-			}
-			treeView.EndUpdate();
+
+        else if (Directory.Exists(file))
+        {
+          //treeView.Nodes.Clear();
+          DirectoryInfo rootDirectoryInfo = new DirectoryInfo(file);
+          TreeNode tn = this.menuTree.RecursiveCreateDirectoryNode(rootDirectoryInfo);
+          /*
+          if (!String.IsNullOrEmpty(nodeInfo.Title))
+          {
+            //MessageBox.Show(nodeInfo.Title);
+            tn.Name = nodeInfo.Title;
+            tn.Text = nodeInfo.Title;
+          }
+          if (!String.IsNullOrEmpty(nodeInfo.icon)) tn.ImageIndex = GetIconImageIndexFromIconPath(nodeInfo.icon);
+          if (!String.IsNullOrEmpty(nodeInfo.Tooltip)) tn.ToolTipText = nodeInfo.Tooltip;
+          //tn.Tag = rootDirectoryInfo;
+          */
+          tn.Tag = rootDirectoryInfo;
+          treeView.Nodes.Add(tn);
+        }
+      }
+      treeView.EndUpdate();
 		}
 
-		// ==================================================================================================
-		private string File_ReadToEnd(string filepath)
+    // ==================================================================================================
+    
+      /*
+    public string File_ReadToEnd(string filepath)
 		{
 			if (!File.Exists(filepath))
 			{
@@ -1002,10 +1032,13 @@ namespace AntPlugin
 			streamReader.Close();
 			return result;
 		}
-
-    // kokokoko
-    public TreeNode GetBuildFileNode(string file)
-		{
+    */
+    
+      // kokokoko
+    // 変更 NodeInfo=null追加(設定を反映可能にする) Time-stamp: <2019-10-22 11:43:48 kahata> 
+    //public TreeNode GetBuildFileNode(string file)
+    public TreeNode GetBuildFileNode(string file,NodeInfo ni_arg=null)
+    {
       //===========================================
       // Fixed Time-stamp: <2019-05-21 08:27:41 kahata>
       file = menuTree.ProcessVariable(file);
@@ -1134,7 +1167,10 @@ namespace AntPlugin
             // 追加 Time-stamp: <2019-03-11 10:29:45 kahata>
             if (propertyName.ToLower() == "xmltreemenu" && !String.IsNullOrEmpty(child.InnerText))
             {
-              rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file));
+              //MessageBox.Show("koko");
+              // 変更 ni_arg追加 Time-stamp: <2019-10-22 11:57:15 kahata>
+              //rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file));
+              rootNode.Nodes.Add(this.menuTree.getXmlTreeNodeFromString(child.InnerText, file, ni_arg));
             }
             // 追加 Time-stamp: <2019-05-18 08:08:09 kahata>
             else if (propertyName.ToLower()=="wsf" && !String.IsNullOrEmpty(child.InnerText))
@@ -1149,7 +1185,7 @@ namespace AntPlugin
             {
               antNode = GetBuildTargetNode(child, defaultTarget);
               antNode.File = file;
-              //Kahata TimeStamp: 2016-04-23
+              //koko 重要 antNodeのtagはxmlNodeである Kahata TimeStamp: 2016-04-23
               antNode.Tag = child;
               if (子ノード表示ToolStripMenuItem.Checked == true) this.populateChildNodes(child, antNode);
               if (プロパティ表示ToolStripMenuItem.Checked == true) rootNode.Nodes.Add(antNode);

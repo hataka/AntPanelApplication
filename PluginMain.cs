@@ -265,7 +265,11 @@ namespace AntPlugin
       arguments += " -buildfile \"" + file + "\" \"" + target + "\"";
       //arguments += " -buildfile \"" + file + "\" \"" + target + "\"";
       arguments += " -DprojectDir=\"" + Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath) + "\"";
+      arguments += " -DprojectName=\"" + Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath) + "\"";
       arguments += " -DcurDir=\"" + PluginBase.MainForm.ProcessArgString("$(CurDir)") + "\"";
+      arguments += " -DcurFile=\"" + this.pluginUI.menuTree.ProcessVariable("$(CurFile)") + "\"";
+
+
 
       //kahata: Time-stamp: <2016-04-23 5:41:26 kahata>
       System.IO.Directory.SetCurrentDirectory(Path.GetDirectoryName(file));
@@ -298,6 +302,10 @@ namespace AntPlugin
       String arguments = " //job:" + job;
       arguments += " \"" + file + "\"";
       //kahata: Time-stamp: <2017-06-23 08:27:26 kahata>
+      arguments += " /projectPath:\"" + PluginBase.CurrentProject.ProjectPath + "\"";
+      arguments += " /projectDir:\"" + Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath) + "\"";
+      arguments += " /curFile:\"" + this.pluginUI.menuTree.ProcessVariable("$(CurFile)") + "\"";
+      arguments += " /curDir:\"" + this.pluginUI.menuTree.ProcessVariable("$(CurDir)") + "\"";
       try
       {
         System.IO.Directory.SetCurrentDirectory(Path.GetDirectoryName(file));

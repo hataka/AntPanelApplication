@@ -64,9 +64,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
     }
 
 
-
-
-
     //public string type;
     //public string title;
     //public string tooltip;
@@ -100,7 +97,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
     //public string comment;
     //public XmlNode xmlNode;
 
-
     public static void NodeAction(object sender, EventArgs e)
     {
       ToolStripMenuItem button = sender as ToolStripMenuItem;
@@ -109,7 +105,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
         String argstring = button.Tag as String;
         ActionManager.NodeAction(argstring);
       }
-
       else if(button.Tag is NodeInfo)
       {
         NodeInfo ni = button.Tag as NodeInfo;
@@ -302,7 +297,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
     }
 
-
     public static void AddBuildFiles(object sender, EventArgs e)
     {
       ToolStripMenuItem button = sender as ToolStripMenuItem;
@@ -464,13 +458,24 @@ namespace AntPlugin.XmlTreeMenu.Managers
         DockContent document = PluginBase.MainForm.CreateCustomDocument(simplePanel);
         document.Tag = simplePanel;
 
-        if (File.Exists(args) && File.Exists(command))
+        if (File.Exists(path))
+        {
+          //MessageBox.Show(option);
+          //if (String.IsNullOrEmpty(document.TabText))  document.TabText = Path.GetFileName(path);
+          if (option.ToLower().IndexOf("windowtitle") < 0) document.TabText = Path.GetFileName(path);
+        }
+        else if (File.Exists(args) && File.Exists(command))
         {
           document.TabText = Path.GetFileNameWithoutExtension(command) + "!" + Path.GetFileName(args);
         }
         else if (File.Exists(command))
         {
-          document.TabText = Path.GetFileName(command);
+          if (option.ToLower().IndexOf("windowtitle") < 0) document.TabText = Path.GetFileName(command);
+          //document.TabText = Path.GetFileName(command);
+        }
+        else if (!String.IsNullOrEmpty(command))
+        {
+          document.TabText = command;
         }
         else
         {
@@ -542,16 +547,56 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.BrowseEx(file);
           return;
         }
-        if (Lib.IsSoundFile(file) || Lib.IsVideoFile(file))
+        else if (Lib.IsSoundFile(file) || Lib.IsVideoFile(file))
         {
           //ActionManager.Player(file);
-          button.Tag  = "PlayerPanel" + "|" + file;
+          button.Tag = "PlayerPanel" + "|" + file;
           ActionManager.CustomDocument(button, null);
           return;
         }
-        else if (!Lib.IsExecutableFile(file) && !Lib.IsSoundFile(file) && !Lib.IsVideoFile(file))
+        else if (Lib.IsFlashdevelopFile(file))
         {
           PluginBase.MainForm.OpenEditableDocument(file);
+        }
+        else if (Path.GetExtension(file) == ".swf")
+        {
+          PluginBase.MainForm.CallCommand("PluginCommand", "FlashViewer.Document;" + file);
+        }
+        else if (!Lib.IsExecutableFile(file) && !Lib.IsSoundFile(file) && !Lib.IsVideoFile(file))
+        {
+          switch (option.ToLower())
+          {
+            case "sakura":
+              Process.Start(menuTree.pluginUI.settings.SakuraPath, file);
+              break;
+            case "pspad":
+              Process.Start(menuTree.pluginUI.settings.PspadPath, file);
+              break;
+            case "flashdevelop":
+            case "fd":
+              //Process.Start(menuTree.pluginUI.settings.FlashdevelopPath, file);
+              break;
+            case "editor":
+            case "ant":
+            case "panel":
+              //if (Path.GetExtension(file) == ".rtf")
+              //{
+                //((Form1)menuTree.Tag).editor.richTextBox1.LoadFile(file);
+              //}
+              //else
+              //{
+                //((Form1)menuTree.Tag).editor.richTextBox1.Text
+                //  = Lib.File_ReadToEndDecode(file);
+              //}
+              break;
+            case "vs":
+            case "visualstudio":
+              Process.Start(menuTree.pluginUI.settings.Devenv17Path, "/edit " + "\"" + file + "\"");
+              break;
+            default:
+              PluginBase.MainForm.OpenEditableDocument(file);
+              return;
+          }
           return;
         }
         else
@@ -653,7 +698,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
       //kahata: Time-stamp: <2016-04-23 5:41:26 kahata>
       System.IO.Directory.SetCurrentDirectory(Path.GetDirectoryName(buildfile));
       Process.Start("cmd.exe", "/k " + command + " " + arguments);
-      if(ni.Option.ToLower() == "doclument")
+      if(ni.Option.ToLower() == "docmument")
       {
         String result = ProcessHandler.getStandardOutput("cmd.exe", command + " " + arguments);
         PluginBase.MainForm.CallCommand("New", "");

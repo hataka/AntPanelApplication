@@ -1,4 +1,6 @@
 ﻿using AntPlugin.CommonLibrary;
+using PluginCore;
+using PluginCore.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -183,6 +185,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
         return false;
     }
 
+    /*
     public static TreeNode GetTopTreeNode(TreeNode treeNode)
     {
       foreach (TreeNode tn in treeView.Nodes)
@@ -191,7 +194,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
       return null;
     }
-
+    */
+    
     /// <summary>
     /// FindTreeNodeByFullPath
     /// </summary
@@ -732,6 +736,292 @@ namespace AntPlugin.XmlTreeMenu.Managers
       */
     }
 
+    // ==================================================================================================
+    // 追加関数 Time-stamp: <2019-10-23 15:06:46 kahata>
+    public static string ProcessVariable(string strVar)
+    {
+      string arg = string.Empty;
+      arg = PluginBase.MainForm.ProcessArgString(strVar);
+      try
+      {
+        arg = arg.Replace("$(CurProjectDir)", Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath));
+        arg = arg.Replace("$(CurProjectName)", Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath));
+        arg = arg.Replace("$(Quote)", "\"");
+        arg = arg.Replace("$(Dollar)", "$");
+        arg = arg.Replace("$(AppDir)", PathHelper.AppDir);
+        arg = arg.Replace("$(BaseDir)", PathHelper.BaseDir);
+        arg = arg.Replace("$(CurDirName)", Path.GetFileNameWithoutExtension(Path.GetDirectoryName(PluginBase.MainForm.CurrentDocument.FileName)));
+      }
+      catch
+      {
+      }
+      return arg;
+    }
+
+    public static string File_ReadToEnd(string filepath)
+    {
+      if (!File.Exists(filepath))
+      {
+        return "";
+      }
+      StreamReader streamReader = new StreamReader(filepath, Encoding.GetEncoding("UTF-8"));
+      string result = streamReader.ReadToEnd();
+      streamReader.Close();
+      return result;
+    }
+
+    /// <summary>
+    /// NodeInfo ni プロパティ名 値を返す
+    /// 新規 Time-stamp: 2019-10-22 13:35:07 kahata
+    /// TreeViewManager.cs 404行 public static NodeInfo MakeNodeInfo(Dictionary<String,String> attr)参照
+    /// </summary>
+    /// <param name="ni"></param>
+    /// <returns></returns>
+    //public String GetNofeInfoProperties(NodeInfo ni)
+    public static Dictionary<String, String> GetNodeInfoProperties(NodeInfo ni, bool test = false)
+    {
+      String output = "";
+      Dictionary<String, String> NodeInfoDic = new Dictionary<string, string>();
+      PropertyInfo[] properties = ni.GetType().GetProperties();
+      foreach (PropertyInfo info in properties)
+      {
+        String value = String.Empty;
+        if (info.GetValue(ni, null) is String)
+        {
+          value = info.GetValue(ni, null) as String;
+        }
+        else if (info.GetValue(ni, null) is Boolean)
+        {
+          value = info.GetValue(ni, null).ToString();
+        }
+        //output += info.ToString();
+        NodeInfoDic[info.Name] = value;
+        output += "name : " + info.Name + "\t\tvalue : " + value + "\n";
+      }
+      if (test) MessageBox.Show(output);
+      //return output;
+      return NodeInfoDic;
+    }
+
+    /// <summary>
+    /// 【C#】Dictionary に指定したキーが存在する場合は代入する方法
+    /// </summary>
+    /// http://baba-s.hatenablog.com/entry/2015/05/22/104452
+    /// table[3]:が存在する場合 
+    /// table[3] = "フシギバナ";// 上書きOK
+    /// table.Add( 3, "フシギバナ" ) // NG（例外が発生する）;
+    /// <param name="xmlStr"></param>
+    /// <param name="nodeName"></param>
+    /// <returns></returns>
+    public static Dictionary<string, string> GetPropertiesFromXmlString(String xmlStr, String nodeName = "property")
+    {
+      var propertyDic = new Dictionary<string, string>();
+      //Create the XmlDocument.
+      XmlDocument doc = new XmlDocument();
+      //doc.PreserveWhitespace = true;
+      doc.LoadXml(xmlStr);
+      XmlNodeList elemList = doc.GetElementsByTagName(nodeName);
+      for (int i = 0; i < elemList.Count; i++)
+      {
+        String key = ProcessVariable(((XmlElement)elemList[i]).GetAttribute("name"));
+        String value = ProcessVariable(((XmlElement)elemList[i]).GetAttribute("value"));
+        //propertyDic.Add(key, value);
+        if (!String.IsNullOrEmpty(key)) propertyDic[key] = value;
+        //Console.WriteLine(elemList[i].InnerXml);
+      }
+      return propertyDic;
+    }
+
+    public static Dictionary<string, string> GetPropertiesFromXmlFile(String filePath, String nodeName = "property")
+    {
+      var propertyDic = new Dictionary<string, string>();
+      //Create the XmlDocument.
+      XmlDocument doc = new XmlDocument();
+      doc.PreserveWhitespace = true;
+      doc.Load(filePath);
+      XmlNodeList elemList = doc.GetElementsByTagName(nodeName);
+      for (int i = 0; i < elemList.Count; i++)
+      {
+        String key = ProcessVariable(((XmlElement)elemList[i]).GetAttribute("name"));
+        String value = ProcessVariable(((XmlElement)elemList[i]).GetAttribute("value"));
+        //propertyDic.Add(key, value);
+        if (!String.IsNullOrEmpty(key)) propertyDic[key] = value;
+        //Console.WriteLine(elemList[i].InnerXml);
+      }
+      return propertyDic;
+    }
+
+    public static Dictionary<string, string> GetImportFileFromXmlString(String xmlStr, String nodeName = "import")
+    {
+      var importDic = new Dictionary<string, string>();
+      //Create the XmlDocument.
+      XmlDocument doc = new XmlDocument();
+      doc.PreserveWhitespace = true;
+      doc.LoadXml(xmlStr);
+      XmlNodeList elemList = doc.GetElementsByTagName(nodeName);
+      for (int i = 0; i < elemList.Count; i++)
+      {
+        String key = elemList[i].OuterXml;
+        String value = ProcessVariable(((XmlElement)elemList[i]).GetAttribute("file"));
+        //propertyDic.Add(key, value);
+        if (!String.IsNullOrEmpty(key)) importDic[key] = value;
+        //Console.WriteLine(elemList[i].InnerXml);
+      }
+      return importDic;
+    }
+
+    public static NodeInfo SetNodeInfoFromXmlNode(XmlNode xmlNode, Boolean fullNode = false)
+    {
+      NodeInfo nodeInfo = new NodeInfo();
+      PropertyInfo[] properties = nodeInfo.GetType().GetProperties();
+      foreach (PropertyInfo info in properties)
+      {
+        if (info.Name == "Type")
+        {
+          switch (xmlNode.Name)
+          {
+            case "folder":
+              info.SetValue(nodeInfo, "folder", null);// ni.Type = "folder";
+              break;
+            case "record":
+              info.SetValue(nodeInfo, "record", null);//ni.Type = "record";
+              break;
+            // kahata FIX 2018-02-10
+            case "toolbar":
+            case "menubar":
+            case "launch":
+            case "settings":
+            case "property":
+              info.SetValue(nodeInfo, "null", null);//ni.Type = "null";
+            //FIX
+           //this.ProcessNode(childXmlNode);
+              break;
+            // kahata FIX 2018-02-14
+            case "load":
+            case "loadfile":
+            case "include":
+            case "includefile":
+              info.SetValue(nodeInfo, "include", null);//ni.Type = "include";
+              break;
+            default:
+              if (fullNode == true) info.SetValue(nodeInfo, xmlNode.Name, null);// ni.Type = childXmlNode.Name;// "node";
+              else info.SetValue(nodeInfo, null, null);//ni.Type = "null";
+              break;
+          }
+        }
+        else if(info.Name == "Action")
+        {
+          if (xmlNode.Name == "target")
+          {
+            //ni.Action = "Ant";
+            info.SetValue(nodeInfo, "Ant", null);
+          }
+          else if (xmlNode.Name == "job")
+          {
+            //ni.Action = "Wsf";
+            info.SetValue(nodeInfo, "Wsf", null);
+          }
+          else
+          {
+            info.SetValue(nodeInfo, ProcessVariable(((XmlElement)xmlNode).GetAttribute(info.Name.ToLower())), null);
+          }
+        }
+        else if (info.Name == "InnerText")
+        {
+          if (fullNode == true && xmlNode.InnerText != String.Empty)
+          {
+            info.SetValue(nodeInfo, xmlNode.InnerText, null);// ni.InnerText = childXmlNode.InnerText;
+          }
+        }
+        else if (info.Name == "Expand")
+        {
+          if (((XmlElement)xmlNode).GetAttribute("expand") == "true")
+          {
+            info.SetValue(nodeInfo, true, null);// ni.Expand = true;
+          }
+        }
+        else if (info.Name == "XmlNode")
+        {
+            info.SetValue(nodeInfo, xmlNode, null);// ni.XmlNode = childXmlNode;
+        }
+        else
+        {
+          info.SetValue(nodeInfo, ProcessVariable(((XmlElement)xmlNode).GetAttribute(info.Name.ToLower())), null);
+        }
+      }
+      return nodeInfo;
+    }
+
+    public static NodeInfo SetNodeInfoRawFromXmlNode(XmlNode xmlNode)
+    {
+      NodeInfo nodeInfo = new NodeInfo();
+      PropertyInfo[] properties = nodeInfo.GetType().GetProperties();
+      foreach (PropertyInfo info in properties)
+      {
+        info.SetValue(nodeInfo, ProcessVariable(((XmlElement)xmlNode).GetAttribute(info.Name.ToLower())), null);
+      }
+      return nodeInfo;
+    }
+
+    public static NodeInfo SetNodeinfo(String path)
+    {
+      NodeInfo nodeInfo = new NodeInfo();
+
+      nodeInfo.Title = Path.GetFileName(path);
+      nodeInfo.Type = "file";
+      nodeInfo.Path = path;
+      /*
+      nodeInfo.PathBase = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("base"));
+      nodeInfo.Action = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("action"));
+      nodeInfo.Command = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("command"));
+      //nodeInfo.Path = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("path"));
+      nodeInfo.Path = path;
+      nodeInfo.Args = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("args"));
+      nodeInfo.Option = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("option"));
+      nodeInfo.XmlNode = xmlNode;
+      nodeInfo.Icon = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("icon"));
+      if (((XmlElement)xmlNode).GetAttribute("expand") == "true")
+      {
+        nodeInfo.Expand = true;
+      }
+      */
+      return nodeInfo;
+    }
+
+    /// <summary>
+    /// Option #2: Non-recursive approach:
+    /// </summary>
+    /// https://stackoverflow.com/questions/6239544/populate-treeview-with-file-system-directory-structure
+    /// <param name="treeView"></param>
+    /// <param name="path"></param>
+    public static void ListDirectory(TreeView treeView, string path)
+    {
+      treeView.Nodes.Clear();
+
+      var stack = new Stack<TreeNode>();
+      var rootDirectory = new DirectoryInfo(path);
+      var node = new TreeNode(rootDirectory.Name) { Tag = rootDirectory };
+      stack.Push(node);
+
+      while (stack.Count > 0)
+      {
+        var currentNode = stack.Pop();
+        var directoryInfo = (DirectoryInfo)currentNode.Tag;
+        foreach (var directory in directoryInfo.GetDirectories())
+        {
+          var childDirectoryNode = new TreeNode(directory.Name) { Tag = directory };
+          currentNode.Nodes.Add(childDirectoryNode);
+          stack.Push(childDirectoryNode);
+        }
+        foreach (var file in directoryInfo.GetFiles())
+          currentNode.Nodes.Add(new TreeNode(file.Name));
+      }
+
+      treeView.Nodes.Add(node);
+    }
+
+
+    // ==================================================================================================
     ///////////////////////////////////////////////////////////////////////////////////////////
     // icon設定
     public static Int32 getImageIndexFromNodeInfo(NodeInfo ni)
