@@ -2,6 +2,7 @@
 using AntPlugin.Controls;
 using AntPlugin.XmlTreeMenu;
 using AntPlugin.XmlTreeMenu.Managers;
+using CommonInterface;
 using CSParser.BuildTree;
 using PluginCore;
 using PluginCore.Helpers;
@@ -16,6 +17,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace AntPlugin
 {
@@ -69,15 +71,41 @@ namespace AntPlugin
 		public BuildTree buildTree = new BuildTree();
     public GradleTree gradleTree = new GradleTree();
     public XmlMenuTree menuTree = null;
-
+    public string currentDocumentPath;
     public DirTreePanel dirTreePanel;
     public FTPClientPanel ftpClientPanel;
     public XmlTreePanel xmlTreePanel;
 
-    public MDIForm.ParentFormClass mainForm;
-    public MDIForm.ChildFormControlClass instance;
+    //public MDIForm.ParentFormClass mainForm;
+    //public MDIForm.ChildFormControlClass instance;
+    public TreeNode currentNode = null;
     #endregion
 
+    #region Public Properties
+    public string CurrentProjectPath
+    {
+      get { return PluginBase.CurrentProject.ProjectPath; }
+    }
+
+    public string CurrentDocumentPath
+    {
+      get { return this.currentDocumentPath; }
+      set { this.currentDocumentPath = value; }
+    }
+
+    public ChildFormControlClass Instance
+    {
+      get;
+      set;
+    }
+    #endregion
+
+
+
+
+
+
+    #region Constructor
     public PluginUI(PluginMain pluginMain)
 		{
 			this.pluginMain = pluginMain;
@@ -108,6 +136,7 @@ namespace AntPlugin
 			this.PopulateFileStateMenu();
 			this.PopulatePreviousCustomDocumentsMenu();
 		}
+    #endregion
 
     #region Initialization
     private void InitializeGraphics()
@@ -126,9 +155,9 @@ namespace AntPlugin
       addButton.Image = PluginBase.MainForm.FindImage("33");
 			runButton.Image = PluginBase.MainForm.FindImage("487");
 			refreshButton.Image = PluginBase.MainForm.FindImage("66");
-			// Fontが変になる外す
-			//this.toolStrip.Font = this.settings.AntPanelDefaultFont;
-			//this.treeView.Font = this.settings.AntPanelDefaultFont;
+
+
+
 			AntPlugin.PluginUI.imageList2 = new ImageList();
 			Bitmap value = ((System.Drawing.Bitmap)(this.imageListStripButton.Image));
 			AntPlugin.PluginUI.imageList2.Images.AddStrip(value);
@@ -166,12 +195,12 @@ namespace AntPlugin
 
     private void InitializeInterface()
     {
-      this.mainForm = new MDIForm.ParentFormClass();
-      this.mainForm.imageList1 = this.imageList;
-      this.mainForm.imageList2 = imageList2;
-      this.mainForm.propertyGrid1 = this.propertyGrid1;
-      this.mainForm.contextMenuStrip1 = this.targetMenu;
-      this.treeView.Tag = mainForm;
+      //this.mainForm = new MDIForm.ParentFormClass();
+      //this.mainForm.imageList1 = this.imageList;
+      //this.mainForm.imageList2 = imageList2;
+      //this.mainForm.propertyGrid1 = this.propertyGrid1;
+      //this.mainForm.contextMenuStrip1 = this.targetMenu;
+      //this.treeView.Tag = mainForm;
       this.treeView.AccessibleName = "AntPlugin.PluginUI.treeView";
     }
 
@@ -275,8 +304,6 @@ namespace AntPlugin
 			this.splitContainer1.Panel1Collapsed = false;
       RefreshData();
 		}
-
-    public TreeNode currentNode=null;
 
     public void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
@@ -789,7 +816,7 @@ namespace AntPlugin
     }
 
     // kahata: Time-stamp: <2016-04-23 7:24:26 kahata>
-		private void RunCommand(String argstring)
+		public void RunCommand(String argstring)
 		{
 			String command = String.Empty;
 			String tag = String.Empty;
@@ -959,6 +986,8 @@ namespace AntPlugin
           else if (Path.GetExtension(file) == ".fdp"
             //|| Path.GetExtension(file) == ".asx"
             //|| Path.GetExtension(file) == ".wax"
+            // Hack Time-stamp: <2020-04-14 19:05:04 kahata>
+            || Path.GetExtension(file) == ".as3proj"
             || Path.GetExtension(file) == ".wsf")
           {
             treeView.Nodes.Add(GetBuildFileNode(file));
@@ -1081,7 +1110,10 @@ namespace AntPlugin
 
 
       if (Path.GetExtension(file).ToLower()==".wsf") rootNode = new AntTreeNode(projectName, ICON_WSF_FILE);
-			if (Path.GetExtension(file).ToLower() == ".fdp") rootNode = new AntTreeNode(projectName, ICON_FDP_FILE);
+      // Hack Time-stamp: <2020-04-14 19:05:04 kahata>
+      //if (Path.GetExtension(file).ToLower() == ".fdp")
+      if (Path.GetExtension(file).ToLower() == ".fdp" || Path.GetExtension(file).ToLower() == ".as3proj")
+        rootNode = new AntTreeNode(projectName, ICON_FDP_FILE);
 			rootNode.File = file;
 			rootNode.Target = defaultTarget;
 
@@ -1974,8 +2006,35 @@ namespace AntPlugin
 
 		}
 
-		#region Previous Document
-		public void PopulatePreviousCustomDocumentsMenu()
+    public void CurDocumentPath(object sender, EventArgs e)
+    {
+      ToolStripMenuItem button = sender as ToolStripMenuItem;
+      String message = button.Tag as string;
+      MessageBox.Show(this.CurrentDocumentPath, "CurrentDocumentPath");
+    }
+
+    public void CallCommand_test(object sender, EventArgs e)
+    {
+      ToolStripMenuItem button = sender as ToolStripMenuItem;
+      String message = button.Tag as string;
+      MessageBox.Show(message, "CallCommand_test");
+      //text = ((Control)PluginBase.MainForm.CurrentDocument.Controls[0].Tag).Tag.ToString();
+      //((DockContent)PluginBase.MainForm.CurrentDocument).TabText=ActionManager.GetCurrentDocumentPath();
+      //((DockContent)PluginBase.MainForm.CurrentDocument).TabText = Path.GetFileName(message);
+    }
+
+    public void Instance_Name_test(object sender, EventArgs e)
+    {
+      ToolStripMenuItem button = sender as ToolStripMenuItem;
+      String message = button.Tag as string;
+      if (this.Instance != null)
+      {
+        MessageBox.Show(this.Instance.name, "Instance_Name_test");
+      }
+    }
+
+    #region Previous Document
+    public void PopulatePreviousCustomDocumentsMenu()
 		{
 			try
 			{

@@ -365,7 +365,7 @@ namespace AntPlugin
       }
     }
 
-    [Category("アプリケーション パス"), DefaultValue(@"C:\HDD_F\Programs\cs-script\csws.exe"), DisplayName("CswsPath")]
+    [Category("アプリケーション パス"), DefaultValue(@"C:\HDD_F\Programs\cs-script\csws.exe"), DisplayName("cswsPath")]
     public string CswsPath
     {
       get
@@ -377,9 +377,6 @@ namespace AntPlugin
         this.cswsPath = value;
       }
     }
-
-
-
 
     [Category("初期設定"), DefaultValue(@"F:\VCSharp\Flashdevelop\FlashDevelop\Bin\Debug\SettingData\XmlTreeMenu.xml"), DisplayName("HomeMenuPath")]
     public string HomeMenuPath

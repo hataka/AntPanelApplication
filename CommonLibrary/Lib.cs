@@ -28,7 +28,7 @@ namespace AntPlugin.CommonLibrary
 
 		public static ArrayList soundfile = new ArrayList{".asf",".wax",".asx",".mp3",".wav",".wma"};
 
-		public static ArrayList videofile = new ArrayList{".wmv",".asx",".mpg",".m2p",".asf"};
+		public static ArrayList videofile = new ArrayList{".wmv",".asx",".mpg",".m2p",".asf",".mp4"};
 
 		public static ArrayList databasefile = new ArrayList{".mdf",".mdb",".sqlit3",".sqlite"};
 

@@ -1,6 +1,7 @@
 ﻿using AntPlugin.CommonLibrary;
 using AntPlugin.XmlTreeMenu.Controls;
 using AntPlugin.XMLTreeMenu.Controls;
+using CommonInterface;
 using PluginCore;
 using PluginCore.Helpers;
 using PluginCore.Managers;
@@ -11,13 +12,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace AntPlugin.XmlTreeMenu.Managers
 {
-
   public class ActionManager
   {
     public static XmlMenuTree menuTree
@@ -27,42 +28,70 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static String currentDocumentPath;
 
-    public String CurrentDocumentPath
+    public static String CurrentDocumentPath
     {
-      get { return GetCurrentDocumentPath(); }
+      //get { return GetCurrentDocumentPath(); }
+      get { return currentDocumentPath; }
+      set { currentDocumentPath = value; }
     }
-
 
     public static string ProcessVariable(string strVar)
     {
-      string arg = string.Empty;
-      try
+      string curControlFilePath = ActionManager.GetCurrentDocumentPath();
+      string arg = strVar;// string.Empty;
+      try{arg = PluginBase.MainForm.ProcessArgString(arg);}catch { }
+      try{arg = arg.Replace("$(CurProjectDir)", Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath)); } catch { }
+      try { arg = arg.Replace("$(CurProjectName)", Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath)); } catch { }
+      //arg = arg.Replace("$(CurProjectUrl)", Lib.Path2Url(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), this.settings.DocumentRoot, this.settings.ServerRoot));
+      try {arg = arg.Replace("$(CurProjectUrl)", Lib.Path2Url(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), "localhost")); } catch { }
+      try {arg = arg.Replace("$(Quote)", "\""); } catch { }
+      try {arg = arg.Replace("$(Dollar)", "$"); } catch { }
+      try {arg = arg.Replace("$(AppDir)", PathHelper.AppDir); } catch { }
+      try {arg = arg.Replace("$(BaseDir)", PathHelper.BaseDir); } catch { }
+      try {arg = arg.Replace("$(CurSciText)", PluginBase.MainForm.CurrentDocument.SciControl.Text); } catch { }
+      //arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(PluginBase.MainForm.CurrentDocument.FileName, this.settings.DocumentRoot, this.settings.ServerRoot));
+      try {arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(PluginBase.MainForm.CurrentDocument.FileName, "localhost")); } catch { }
+
+      if (curControlFilePath != "")
       {
-        arg = PluginBase.MainForm.ProcessArgString(strVar);
+        arg = arg.Replace("$(ControlCurFilePath)", curControlFilePath);
+        arg = arg.Replace("$(ControlCurFileDir)", Path.GetDirectoryName(curControlFilePath));
+        arg = arg.Replace("$(ControlCurFilePath)", curControlFilePath);
+        arg = arg.Replace("$(CurControlFileDir)", Path.GetDirectoryName(curControlFilePath));
+        arg = arg.Replace("$(CurControlFileName)", Path.GetFileName(curControlFilePath));
+        arg = arg.Replace("$(CurControlFileBody)", Path.GetFileNameWithoutExtension(curControlFilePath));
+        arg = arg.Replace("$(CurControlFileExt)", Path.GetExtension(curControlFilePath));
       }
-      catch { arg = strVar; }
-      try
-      {
-        arg = arg.Replace("$(CurProjectDir)", Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath));
-        arg = arg.Replace("$(CurProjectName)", Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath));
-        //arg = arg.Replace("$(CurProjectUrl)", Lib.Path2Url(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), this.settings.DocumentRoot, this.settings.ServerRoot));
-        arg = arg.Replace("$(CurProjectUrl)", Lib.Path2Url(Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath), "localhost"));
-        arg = arg.Replace("$(Quote)", "\"");
-        arg = arg.Replace("$(Dollar)", "$");
-        arg = arg.Replace("$(AppDir)", PathHelper.AppDir);
-        arg = arg.Replace("$(BaseDir)", PathHelper.BaseDir);
-        arg = arg.Replace("$(CurSciText)", PluginBase.MainForm.CurrentDocument.SciControl.Text);
-        //arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(PluginBase.MainForm.CurrentDocument.FileName, this.settings.DocumentRoot, this.settings.ServerRoot));
-        arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(PluginBase.MainForm.CurrentDocument.FileName, "localhost"));
-        //arg = arg.Replace("$(ControlCurFilePath)", this.controlCurrentFilePath);
-        //arg = arg.Replace("$(ControlCurFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
-        //arg = arg.Replace("$(CurControlFilePath)", this.controlCurrentFilePath);
-        //arg = arg.Replace("$(CurControlFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
-      }
-      catch { }
+      return arg;
+      // XmlTreeMenu.cs の ProcessVariable(string strVar)に集約失敗 Time-stamp: <2020-05-15 05:54:14 kahata>
+      //return menuTree.ProcessVariable(strVar);
+    }
+
+    public static string CurControlProcessVariable(string arg,string currentControlPath)
+    {
+      if (String.IsNullOrEmpty(arg)) return string.Empty;
+      if (String.IsNullOrEmpty(currentControlPath)) return arg;
+      arg = arg.Replace("$(ControlCurFilePath)", currentControlPath);
+      arg = arg.Replace("$(ControlCurFileDir)", Path.GetDirectoryName(currentControlPath));
+      arg = arg.Replace("$(CurControlFilePath)", currentControlPath);
+      arg = arg.Replace("$(CurControlFileDir)", Path.GetDirectoryName(currentControlPath));
+      arg = arg.Replace("$(CurControlFileName)", Path.GetFileName(currentControlPath));
+      arg = arg.Replace("$(CurControlFileBody)", Path.GetFileNameWithoutExtension(currentControlPath));
+      arg = arg.Replace("$(CurControlFileExt)", Path.GetExtension(currentControlPath));
       return arg;
     }
 
+    public static String GetCurControlFilePath()
+    {
+      string filepath = String.Empty;
+      if (PluginBase.MainForm.CurrentDocument.Controls[0] is ICommonInterface)
+      {
+        filepath = ((Control)PluginBase.MainForm.CurrentDocument.Controls[0].Tag).Tag.ToString();
+        //filepath = ((ICommonInterface)PluginBase.MainForm.CurrentDocument.Controls[0]).Instance.filepath;
+      }
+      //MessageBox.Show(filepath, "GetCurControlFilePath()");
+      return filepath;
+    }
 
     //public string type;
     //public string title;
@@ -97,6 +126,7 @@ namespace AntPlugin.XmlTreeMenu.Managers
     //public string comment;
     //public XmlNode xmlNode;
 
+    // TODO nolink
     public static void NodeAction(object sender, EventArgs e)
     {
       ToolStripMenuItem button = sender as ToolStripMenuItem;
@@ -114,6 +144,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void NodeAction(String tagstring)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       string argstring = String.Empty;
       string action = String.Empty;
       String command = String.Empty;
@@ -128,16 +161,24 @@ namespace AntPlugin.XmlTreeMenu.Managers
         if (tmp0.Length > 1) { action = tmp0[0]; argstring = tmp0[1]; }
         else if (tmp0.Length == 1) { action = String.Empty; argstring = tmp0[0]; }
         else return;
-        //Dictionary<string, string> param = StringHandler.Get_Values(argstring, '|', '=');
         String[] tmpstr = argstring.Split('|');
+
+        command = CurControlProcessVariable(ProcessVariable(tmpstr[0]), curDocumentPath);
+        args = (tmpstr.Length > 1) ? CurControlProcessVariable(ProcessVariable(tmpstr[1]), curDocumentPath) : null;
+        path = (tmpstr.Length > 2) ? CurControlProcessVariable(ProcessVariable(tmpstr[2]), curDocumentPath) : null;
+        option = (tmpstr.Length > 3) ? CurControlProcessVariable(ProcessVariable(tmpstr[3]), curDocumentPath) : null;
+
+        /*
         command = ProcessVariable(tmpstr[0]);
         args = (tmpstr.Length > 1) ? ProcessVariable(tmpstr[1]) : null;
         path = (tmpstr.Length > 2) ? ProcessVariable(tmpstr[2]) : null;
         option = (tmpstr.Length > 3) ? ProcessVariable(tmpstr[3]) : null;
+        */
       }
       catch (Exception exc)
       {
-        MessageBox.Show(Lib.OutputError(exc.Message.ToString()));
+        //MessageBox.Show(Lib.OutputError(exc.Message.ToString()));
+        MessageBox.Show(Lib.OutputError(exc.Message.ToString()), MethodBase.GetCurrentMethod().Name);
         return;
       }
       ///////////////////////////////////////////////////////////////
@@ -158,29 +199,38 @@ namespace AntPlugin.XmlTreeMenu.Managers
       ActionManager.NodeAction(ni);
     }
 
+    // curDocumentPath処理組み込み Time-stamp: <2020-05-16 09:24:30 kahata>
     public static void NodeAction(NodeInfo ni)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = new ToolStripMenuItem();
-      String pathbase = PluginBase.MainForm.ProcessArgString(ni.PathBase);
-      String action = PluginBase.MainForm.ProcessArgString(ni.Action);
-      String command = ProcessVariable(PluginBase.MainForm.ProcessArgString(ni.Command));
+      //String pathbase = PluginBase.MainForm.ProcessArgString(ni.PathBase);
+      //String action = PluginBase.MainForm.ProcessArgString(ni.Action);
+      String pathbase = ProcessVariable(ni.PathBase);
+      String action = ProcessVariable(ni.Action);
+      String command = ProcessVariable(ni.Command);
       String innerText = ProcessVariable(ni.InnerText);
       String path = String.Empty; ;
       if (ni.Path.IndexOf('|') < 0)
       {
         path = ProcessVariable(Path.Combine(PluginBase.MainForm.ProcessArgString(ni.pathbase),
-                  PluginBase.MainForm.ProcessArgString(ni.Path)));
+               PluginBase.MainForm.ProcessArgString(ni.Path)));
       }
       else   path = ni.Path;
+      if(!String.IsNullOrEmpty(path))CurControlProcessVariable(path, curDocumentPath);
       String icon = ProcessVariable(PluginBase.MainForm.ProcessArgString(ni.Icon));
+      if (!String.IsNullOrEmpty(icon)) CurControlProcessVariable(icon, curDocumentPath);
       String args = ProcessVariable(PluginBase.MainForm.ProcessArgString(ni.args));//String.Empty;
+      if (!String.IsNullOrEmpty(args)) CurControlProcessVariable(args, curDocumentPath);
       String option = ProcessVariable(PluginBase.MainForm.ProcessArgString(ni.Option));
+      if (!String.IsNullOrEmpty(option)) CurControlProcessVariable(option, curDocumentPath);
+
       String filebody = String.Empty;
       String result = String.Empty;
       String dir = String.Empty;
       String code = String.Empty;
- 
-      //DialogResult res;
 
       if (path != String.Empty)
       {
@@ -193,9 +243,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
       {
         filebody = Path.GetFileNameWithoutExtension(path);
       }
-      
-      // FIXME
-      //this.ApplyPropertySetting();
 
       PluginBase.MainForm.StatusStrip.Tag = ni.Action.ToLower() + "!" + command + "|" + args + "|" + path + "|" + option;
       button.Tag = command + "|" + args + "|" + path + "|" + option;
@@ -209,9 +256,6 @@ namespace AntPlugin.XmlTreeMenu.Managers
         // obsolete PluginBaseのBrowseを使うか CustomDocument
         case "browse":
           ActionManager.BrowseEx(path);
-          //FIXME:
-          //this.BrowseEx(path);
-          //PluginBase.MainForm.CallCommand("Browse", path);
           break;
         case "ant":
           ActionManager.RunTarget(button, null);
@@ -242,40 +286,17 @@ namespace AntPlugin.XmlTreeMenu.Managers
           ActionManager.OpenDocument(button, null);
           break;
         case "picture":
-          //ActionManager.
-          //FIXED
-          // Plugins のディレクトリにmediaplayerのdllをコピーするので廃止。
-          // CustomDocumentに処理を移す
-          //case "player":
-          //this.Player(path);
-          //break;
           ActionManager.Picture(command + "|" + args + "|" + path + "|" + option);
-          //button.Tag = "PlayerPanel" + "|" + args + "|" + path + "|" + option;
-          //ActionManager.CustomDocument(button, null);
           break;
-        // opengl.dllが,NET4.0で互換性がないので廃止 
-        //.NET3.5 のFlashdevelop 5.2.0ではdockableControlで処理
-        //case "opengl":
-        //this.OpenGL_Action(command);
-        //break;
+        case "opengl":
+          // TODO: 実装 customで処理
+          //ActionManager.OpenGL_Action(command);
+          break;
         case "custom":
         case "customdocument":
         case "customdoc":
           ActionManager.CustomDocument(button, null);
           break;
-
-
-
-        //  2013-02-27 追加
-        // excel13 のspredheetはwindows8以上で使用不可
-        // 代替のReogrid.dll は.NET4.0で互換性なし(.NET3.5のFD5.2.0はdockablecontrol
-        //case "spreadsheet":
-        //  this.SpreadSheet(path);
-        //  break;
-
-        //case "executescript":
-        //ActionManager.ExecuteScript(button, null);
-        //break;
         case "plugincommand":
           ActionManager.PluginCommand(button, null);
           break;
@@ -297,13 +318,19 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
     }
 
+    // called from NodeAction menu
     public static void AddBuildFiles(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
       String dir = String.Empty;
 
       if (argstring == "") return;
+      // HACK Time-stamp: <2020-05-16 09:37:12 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
       NodeInfo ni = MakeNodeInfo(argstring);
       if (ni.Path != String.Empty)
       {
@@ -327,6 +354,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void RunProcess(object sender, EventArgs e)
     {
+      //string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      //string curControlFilePath = ActionManager.GetCurControlFilePath();
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
 
@@ -337,19 +366,24 @@ namespace AntPlugin.XmlTreeMenu.Managers
       String dir = String.Empty;
 
       if (String.IsNullOrEmpty(argstring)) return;
+
+      //argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
+      argstring = ProcessVariable(argstring);
+
       try
       {
         String[] tmpstr = argstring.Split('|');
-        command = ProcessVariable(tmpstr[0]);
-        args = (tmpstr.Length > 1) ? ProcessVariable(tmpstr[1]) : null;
-        path = (tmpstr.Length > 2) ? ProcessVariable(tmpstr[2]) : null;
-        option = (tmpstr.Length > 3) ? ProcessVariable(tmpstr[3]) : null;
+        command = tmpstr[0];
+        args = (tmpstr.Length > 1) ? tmpstr[1] : null;
+        path = (tmpstr.Length > 2) ? tmpstr[2] : null;
+        option = (tmpstr.Length > 3) ? tmpstr[3] : null;
       }
       catch (Exception exc)
       {
         MessageBox.Show(Lib.OutputError(exc.Message.ToString()));
         return;
       }
+      //MessageBox.Show(command + " : " + args + " : " + path + " : " + option, "ProcessVariable後");
       if (!String.IsNullOrEmpty(path))
       {
         if (System.IO.Directory.Exists(path)) dir = path;
@@ -419,6 +453,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void ExecuteInPlace(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
 
@@ -440,6 +477,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
         MessageBox.Show(Lib.OutputError(exc.Message.ToString()));
       }
       if (argstring == "") return;
+
+      // HACK Time-stamp: <2020-05-16 09:46:43 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
       // command前処理					
       if (command == String.Empty) command = path;
       else if (args == String.Empty) args = path;
@@ -493,6 +533,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void OpenDocument(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
 
@@ -502,6 +545,8 @@ namespace AntPlugin.XmlTreeMenu.Managers
       String option = String.Empty;
 
       if (String.IsNullOrEmpty(argstring)) return;
+      //HACK Time-stamp: <2020-05-16 09:49:39 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
       try
       {
         String[] tmpstr = argstring.Split('|');
@@ -562,6 +607,11 @@ namespace AntPlugin.XmlTreeMenu.Managers
         {
           PluginBase.MainForm.CallCommand("PluginCommand", "FlashViewer.Document;" + file);
         }
+        else if (Path.GetExtension(file) == ".pdf")
+        {
+          PluginBase.MainForm.CallCommand("Browse", file);
+        }
+
         else if (!Lib.IsExecutableFile(file) && !Lib.IsSoundFile(file) && !Lib.IsVideoFile(file))
         {
           switch (option.ToLower())
@@ -625,6 +675,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void CustomDocument(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
       String command = String.Empty;
@@ -633,6 +686,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
       String option = String.Empty;
  
       if (String.IsNullOrEmpty(argstring)) return;
+      // HACK Time-stamp: <2020-05-16 09:51:24 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
+
       try
       {
         String[] tmpstr = argstring.Split('|');
@@ -658,12 +714,17 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void RunTarget(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       //public void RunTarget(String file, String target)
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
       String buildfile = String.Empty;
 
       if (argstring == "") return;
+      // HACK Time-stamp: <2020-05-16 09:53:32 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
       NodeInfo ni = MakeNodeInfo(argstring);
       String command = Environment.SystemDirectory + "\\cmd.exe";
 
@@ -711,10 +772,15 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void RunWshScript(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
       String buildfile = String.Empty;
-       if (argstring == "") return;
+      if (argstring == "") return;
+      // HACK Time-stamp: <2020-05-16 09:55:44 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
       NodeInfo ni = MakeNodeInfo(argstring);
 
       String filename = Path.GetFileName(ni.Path);
@@ -776,9 +842,14 @@ namespace AntPlugin.XmlTreeMenu.Managers
     /// WebHandler.DownLoadfile(String url, String fileName)
     public static void ExecuteScript(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
       if (argstring == "") return;
+      // HACK Time-stamp: <2020-05-16 09:57:53 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
       NodeInfo ni = MakeNodeInfo(argstring);
       ni.InnerText = String.Empty;
       ScriptManager.RunScript(ni);
@@ -786,11 +857,14 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void PluginCommand(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
       if (argstring == "") return;
-
-      //MessageBox.Show(argstring);
+      // HACK Time-stamp: <2020-05-16 09:59:46 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
 
       NodeInfo ni = MakeNodeInfo(argstring);
       try
@@ -806,11 +880,42 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
     }
 
-    public static void CallCommand(object sender, EventArgs e)
+    public static void ControlCommand(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
       if (argstring == "") return;
+      // HACK Time-stamp: <2020-05-16 10:00:57 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
+      NodeInfo ni = MakeNodeInfo(argstring);
+      if (ni.Command == String.Empty) return;
+      if (PluginBase.MainForm.CurrentDocument.Controls[0] is ICommonInterface)
+      {
+        try
+        {
+          ((ICommonInterface)PluginBase.MainForm.CurrentDocument.Controls[0]).Instance.callCommand(ni.Command, ni.Args);
+        }
+        catch(Exception exc)
+        {
+          MessageBox.Show(Lib.OutputError(exc.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        }
+      }
+    }
+
+    public static void CallCommand(object sender, EventArgs e)
+    {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
+      ToolStripMenuItem button = sender as ToolStripMenuItem;
+      String argstring = button.Tag as String;
+      if (argstring == "") return;
+      // HACK Time-stamp: <2020-05-16 10:03:38 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
+
       NodeInfo ni = MakeNodeInfo(argstring);
 
        if (ni.Command == String.Empty) return;
@@ -834,6 +939,9 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void RunEmbedScript(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       if(button.Tag is NodeInfo)
       {
@@ -842,13 +950,21 @@ namespace AntPlugin.XmlTreeMenu.Managers
       }
       String argstring = button.Tag as String;
       if (argstring == "") return;
-
+      // HACK Time-stamp: <2020-05-16 10:06:41 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
     }
 
     public static void DefaultAction(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String argstring = button.Tag as String;
+      if (argstring == "") return;
+      // HACK Time-stamp: <2020-05-16 10:09:14 kahata>
+      argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
+
       NodeInfo ni = MakeNodeInfo(argstring);
 
       if (File.Exists(ni.Path))
@@ -903,12 +1019,16 @@ namespace AntPlugin.XmlTreeMenu.Managers
 
     public static void EvalScript(object sender, EventArgs e)
     {
-       ToolStripMenuItem button = sender as ToolStripMenuItem;
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
+      ToolStripMenuItem button = sender as ToolStripMenuItem;
       if(button.Tag is String)
       {
         String argstring = button.Tag as String;
         if (argstring == "") return;
-
+        // HACK 
+        argstring = CurControlProcessVariable(ProcessVariable(argstring), curDocumentPath);
         NodeInfo ni = MakeNodeInfo(argstring);
         ScriptManager.EvalScript(ni.Command.Replace("semicolon",";"));
       }
@@ -921,8 +1041,13 @@ namespace AntPlugin.XmlTreeMenu.Managers
     /// <param name="e"></param>
     public static void Hello(object sender, EventArgs e)
     {
+      string curDocumentPath = ActionManager.GetCurrentDocumentPath();
+      string curControlFilePath = ActionManager.GetCurControlFilePath();
+
       ToolStripMenuItem button = sender as ToolStripMenuItem;
       String msg = (string)button.Tag;
+      // HACK 
+      msg = CurControlProcessVariable(ProcessVariable(msg), curDocumentPath);
       //NodeInfo ni = MakeNodeInfo(sender);
       MessageBox.Show("ActionManager Hello関数からのご挨拶です " + msg, "Hello");
     }
@@ -1405,22 +1530,38 @@ namespace AntPlugin.XmlTreeMenu.Managers
       string text = "";
       if (PluginBase.MainForm.CurrentDocument.IsEditable)
       {
+        menuTree.isCommonInterface = false;
+        menuTree.pluginUI.Instance = null;
         text = PluginBase.MainForm.CurrentDocument.FileName;
       }
       else if (PluginBase.MainForm.CurrentDocument.IsBrowsable)
       {
+        menuTree.isCommonInterface = false;
+        menuTree.pluginUI.Instance = null;
         text = ((WebBrowser)((UserControl)PluginBase.MainForm.CurrentDocument.Controls[0]).Controls[0]).Url.ToString();
       }
       else
       {
+        if (PluginBase.MainForm.CurrentDocument.Controls[0] is ICommonInterface)
+        {
+          menuTree.isCommonInterface = true;
+          //ここにおくとおかしい
+          menuTree.InitializeCommonInterface(PluginBase.MainForm.CurrentDocument.Controls[0]);
+        }
+        else
+        {
+          menuTree.isCommonInterface = false;
+          menuTree.pluginUI.Instance = null;
+        }
         try
         {
           text = ((Control)PluginBase.MainForm.CurrentDocument.Controls[0].Tag).Tag.ToString();
         }
         catch (Exception ex)
         {
-          MessageBox.Show(ex.Message.ToString());
-          return "";
+          //MessageBox.Show(ex.Message.ToString());
+          MessageBox.Show(Lib.OutputError(ex.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+          return String.Empty;
         }
       }
       currentDocumentPath = text;

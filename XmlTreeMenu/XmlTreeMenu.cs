@@ -2,6 +2,7 @@
 using AntPlugin.XmlTreeMenu.Managers;
 using AntPlugin.XMLTreeMenu.Controls;
 using AntPlugin.XMLTreeMenu.Dialogs;
+using CommonInterface;
 using MDIForm;
 using PluginCore;
 using PluginCore.Controls;
@@ -16,11 +17,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using WeifenLuo.WinFormsUI.Docking;
@@ -37,7 +36,7 @@ namespace AntPlugin.XmlTreeMenu
     public RunProcessDialog runProcessDialog;
     public OpenFileDialog openFileDialog;
     public String currentTreeMenuFilepath = String.Empty;
-
+    public String controlCurrentFilePath = String.Empty;
     private ContextMenuStrip buildFileMenu;
     private ContextMenuStrip targetMenu;
     #endregion
@@ -111,6 +110,26 @@ namespace AntPlugin.XmlTreeMenu
       this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
       this.treeView.DoubleClick += new EventHandler(this.treeView_DoubleClick);
     }
+
+    public void InitializeCommonInterface(Control control)
+    {
+      if (!(control is ICommonInterface))
+      {
+        if (this.pluginUI.Instance != null) this.pluginUI.Instance = null;
+        return;
+      }
+      else
+      {
+        this.pluginUI.Instance = new CommonInterface.ChildFormControlClass();
+        this.pluginUI.Instance.name = ((ICommonInterface)control).Instance.name;
+        this.pluginUI.Instance.toolStrip = ((ICommonInterface)control).Instance.toolStrip;
+        this.pluginUI.Instance.menuStrip = ((ICommonInterface)control).Instance.menuStrip;
+        this.pluginUI.Instance.statusStrip = ((ICommonInterface)control).Instance.statusStrip;
+        this.pluginUI.Instance.callCommand = ((ICommonInterface)control).Instance.callCommand;
+        this.pluginUI.Instance.MainControl = ((ICommonInterface)control).Instance.MainControl;
+        this.pluginUI.Instance.filepath = ((ICommonInterface)control).Instance.filepath;
+      }
+    }
     #endregion
 
     #region TreeView Ivent Handler
@@ -161,6 +180,8 @@ namespace AntPlugin.XmlTreeMenu
 
     private void ShowNodeInfo(TreeNode treeNode)
     {
+      //仮
+      /*
       if (treeNode != null && treeNode.Tag.GetType().Name == "NodeInfo" && treeNode.Tag != null)
       {
         //MessageBox.Show(treeNode.GetType().FullName);
@@ -168,6 +189,8 @@ namespace AntPlugin.XmlTreeMenu
         selectedObject = (NodeInfo)treeNode.Tag;
         this.pluginUI.propertyGrid1.SelectedObject = selectedObject;
       }
+      */
+
     }
 
     private void ShowNodeInfo(TreeNode treeNode,TreeView treeView)
@@ -192,8 +215,12 @@ namespace AntPlugin.XmlTreeMenu
 
         else if (treeNode.Tag is XmlElement)
         {
-          mainForm = treeView.Tag as MDIForm.ParentFormClass;
-          mainForm.propertyGrid1.SelectedObject = (XmlElement)treeNode.Tag;
+          try
+          {
+            mainForm = treeView.Tag as MDIForm.ParentFormClass;
+            mainForm.propertyGrid1.SelectedObject = (XmlElement)treeNode.Tag;
+          }
+          catch { }
         }
 
         else if (treeNode.Tag is CSParser.Model.MemberModel)
@@ -430,11 +457,7 @@ namespace AntPlugin.XmlTreeMenu
       XmlNode xmlNode = null;
       XmlDocument xmldoc = new XmlDocument();
 
-
-
       xmldoc.Load(file);
-
-
 
       xmlNode = xmldoc.DocumentElement;
       //MessageBox.Show(xmlNode.Name);
@@ -473,7 +496,11 @@ namespace AntPlugin.XmlTreeMenu
       //xmlStr = ProcessXmlString(xmlStr, ni);
       xmlStr = xmlStr.Replace("$(IncludePath)", file);
       xmlStr = xmlStr.Replace("$(IncludeFileName)", Path.GetFileName(file));
+      xmlStr = xmlStr.Replace("$(IncludeFileBody)", Path.GetFileNameWithoutExtension(file));
+      xmlStr = xmlStr.Replace("$(IncludeFileExt)", Path.GetExtension(file));
       xmlStr = xmlStr.Replace("$(IncludeDir)", Path.GetDirectoryName(file));
+      xmlStr = xmlStr.Replace("$(IncludeDirPath)", Path.GetDirectoryName(file));
+      xmlStr = xmlStr.Replace("$(IncludeDirName)", Path.GetFileName(Path.GetDirectoryName(file)));
       //MessageBox.Show(xmlStr);
       if (ni_arg != null)
       {
@@ -492,6 +519,24 @@ namespace AntPlugin.XmlTreeMenu
             xmlStr = xmlStr.Replace("$(Target)",Path.GetFileName(Path.GetDirectoryName(ni_arg.PathBase)));
           }
         }
+
+        //////////////////////////////////////////////////////////////////////////////////
+        // ni_arg.Args 組み込み Time-stamp: <2020-04-06 19:16:34 kahata>
+        if (!String.IsNullOrEmpty(ni_arg.Args))
+        {
+          //MessageBox.Show(ni_arg.Args, "Args");
+          //Dictionary<string, string> param = StringHandler.Get_Values(ni_arg.Args,';','=');
+          foreach (KeyValuePair<string, string> item in StringHandler.Get_Values(ni_arg.Args))
+          {
+            if (!String.IsNullOrEmpty(ni_arg.Option) 
+              && ni_arg.Option.ToLower().IndexOf("debug") >= 0)// || option.ToLower().IndexOf("inpanel") >= 0)
+            {
+              MessageBox.Show(item.Value, item.Key);
+            }
+            xmlStr = xmlStr.Replace(item.Key, item.Value);
+          }
+        }
+        //////////////////////////////////////////////////////////////////////////////////
       }
 
       // <import file="aaa"/> の処理 Time-stamp: <2019-10-20 20:29:23 kahata>
@@ -574,7 +619,11 @@ namespace AntPlugin.XmlTreeMenu
 
       xmlStr = xmlStr.Replace("$(IncludePath)", file);
       xmlStr = xmlStr.Replace("$(IncludeFileName)", Path.GetFileName(file));
+      xmlStr = xmlStr.Replace("$(IncludeFileBody)", Path.GetFileNameWithoutExtension(file));
+      xmlStr = xmlStr.Replace("$(IncludeFileExt)", Path.GetExtension(file));
       xmlStr = xmlStr.Replace("$(IncludeDir)", Path.GetDirectoryName(file));
+      xmlStr = xmlStr.Replace("$(IncludeDirPath)", Path.GetDirectoryName(file));
+      xmlStr = xmlStr.Replace("$(IncludeDirName)", Path.GetFileName(Path.GetDirectoryName(file)));
 
       if (ni_arg != null)
       {
@@ -641,7 +690,15 @@ namespace AntPlugin.XmlTreeMenu
       //NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file);
       NodeInfo nodeInfo = this.SetNodeinfo(xmlNode, file, ni_arg);
       TreeNode treeNode = this.BuildTreeNode(nodeInfo, file);
+
+
       this.RecursiveBuildToTreeNode(xmlNode, treeNode, false);
+
+      //this.RecursiveBuildToTreeNode(xmlNode, treeNode, true);
+
+
+
+
       treeNode.Tag = nodeInfo;
       treeNode.ToolTipText = file;
       return treeNode;
@@ -1061,15 +1118,37 @@ namespace AntPlugin.XmlTreeMenu
         arg = arg.Replace("$(CurSciText)", PluginBase.MainForm.CurrentDocument.SciControl.Text);
         //arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(PluginBase.MainForm.CurrentDocument.FileName, this.settings.DocumentRoot, this.settings.ServerRoot));
         arg = arg.Replace("$(CurFileUrl)", Lib.Path2Url(PluginBase.MainForm.CurrentDocument.FileName, "localhost"));
-        //arg = arg.Replace("$(ControlCurFilePath)", this.controlCurrentFilePath);
-        //arg = arg.Replace("$(ControlCurFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
-        //arg = arg.Replace("$(CurControlFilePath)", this.controlCurrentFilePath);
-        //arg = arg.Replace("$(CurControlFileDir)", Path.GetDirectoryName(this.controlCurrentFilePath));
+        arg = arg.Replace("$(ControlCurFilePath)", this.GetCurControlFilePath());
+        arg = arg.Replace("$(ControlCurFileDir)", Path.GetDirectoryName(this.GetCurControlFilePath()));
+        arg = arg.Replace("$(CurControlFilePath)", this.GetCurControlFilePath());
+        arg = arg.Replace("$(CurControlFileDir)", Path.GetDirectoryName(this.GetCurControlFilePath()));
+        arg = arg.Replace("$(CurControlFileName)", Path.GetFileName(this.GetCurControlFilePath()));
+        arg = arg.Replace("$(CurControlFileBody)", Path.GetFileNameWithoutExtension(this.GetCurControlFilePath()));
+        arg = arg.Replace("$(CurControlFileExt)", Path.GetExtension(this.GetCurControlFilePath()));
+        // HACK 環境変数の取得
+        if (arg.ToLower().IndexOf("env.")>-1)
+        {
+          string tmp = arg.TrimStart('$', '(').TrimEnd(')');
+          tmp = tmp.Replace("env.", "").Replace("ENV.", "").Replace("Env", "");
+          string env = System.Environment.GetEnvironmentVariable(tmp);
+          arg = arg.Replace(arg, env);
+        }
       }
       catch { }
       return arg;
     }
 
+    public String GetCurControlFilePath()
+    {
+      string filepath = String.Empty;
+      if(PluginBase.MainForm.CurrentDocument.Controls[0] is ICommonInterface)
+      {
+        //text = ((Control)PluginBase.MainForm.CurrentDocument.Controls[0].Tag).Tag.ToString();
+        filepath = ((ICommonInterface)PluginBase.MainForm.CurrentDocument.Controls[0]).Instance.filepath;
+      }
+      return filepath;
+    }
+    
     /// <summary>
     /// Xml文書を再帰的に検査し、TreeNodeを構築
     /// </summary>
@@ -1179,6 +1258,7 @@ namespace AntPlugin.XmlTreeMenu
           if (String.IsNullOrEmpty(nodeName)) nodeName = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("name"));
           if (String.IsNullOrEmpty(nodeName)) nodeName = this.ProcessVariable(((XmlElement)childXmlNode).GetAttribute("id"));
           if (String.IsNullOrEmpty(nodeName)) nodeName = ((XmlElement)childXmlNode).Name;
+          
 
           // TreeNodeを新規作成
           //TreeNode tn = new TreeNode(ni.Title);
@@ -1331,10 +1411,16 @@ namespace AntPlugin.XmlTreeMenu
       ni.NodeFont = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("nodefont"));
       ni.NodeChecked = this.ProcessVariable(((XmlElement)xmlNode).GetAttribute("nodechecked"));
       ni.Option = ProcessVariable(((XmlElement)xmlNode).GetAttribute("option"));
-      if (fullNode == true && xmlNode.InnerText != String.Empty)
-      {
+
+
+      // FIX : Time-stamp: <2020-05-03 10:09:10 kahata>
+      //if (fullNode == true && xmlNode.InnerText != String.Empty)
+      //{
         ni.InnerText = xmlNode.InnerText;
-      }
+      //}
+      
+      
+      
       // 「Expand」属性を取得
       if (((XmlElement)xmlNode).GetAttribute("expand") == "true")
       {
@@ -1618,6 +1704,10 @@ namespace AntPlugin.XmlTreeMenu
       }
     }
 
+    /// <summary>
+    /// XmlTreeMenu.xml の toolbar,menubar,launch, settingsノードを処理する
+    /// </summary>
+    /// <param name="xmlNode"></param>
     private void ProcessNode(XmlNode xmlNode)
     {
       String name = xmlNode.Name;
@@ -1628,7 +1718,6 @@ namespace AntPlugin.XmlTreeMenu
           this.ToolBarSettings(xmlNode);
           break;
         case "menubar":
-          //MessageBox.Show("menubar");
           // 未完成
           this.MenuBarSettings(xmlNode);
           break;
@@ -1642,7 +1731,6 @@ namespace AntPlugin.XmlTreeMenu
           //this.AntPropertySettings(xmlNode);
           break;
       }
-
     }
 
     public static List<String> ToolBarSettingsFiles = new List<string>();
@@ -1651,7 +1739,6 @@ namespace AntPlugin.XmlTreeMenu
 
     public void ToolBarSettings(XmlNode xmlNode)
     {
-      //MessageBox.Show(this.currentTreeMenuFilepath);
       try
       {
         if (!ToolBarSettingsFiles.Contains(this.currentTreeMenuFilepath))
@@ -2481,9 +2568,9 @@ namespace AntPlugin.XmlTreeMenu
 
     #region Custom Document
 
-    public void InitializeCustomControlsInterface(IMDIForm control)
+    public void InitializeCustomMDIFormInterface(IMDIForm control)
     {
-      control.MainForm = new ParentFormClass
+      control.MainForm = new MDIForm.ParentFormClass
       {
         Instance = (Form)PluginBase.MainForm,
         //containerDockContent = control as DockContent,
@@ -2492,16 +2579,328 @@ namespace AntPlugin.XmlTreeMenu
         statusStrip = PluginBase.MainForm.StatusStrip,
         //xmlTreeMenu_pluginUI = this,
         //settings = this.pluginMain.Settings,
-        callPluginCommand = this.CallPluginCommand
+        callPluginCommand = this.CallXmlMenuTreeCommand
       };
     }
-   
+
+    public bool isCommonInterface = false;
+
+    public void InitializeCustomCommonInterface(ICommonInterface control)
+    {
+      control.MainForm = new CommonInterface.ParentFormClass
+      {
+        #region MainForm Methods
+        Instance = (Control)PluginBase.MainForm,
+
+        /// <summary>
+        /// Refreshes the main form.
+        /// </summary>
+        RefreshUI = PluginBase.MainForm.RefreshUI,
+
+        /// <summary>
+        /// Stop the currently running process.
+        /// </summary>
+        KillProcess = PluginBase.MainForm.KillProcess,
+
+        /// <summary>
+        /// Refreshes the scintilla configuration.
+        /// </summary>
+        RefreshSciConfig = PluginBase.MainForm.RefreshSciConfig,
+
+        /// <summary>
+        /// Calls a normal <see cref="IMainForm"/> method.
+        /// </summary>
+        CallCommand = PluginBase.MainForm.CallCommand,
+
+        /// <summary>
+        /// Finds the menu items that have the specified name.
+        /// </summary>
+        FindMenuItems = PluginBase.MainForm.FindMenuItems,
+
+        /// <summary>
+        /// Finds the specified menu item by name.
+        /// </summary>
+        FindMenuItem = PluginBase.MainForm.FindMenuItem,
+
+        /// <summary>
+        /// Processes the argument string variables.
+        /// </summary>
+        ProcessArgString = PluginBase.MainForm.ProcessArgString,
+
+        /// <summary>
+        /// Adjusts the image for different themes.
+        /// </summary>
+        //Image ImageSetAdjust(Image image);
+        ImageSetAdjust = PluginBase.MainForm.ImageSetAdjust,
+
+        /// <summary>
+        /// Gets a copy of the image that gets automatically adjusted according to the theme.
+        /// </summary>
+        //Image GetAutoAdjustedImage(Image image);
+        GetAutoAdjustedImage = PluginBase.MainForm.GetAutoAdjustedImage,
+
+        /// <summary>
+        /// Finds the specified composed/ready image that is automatically adjusted according to the theme.
+        /// <para/>
+        /// If you make a copy of the image returned by this method, the copy will not be automatically adjusted.
+        /// </summary>
+        //Image FindImage(String data);
+        FindImage = PluginBase.MainForm.FindImage,
+
+        /// <summary>
+        /// Finds the specified composed/ready image.
+        /// <para/>
+        /// If you make a copy of the image returned by this method, the copy will not be automatically adjusted, even if <code>autoAdjusted</code> is <code>true</code>.
+        /// </summary>
+        //Image FindImage(String data, Boolean autoAdjust);
+        //FindImage2 = PluginBase.MainForm.,
+
+        /// <summary>
+        /// Finds the specified composed/ready image that is automatically adjusted according to the theme.
+        /// The image size is always 16x16.
+        /// <para/>
+        /// If you make a copy of the image returned by this method, the copy will not be automatically adjusted.
+        /// </summary>
+        //Image FindImage16(String data);
+        //FindImage16 = PluginBase.MainForm.,
+
+        /// <summary>
+        /// Finds the specified composed/ready image. The image size is always 16x16.
+        /// <para/>
+        /// If you make a copy of the image returned by this method, the copy will not be automatically adjusted, even if <code>autoAdjusted</code> is <code>true</code>.
+        /// </summary>
+        //Image FindImage16(String data, Boolean autoAdjusted);
+        //FindImage16_2 = PluginBase.MainForm.,
+
+        /// <summary>
+        /// Finds the specified composed/ready image and returns a copy of the image that has its color adjusted.
+        /// This method is typically used for populating a <see cref="ImageList"/> object.
+        /// <para/>
+        /// Equivalent to calling <code>ImageSetAdjust(FindImage(data, false))</code>.
+        /// </summary>
+        //Image FindImageAndSetAdjust(String data);
+        FindImageAndSetAdjust = PluginBase.MainForm.FindImageAndSetAdjust,
+
+        /// <summary>
+        /// Gets the amount of FD instances running
+        /// </summary>
+        //Int32 GetInstanceCount();
+        GetInstanceCount = PluginBase.MainForm.GetInstanceCount,
+        #endregion
+
+        #region MainFrom Properties
+        /// <summary>
+        /// Gets the tool strip.
+        /// public ToolStrip ToolStrip { get; set; }
+        /// </summary>
+        ToolStrip = PluginBase.MainForm.ToolStrip,
+        /// <summary>
+        /// Gets the menu strip.
+        /// public MenuStrip MenuStrip { get; set; }
+        /// </summary>
+        MenuStrip = PluginBase.MainForm.MenuStrip,
+        /// <summary>
+        /// Gets the status strip.
+        ///public StatusStrip statusStrip { get; set; }
+        /// </summary>
+        statusStrip = PluginBase.MainForm.StatusStrip,
+        /// <summary>
+        /// Gets the tool strip status label.
+        /// public ToolStripStatusLabel StatusLabel { get; set; }
+        /// </summary>
+        StatusLabel = PluginBase.MainForm.StatusLabel,
+        /// <summary>
+        /// Gets the application start arguments.
+        /// String[] StartArguments { get; set; }
+        /// </summary>
+        StartArguments = PluginBase.MainForm.StartArguments,
+        /// <summary>
+        /// Gets or sets the working directory.
+        /// String WorkingDirectory { get; set; }
+        /// </summary>
+        WorkingDirectory = PluginBase.MainForm.WorkingDirectory,
+        /// <summary>
+        /// Gets the tool strip panel.
+        /// ToolStripPanel ToolStripPanel { get; set; }
+        /// </summary>
+        ToolStripPanel = PluginBase.MainForm.ToolStripPanel,
+        /// <summary>
+        /// Gets the tool strip progress label.
+        /// ToolStripStatusLabel ProgressLabel { get; set; }
+        /// </summary>
+        ProgressLabel = PluginBase.MainForm.ProgressLabel,
+        /// <summary>
+        /// Gets the tool strip progress bar.
+        /// ToolStripProgressBar ProgressBar { get; set; }
+        /// </summary>
+        ProgressBar = PluginBase.MainForm.ProgressBar,
+        /// <summary>
+        ///  Gets the collection of controls contained within this control.
+        /// Control.ControlCollection Controls { get; set; }
+        /// </summary>
+        Controls = PluginBase.MainForm.Controls,
+        /// <summary>
+        /// Gets the tab menu.
+        /// ContextMenuStrip TabMenu { get; set; }
+        /// </summary>
+        TabMenu = PluginBase.MainForm.TabMenu,
+        /// <summary>
+        /// Gets the editor menu.
+        /// ContextMenuStrip EditorMenu { get; set; }
+        /// </summary>
+        EditorMenu = PluginBase.MainForm.EditorMenu,
+
+        /*
+        /// <summary>
+        /// Gets the current <see cref="ITabbedDocument"/> object.
+        /// </summary>
+        //ITabbedDocument CurrentDocument { get; }
+        /// <summary>
+        /// Gets all available documents.
+        /// </summary>
+        //ITabbedDocument[] Documents { get; }
+        */
+
+        /// <summary>
+        /// Gets whether FlashDevelop holds modified documents.
+        /// Boolean HasModifiedDocuments { get; set; }
+        /// </summary>
+        HasModifiedDocuments = PluginBase.MainForm.HasModifiedDocuments,
+        /// <summary>
+        /// Gets whether FlashDevelop is closing.
+        /// Boolean ClosingEntirely { get; set; }
+        /// </summary>
+        ClosingEntirely = PluginBase.MainForm.ClosingEntirely,
+        /// <summary>
+        /// Gets whether a process is running.
+        ///Boolean ProcessIsRunning { get; set; }
+        /// </summary>
+        ProcessIsRunning = PluginBase.MainForm.ProcessIsRunning,
+        /// <summary>
+        /// Gets whether a document is reloading.
+        /// Boolean ReloadingDocument { get; set; }
+        /// </summary>
+        ReloadingDocument = PluginBase.MainForm.ReloadingDocument,
+        /// <summary>
+        /// Gets whether contents are being processed.
+        /// Boolean ProcessingContents { get; set; }
+        /// </summary>
+        ProcessingContents = PluginBase.MainForm.ProcessingContents,
+        /// <summary>
+        /// Gets whether contents are being restored.
+        /// Boolean RestoringContents { get; set; }
+        /// </summary>
+        RestoringContents = PluginBase.MainForm.RestoringContents,
+        /// <summary>
+        /// Gets saving multiple.
+        /// Boolean SavingMultiple { get; set; }
+        /// </summary>
+        SavingMultiple = PluginBase.MainForm.SavingMultiple,
+        /// <summary>
+        /// Gets whether the panel is active.
+        /// Boolean PanelIsActive { get; set; }
+        /// </summary>
+        PanelIsActive = PluginBase.MainForm.PanelIsActive,
+        /// <summary>
+        /// Gets whether FlashDevelop is in full screen.
+        /// Boolean IsFullScreen { get; set; }
+        /// </summary>
+        IsFullScreen = PluginBase.MainForm.IsFullScreen,
+        /// <summary>
+        /// Gets whether FlashDevelop is in standalone mode.
+        /// Boolean StandaloneMode { get; set; }
+        /// </summary>
+        StandaloneMode = PluginBase.MainForm.StandaloneMode,
+        /// <summary>
+        /// Gets whether FlashDevelop is in multi-instance mode.
+        /// Boolean MultiInstanceMode { get; set; }
+        /// </summary>
+        MultiInstanceMode = PluginBase.MainForm.MultiInstanceMode,
+        /// <summary>
+        /// Gets whether this <see cref="IMainForm"/> is the first instance.
+        /// Boolean IsFirstInstance { get; set; }
+        /// </summary>
+        IsFirstInstance = PluginBase.MainForm.IsFirstInstance,
+        /// <summary>
+        /// Gets whether a restart is required.
+        /// Boolean RestartRequested { get; set; }
+        /// </summary>
+        RestartRequested = PluginBase.MainForm.RestartRequested,
+        /// <summary>
+        /// Gets whether the application requires a restart to apply changes.
+        /// Boolean RequiresRestart { get; set; }
+        /// </summary>
+        RequiresRestart = PluginBase.MainForm.RequiresRestart,
+        /// <summary>
+        /// Gets whether the config should be refreshed.
+        /// Boolean RefreshConfig { get; set; }
+        /// </summary>
+        RefreshConfig = PluginBase.MainForm.RefreshConfig,
+        /// <summary>
+        /// Gets the ignored keys.
+        /// List<System.Windows.Forms.Keys> IgnoredKeys { get; set; }
+        /// </summary>
+        IgnoredKeys = PluginBase.MainForm.IgnoredKeys,
+        /// <summary>
+        /// Gets the version of the application.
+        /// String ProductVersion { get; set; }
+        /// </summary>
+        ProductVersion = PluginBase.MainForm.ProductVersion,
+        /// <summary>
+        /// Gets the full human readable version string.
+        /// String ProductName { get; set; }
+        /// </summary>
+        ProductName = PluginBase.MainForm.ProductName,
+        /// <summary>
+        /// Gets the command prompt executable (custom or cmd.exe by default).
+        /// String CommandPromptExecutable { get; set; }
+        /// </summary>
+        CommandPromptExecutable = PluginBase.MainForm.CommandPromptExecutable,
+        #endregion
+      };
+      control.MainForm.AntPanel = new CommonInterface.ParentFormClass.AntPanelClass
+      {
+        #region AntPanel Method
+        // Boolean CallXmlMenuTreeCommand(String command, String arguments)
+        CallXmlMenuTreeCommand = this.CallXmlMenuTreeCommand,
+
+        //public delegate Boolean AntCallCommand(String command, String arguments);
+        CallCommand = this.pluginUI.CallCommand,
+
+        //public delegate void AntNodeAction(String argstr);
+        NodeAction = ActionManager.NodeAction,
+
+        //public delegate Boolean AntMenuCommand(String command, String arguments);
+        MenuCommand = this.CallMenuCommand,
+
+        //public delegate Boolean AntTreeCommand(String command, String arguments);
+        TreeCommand = this.CallXmlMenuTreeCommand,
+
+        RunCommand = this.pluginUI.RunCommand,
+
+        // Time-stamp: <2020-05-15 05:50:25 kahata>
+        //ProcessVariable = this.pluginUI.ProcessVariable,
+        ProcessVariable = this.ProcessVariable,
+        #endregion
+
+        #region AntPanel Properties
+        //xmlTreeMenu_pluginUI = this,
+        //settings = this.pluginMain.Settings,
+        imageList1 = this.imageList,
+        imageList2 = AntPlugin.PluginUI.imageList2,
+        CurrentProjectPath = this.pluginUI.CurrentProjectPath,//PluginBase.CurrentProject.ProjectPath
+        CurrentDocumentPath = this.pluginUI.CurrentDocumentPath,
+        #endregion
+
+      };
+    }
+
     public DockContent CreateCustomDocument(string name, string file, string option= "")
     {
       DockContent result;
       try
       {
-        Control control = this.CreateCustomDockControl(name, file,option);
+        Control control = this.CreateCustomDockControl(name, file, option);
         control.Dock = DockStyle.Fill;
         DockContent dockContent = PluginBase.MainForm.CreateCustomDocument(control);
         dockContent.Name = Path.GetFileNameWithoutExtension(name);
@@ -2556,11 +2955,6 @@ namespace AntPlugin.XmlTreeMenu
         case "RichTextEditor":
           //this.settings.PreviousRichTextEditorDocuments = ((RichTextEditor)dockContent.Tag).PreviousDocuments;
           break;
-        /*
-      case "SpreadSheet":
-        //this.settings.PreviousSpreadSheetDocuments = ((SpreadSheet)dockContent.Tag).PreviousDocuments;
-        break;
-      */
         case "SimplePanel":
           //this.settings.PreviousSimplePanelDocuments = ((SimplePanel)dockContent.Tag).PreviousDocuments;
           break;
@@ -2684,31 +3078,31 @@ namespace AntPlugin.XmlTreeMenu
             //richTextEditor.Instance.PreviousDocuments = this.settings.PreviousRichTextEditorDocuments;
             control = richTextEditor as Control;
             break;
-            //case "ReoGridPanel":
-            //control = new ReoGridPanel() as Control;
-            //ReoGridPanel reoGridPanel = new ReoGridPanel();
-            //reoGridPanel.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
-            //reoGridPanel.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
-            //control = reoGridPanel as Control;
-            //control = new ReoGridPanel() as Control;
-            //SpreadSheet spreadSheet = new SpreadSheet();
-            //spreadSheet.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
-            //spreadSheet.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
-            //control = spreadSheet as Control;
-            //break;
-            //case "HTMLEditor":
-            //HTMLEditor htmlEditor = new HTMLEditor();
-            //htmlEditor.PreviousDocuments = this.settings.PreviousHTMLEditorDocuments;
-            //htmlEditor.Instance.PreviousDocuments = this.settings.PreviousHTMLEditorDocuments;
-            //control = htmlEditor as Control;
-            //MessageBox.Show(name);
-            //break;
-            //case "TreeGridView":
-            //TreeGridViewPanel treeGridView = new TreeGridViewPanel();
-            //treeGridViewPanel.PreviousDocuments = this.settings.PreviousTreeGridViewDocuments;
-            //treeGridView.Instance.PreviousDocuments = this.settings.PreviousTreeGridViewPanelDocuments;
-            //control = treeGridView as Control;
-            //break;
+          //case "ReoGridPanel":
+          //control = new ReoGridPanel() as Control;
+          //ReoGridPanel reoGridPanel = new ReoGridPanel();
+          //reoGridPanel.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+          //reoGridPanel.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+          //control = reoGridPanel as Control;
+          //control = new ReoGridPanel() as Control;
+          //SpreadSheet spreadSheet = new SpreadSheet();
+          //spreadSheet.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+          //spreadSheet.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+          //control = spreadSheet as Control;
+          //break;
+          //case "HTMLEditor":
+          //HTMLEditor htmlEditor = new HTMLEditor();
+          //htmlEditor.PreviousDocuments = this.settings.PreviousHTMLEditorDocuments;
+          //htmlEditor.Instance.PreviousDocuments = this.settings.PreviousHTMLEditorDocuments;
+          //control = htmlEditor as Control;
+          //MessageBox.Show(name);
+          //break;
+          //case "TreeGridView":
+          //TreeGridViewPanel treeGridView = new TreeGridViewPanel();
+          //treeGridViewPanel.PreviousDocuments = this.settings.PreviousTreeGridViewDocuments;
+          //treeGridView.Instance.PreviousDocuments = this.settings.PreviousTreeGridViewPanelDocuments;
+          //control = treeGridView as Control;
+          //break;
           //case "JsonViewer":
           //JsonView jsonViewer = new JsonView();
           //treeGridViewPanel.PreviousDocuments = this.settings.PreviousTreeGridViewDocuments;
@@ -2738,6 +3132,7 @@ namespace AntPlugin.XmlTreeMenu
                     dllpath = Path.Combine(dlldir, Path.GetFileNameWithoutExtension(path) + ".dll");
                     //classname = "CommonControl." + Path.GetFileNameWithoutExtension(path);
                     classname = "XMLTreeMenu.Controls." + Path.GetFileNameWithoutExtension(path);
+                    //MessageBox.Show(dllpath, classname);
                   }
                   assembly = Assembly.LoadFrom(dllpath);
                   type = assembly.GetType(classname);
@@ -2762,16 +3157,21 @@ namespace AntPlugin.XmlTreeMenu
         }
         control.Name = Path.GetFileNameWithoutExtension(path);
         control.Dock = DockStyle.Fill;
-        
+
         try
         {
           // 例外発生
           if (control is IMDIForm)
           {
-            this.InitializeCustomControlsInterface((IMDIForm)control);
+            this.InitializeCustomMDIFormInterface((IMDIForm)control);
             //Console.WriteLine("実装してる！");
           }
-          //MessageBox.Show("トライはここですよ");
+          else if (control is ICommonInterface)
+          {
+            this.InitializeCustomCommonInterface((ICommonInterface)control);
+            this.isCommonInterface = true;
+          }
+          else this.isCommonInterface = false;
         }
         catch (Exception ex)
         {
@@ -2779,27 +3179,32 @@ namespace AntPlugin.XmlTreeMenu
           MessageBox.Show(errmsg, "InitializeCustomControlsInterface((IMDIForm)control)エラー");
         }
         control.Name = classname + "@" + dllpath;
-        //control.AccessibleDescription = option;
-        control.AccessibleDescription = classname + "@" + dllpath;
+        control.AccessibleDescription = option;
+        //control.AccessibleDescription = classname + "@" + dllpath;
         control.AccessibleName = file;
         control.AccessibleDefaultActionDescription = this.GetType().FullName + "@" + Application.ExecutablePath;
         ((Control)control.Tag).Tag = file;
 
+        MenuStrip controlMenuStrip = (MenuStrip)Lib.FindChildControlByType(control, "MenuStrip");
+        if (controlMenuStrip != null)
+        {
+          AddCustomMenu(classname, dllpath, controlMenuStrip);
+          //menuStrip.Tag = PluginBase.MainForm.MenuStrip;
+        }
+
+        ToolStrip toolStrip = (ToolStrip)Lib.FindChildControlByType(control, "ToolStrip");
+        if (toolStrip != null)
+        {
+          AddCustomButton(classname, dllpath, toolStrip);
+          //toolStrip.Tag = PluginBase.MainForm.ToolStrip;
+        }
+        /*
         StatusStrip statusStrip = (StatusStrip)Lib.FindChildControlByType(control, "StatusStrip");
         if (statusStrip != null)
         {
           statusStrip.Tag = PluginBase.MainForm.StatusStrip;
         }
-        MenuStrip menuStrip = (MenuStrip)Lib.FindChildControlByType(control, "MenuStrip");
-        if (menuStrip != null)
-        {
-          menuStrip.Tag = PluginBase.MainForm.MenuStrip;
-        }
-        ToolStrip toolStrip = (ToolStrip)Lib.FindChildControlByType(control, "ToolStrip");
-        if (toolStrip != null)
-        {
-          toolStrip.Tag = PluginBase.MainForm.ToolStrip;
-        }
+        */
         result = control;
       }
       catch (Exception ex2)
@@ -2810,7 +3215,44 @@ namespace AntPlugin.XmlTreeMenu
       return result;
     }
 
+    public void AddCustomMenu(string classname, string dllpath, MenuStrip customMenuStrip)
+    {
+      //string name = Path.GetExtension(classname).Replace(".", "");
+      string[] tmp = classname.Split('.');
+      string name = tmp[tmp.Length - 1];
 
+      string menufile = Path.Combine(Path.GetDirectoryName(dllpath), "Data", name, "menubar.xml");
+      if (File.Exists(menufile))
+      {
+        //MessageBox.Show(menufile, name);
+        MenuStrip addMenuStrip = StripBarManager.GetMenuStrip(menufile);
+        List<ToolStripMenuItem> customMenuItems = new List<ToolStripMenuItem>();
+        foreach (ToolStripMenuItem item in addMenuStrip.Items) customMenuItems.Add(item);
+        foreach (ToolStripMenuItem item in customMenuItems) customMenuStrip.Items.Add(item);
+      }
+    }
+
+    public void AddCustomButton(string classname, string dllpath, ToolStrip customToolStrip)
+    {
+      string[] tmp = classname.Split('.');
+      //string name = Path.GetExtension(classname).Replace(".", "");
+      string name = tmp[tmp.Length - 1];
+      string buttonfile = Path.Combine(Path.GetDirectoryName(dllpath), "Data", name, "toolbar.xml");
+      if (File.Exists(buttonfile))
+      {
+        //MessageBox.Show(menufile, name);
+        ToolStrip addToolStrip = StripBarManager.GetToolStrip(buttonfile);
+        ToolStripManager.Merge(addToolStrip, customToolStrip);
+      }
+    }
+
+    /// <summary>
+    /// TODO - no link
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="file"></param>
+    /// <param name="option"></param>
+    /// <returns></returns>
     public Control CreateCustomControl(string path, string file, string option = "")
     {
       Control result;
@@ -2853,6 +3295,7 @@ namespace AntPlugin.XmlTreeMenu
           //case "reogridpanel":
           //reoGridPanel.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
           //reoGridPanel.Instance.PreviousDocuments = this.settings.PreviousSpreadSheetDocuments;
+          
           //break;
           //case "openglpanel":
           //control = new XMLTreeMenu.Controls.OpenGLPanel() as Control;
@@ -2922,8 +3365,8 @@ namespace AntPlugin.XmlTreeMenu
           MessageBox.Show(errmsg, MethodBase.GetCurrentMethod().Name);
         }
         control.Name = classname + "@" + dllpath;
-        //control.AccessibleDescription = option;
-        control.AccessibleDescription = classname + "@" + dllpath;
+        control.AccessibleDescription = option;
+        //control.AccessibleDescription = classname + "@" + dllpath;
         control.AccessibleName = file;
         control.AccessibleDefaultActionDescription = this.GetType().FullName + "@" + Application.ExecutablePath;
         ((Control)control.Tag).Tag = file;
@@ -2953,8 +3396,6 @@ namespace AntPlugin.XmlTreeMenu
       return result;
     }
 
-
-
     public string CurrentDocumentPath()
     {
       string text = "";
@@ -2978,7 +3419,6 @@ namespace AntPlugin.XmlTreeMenu
           return "";
         }
       }
-      //this.currentDocumentPath = text;
       PluginBase.MainForm.StatusLabel.Text = text;
       return text;
     }
@@ -3021,7 +3461,7 @@ namespace AntPlugin.XmlTreeMenu
       return result;
     }
 
-    // TODI no link
+    // TODO no link
     public DockContent CreateEditableDocument(string file, string text, int codepage)
     {
       return null;
@@ -3029,6 +3469,7 @@ namespace AntPlugin.XmlTreeMenu
 
     public void OpenDocument(string file)
     {
+      this.isCommonInterface = false;
       if (Lib.IsImageFile(file))
       {
         ActionManager.Picture(file);
@@ -3066,7 +3507,6 @@ namespace AntPlugin.XmlTreeMenu
     /// </summary>
     public Boolean CallMenuCommand(String name, String tag)
     {
-      //MessageBox.Show(tag,name);
       try
       {
         ActionManager action = new ActionManager();
@@ -3080,9 +3520,7 @@ namespace AntPlugin.XmlTreeMenu
         button.Tag = tag;// new ItemData(null, tag, null); // Tag is used for args
         Object[] parameters = new Object[2];
         parameters[0] = button; parameters[1] = null;
-        //string[] parameters = tag.Split('|');
         method.Invoke(this, parameters);
-       
         return true;
       }
       catch (Exception ex)
@@ -3113,7 +3551,7 @@ namespace AntPlugin.XmlTreeMenu
     /// <summary>
     /// Calls a normal XmlMenuTree method
     /// </summary>
-    public Boolean CallPluginCommand(String name, String tag)
+    public Boolean CallXmlMenuTreeCommand(String name, String tag)
     {
       try
       {
@@ -3149,7 +3587,20 @@ namespace AntPlugin.XmlTreeMenu
       //NodeInfo ni = MakeNodeInfo(sender);
       MessageBox.Show("AntMenu Hello関数からのご挨拶です "+ msg,"Hello");
     }
-    
+
+    public void SetTabTextCurrentDockContent(object sender, EventArgs e)
+    {
+      ToolStripMenuItem button = sender as ToolStripMenuItem;
+      String text = (string)button.Tag;
+      //MessageBox.Show("XmlTreeMenu SetTabTextCurrentDockContent関数からのご挨拶です\n" + path, "Hello");
+      //text = ((Control)PluginBase.MainForm.CurrentDocument.Controls[0].Tag).Tag.ToString();
+      if (PluginBase.MainForm.CurrentDocument.Controls[0] is ICommonInterface)
+      {
+        ((DockContent)PluginBase.MainForm.CurrentDocument).TabText = text;// Path.GetFileName(path);
+      }
+    }
+
+
     #endregion
 
     #endregion
@@ -3381,14 +3832,11 @@ namespace AntPlugin.XmlTreeMenu
 
     #endregion
 
-
-
     /// <summary>
-    /// AntPanel treeNode 右クリック コンテキストメニューの試験 EventHandler
+    /// AntPanel xmlTreeNode 右クリック コンテキストメニューの試験 EventHandler
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-
     private void 試験ToolStripMenuItem_Click(object sender, EventArgs e)
     {
       //NodeInfo nodeInfo = this.SelectedNodeInfo();
@@ -3412,8 +3860,8 @@ namespace AntPlugin.XmlTreeMenu
       //string s = "";
       //XmlNode xmlNode = nodeInfo.XmlNode;
 
-      TreeNode treeNode = this.treeView.SelectedNode;
-      treeNode = GetTopTreeNode(treeNode);
+      //TreeNode treeNode = this.treeView.SelectedNode;
+      //treeNode = GetTopTreeNode(treeNode);
       #region coment out      
       /*
       while (treeNode.Parent != null)
@@ -3466,9 +3914,13 @@ namespace AntPlugin.XmlTreeMenu
       }
       */
       #endregion
-      MessageBox.Show(treeNode.Name);
-    }
+      //MessageBox.Show(treeNode.Name);
 
+      MessageBox.Show(CurrentDocumentPath(), PluginBase.MainForm.CurrentDocument.Controls[0].GetType().FullName);
+      
+      //MessageBox.Show(PluginBase.MainForm.CurrentDocument.Controls[0].AccessibleDescription,
+      //  PluginBase.MainForm.CurrentDocument.Controls[0].GetType().FullName);
+    }
 
     /// <summary>
     ///  treeNode の トップノードを取得する (Includeされた場合特に有効
@@ -3527,10 +3979,6 @@ namespace AntPlugin.XmlTreeMenu
       }
       return treeNode;
     }
-
-
-
-
 
   }
 }

@@ -740,22 +740,27 @@ namespace AntPlugin.XmlTreeMenu.Managers
     // 追加関数 Time-stamp: <2019-10-23 15:06:46 kahata>
     public static string ProcessVariable(string strVar)
     {
-      string arg = string.Empty;
-      arg = PluginBase.MainForm.ProcessArgString(strVar);
-      try
-      {
-        arg = arg.Replace("$(CurProjectDir)", Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath));
-        arg = arg.Replace("$(CurProjectName)", Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath));
-        arg = arg.Replace("$(Quote)", "\"");
-        arg = arg.Replace("$(Dollar)", "$");
-        arg = arg.Replace("$(AppDir)", PathHelper.AppDir);
-        arg = arg.Replace("$(BaseDir)", PathHelper.BaseDir);
-        arg = arg.Replace("$(CurDirName)", Path.GetFileNameWithoutExtension(Path.GetDirectoryName(PluginBase.MainForm.CurrentDocument.FileName)));
-      }
-      catch
-      {
-      }
-      return arg;
+      
+       string arg = string.Empty;
+       arg = PluginBase.MainForm.ProcessArgString(strVar);
+       try
+       {
+         arg = arg.Replace("$(CurProjectDir)", Path.GetDirectoryName(PluginBase.CurrentProject.ProjectPath));
+         arg = arg.Replace("$(CurProjectName)", Path.GetFileNameWithoutExtension(PluginBase.CurrentProject.ProjectPath));
+         arg = arg.Replace("$(Quote)", "\"");
+         arg = arg.Replace("$(Dollar)", "$");
+         arg = arg.Replace("$(AppDir)", PathHelper.AppDir);
+         arg = arg.Replace("$(BaseDir)", PathHelper.BaseDir);
+         arg = arg.Replace("$(CurDirName)", Path.GetFileNameWithoutExtension(Path.GetDirectoryName(PluginBase.MainForm.CurrentDocument.FileName)));
+       }
+       catch
+       {
+       }
+       return arg;
+
+      // 不具合発生 Time-stamp: <2020-05-15 05:54:14 kahata>
+      //XmlMenuTree menuTree = new XmlMenuTree();
+      //return menuTree.ProcessVariable(strVar);
     }
 
     public static string File_ReadToEnd(string filepath)

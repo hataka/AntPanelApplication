@@ -13,6 +13,9 @@ using WeifenLuo.WinFormsUI.Docking;
 using System.Diagnostics;
 using CSParser.BuildTree;
 using AntPlugin.XmlTreeMenu.Managers;
+using AntPlugin.CommonLibrary;
+using System.Reflection;
+
 
 namespace AntPlugin
 {
@@ -138,12 +141,24 @@ namespace AntPlugin
         try
         {
           string fileName = PluginBase.MainForm.CurrentDocument.FileName;
+          String currentdocumentPath = String.Empty;
+          try
+          {
+            currentdocumentPath = ActionManager.GetCurrentDocumentPath();
+          } catch { }
+          
+          //TraceManager.Add("Switched to " + fileName); // tracing to output panel
+          TraceManager.Add("Switched to " + currentdocumentPath); // tracing to output panel
+          this.pluginUI.CurrentDocumentPath = currentdocumentPath;
           if (fileName != null && this.pluginUI != null && File.Exists(fileName))
           {
             this.pluginUI.CsOutlineParse();
           }
         }
-        catch { }
+        catch (Exception ex1)
+        {
+          MessageBox.Show(Lib.OutputError(ex1.Message.ToString()), MethodBase.GetCurrentMethod().Name);
+        }
       }
       if (e.Type == EventType.Command)
 			{
@@ -197,7 +212,7 @@ namespace AntPlugin
           string[] tmp2 = (evnt.Data.ToString()).Split('!');
           string name = tmp2[0];
           string arg = tmp2.Length > 1 ? tmp2[1] : string.Empty;
-          this.pluginUI.menuTree.CallPluginCommand(name, arg);
+          this.pluginUI.menuTree.CallXmlMenuTreeCommand(name, arg);
           evnt.Handled = true;
         }
       }
